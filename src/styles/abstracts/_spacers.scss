@@ -1,0 +1,28 @@
+@use 'sass:map';
+
+// Spacing scale, 4px based. Used for margin, padding, gap. Generates utility
+// classes `has-m*-N`, `has-p*-N`, `has-gap-N` via base/_measures.scss and
+// base/_base.scss.
+
+$spacers: (
+  0: 0,
+  1: 4px,
+  2: 8px,
+  3: 12px,
+  4: 16px,
+  5: 20px,
+  6: 24px,
+  7: 32px,
+  8: 40px,
+  9: 48px,
+  10: 64px,
+  11: 80px,
+);
+
+@function spacer($n) {
+  @if not map.has-key($spacers, $n) {
+    @error 'Spacer `#{$n}` not found in $spacers map.';
+  }
+
+  @return map.get($spacers, $n);
+}

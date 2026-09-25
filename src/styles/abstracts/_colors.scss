@@ -1,0 +1,79 @@
+@use 'sass:map';
+
+// Mirror brand.md exactly.
+// Keys here drive `.bg-<name>`, `.is-<name>`, `.has-border-<name>` utilities
+// generated below.
+
+// The kit colour is chosen on the board at runtime, so the palette reads it
+// through custom properties. These are the defaults, set on `.board` in
+// components/_board.scss and mirrored in src/constants/brand.ts.
+$kit-defaults: (
+  kit:      #F2D106,
+  kit-ink:  #0A0A0A,
+  kit-edge: #C7AB08,
+);
+
+$theme-colors: (
+  // Primary (dominant)
+  board:        #0A0A0A,
+  board-2:      #141414,
+  board-3:      #1F1F1E,
+  chalk:        #F6F6F3,
+
+  // Secondary (complementary)
+  dim:          #96968F,
+  dimmer:       #67675F,
+
+  // Accent
+  out:          #E0766A,
+
+  // Kit, live values from the board
+  kit:          var(--kit),
+  kit-ink:      var(--kit-ink),
+  kit-edge:     var(--kit-edge),
+  kit-soft:     color-mix(in srgb, var(--kit) 13%, transparent),
+
+  // Hairlines: chalk at 13% for edges, 7% for list rules
+  edge:         color-mix(in srgb, #F6F6F3 13%, transparent),
+  rule:         color-mix(in srgb, #F6F6F3 7%, transparent),
+
+  // Derived neutrals for UI chrome.
+  black:        #000000,
+  text:         #F6F6F3,
+  text-muted:   #96968F,
+  keeper-edge:  #C9C9C3,
+  pitch-top:    #1A1A18,
+  pitch-bottom: #0C0C0B,
+);
+
+@function color($name) {
+  @if not map.has-key($theme-colors, $name) {
+    @error 'Color `#{$name}` not found in $theme-colors map.';
+  }
+
+  @return map.get($theme-colors, $name);
+}
+
+// Translucent tints of a palette colour. Works for the kit custom properties too,
+// which `rgba()` cannot take.
+@function tint($name, $percent) {
+  @return color-mix(in srgb, color($name) $percent, transparent);
+}
+
+// Quote the key in interpolation because `black` is a Sass colour keyword
+// and would otherwise be stringified as "#000", producing `.bg-#000`.
+@each $name, $value in $theme-colors {
+  $key: '' + $name;
+
+  .bg-#{$key} {
+    background-color: $value;
+  }
+
+  .is-#{$key} {
+    color: $value;
+  }
+
+  .has-border-#{$key} {
+    border-color: $value;
+  }
+}

@@ -1,0 +1,14 @@
+@use '../abstracts' as *;
+
+// Headings on the board are small labels, sized by utilities in the JSX.
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-family-headline;
+  font-weight: font-weight(semibold);
+  line-height: line-height(compact);
+  color: color(kit);
+}

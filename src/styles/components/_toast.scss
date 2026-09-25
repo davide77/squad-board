@@ -1,0 +1,14 @@
+@use '../abstracts' as *;
+
+.toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
+  z-index: z(toast);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  white-space: nowrap;
+}

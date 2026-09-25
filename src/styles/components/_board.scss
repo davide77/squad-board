@@ -1,0 +1,162 @@
+@use 'sass:map';
+@use '../abstracts' as *;
+
+// The kit colour defaults. The board root overrides them with the club colour
+// the coach picked (SquadBoard.tsx), so everything below follows it.
+:root {
+  --kit: #{map.get($kit-defaults, kit)};
+  --kit-ink: #{map.get($kit-defaults, kit-ink)};
+  --kit-edge: #{map.get($kit-defaults, kit-edge)};
+}
+
+.board {
+  // Pitch lines take a faint wash of the kit colour.
+  --line: #{tint(kit, 24%)};
+}
+
+.board__cols {
+  grid-template-columns: minmax(0, 1fr);
+
+  @include min(bp(md)) {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+  }
+}
+
+.board__foot {
+  border-top: 1px solid $edge;
+}
+
+.board-header {
+  border-bottom: 2px solid color(kit);
+
+  &__ident {
+    flex: 1 1 260px;
+  }
+
+  &__team,
+  &__fixture {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    &::placeholder {
+      color: color(dimmer);
+    }
+  }
+
+  &__team {
+    font-size: clamp(#{font-size(3xl)}, 7vw, #{font-size(4xl)});
+  }
+}
+
+.crest {
+  width: 46px;
+  height: 46px;
+  background-color: color(kit);
+  color: color(kit-ink);
+  border: 2px solid color(kit-edge);
+
+  &--empty {
+    background: none;
+    border: 2px dashed $edge;
+  }
+}
+
+.match-clock {
+  min-width: 74px;
+}
+
+.panel {
+  border-top: 1px solid $edge;
+
+  & + & {
+    margin-top: spacer(5);
+  }
+}
+
+.control-label {
+  min-width: 44px;
+}
+
+// A thin rule between list rows
+.list-rule {
+  border-bottom: 1px solid $rule;
+}
+
+.sub-minute {
+  min-width: 34px;
+}
+
+.warning {
+  background-color: tint(out, 10%);
+  border: 1px solid tint(out, 35%);
+}
+
+.start-card {
+  border: 1px dashed $edge;
+
+  &__steps {
+    list-style: decimal;
+  }
+}
+
+.field {
+  min-width: 0;
+  background-color: color(board-2);
+  border: 1px solid $edge;
+
+  &::placeholder {
+    color: color(dimmer);
+  }
+
+  &--number {
+    width: 64px;
+  }
+
+  &--grow {
+    flex: 1 1 130px;
+  }
+}
+
+// A native select, restyled, with a chevron drawn in two gradients.
+.formation-select {
+  padding-inline: spacer(3) spacer(7);
+  background-color: color(board-2);
+  background-image:
+    linear-gradient(45deg, transparent 50%, color(dim) 50%),
+    linear-gradient(135deg, color(dim) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 55%, calc(100% - 12px) 55%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  border: 1px solid $edge;
+  color: color(chalk);
+  cursor: pointer;
+  appearance: none;
+
+  &:hover {
+    background-color: color(board-3);
+  }
+}
+
+.swatch {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background-color: var(--swatch);
+  border: 2px solid transparent;
+  cursor: pointer;
+
+  // 44px to tap, 26px to see
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -9px;
+  }
+
+  &[aria-pressed='true'] {
+    border-color: color(chalk);
+    box-shadow: 0 0 0 2px color(board);
+  }
+}

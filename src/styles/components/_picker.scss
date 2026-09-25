@@ -1,0 +1,79 @@
+@use '../abstracts' as *;
+
+// Who can play in a position. A bottom sheet on a phone, a centred dialog above bp(sheet).
+.picker {
+  position: fixed;
+  inset: 0;
+  z-index: z(overlay);
+  align-items: flex-end;
+  background-color: tint(board, 66%);
+
+  @include min(bp(sheet)) {
+    align-items: center;
+  }
+
+  &__card {
+    max-width: 460px;
+    max-height: 86vh;
+    padding-bottom: calc(#{spacer(4)} + env(safe-area-inset-bottom));
+    border: 1px solid $edge;
+    border-radius: $radius-sheet $radius-sheet 0 0;
+
+    @include min(bp(sheet)) {
+      max-height: 80vh;
+      border-radius: $radius-sheet;
+    }
+  }
+
+  &__close {
+    @include icon-hit-area(44px, 10px);
+
+    line-height: line-height(tight);
+
+    &:hover {
+      color: color(chalk);
+    }
+  }
+
+  &__list {
+    margin-inline: (-(spacer(4)));
+    padding-inline: spacer(4);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  &__actions {
+    border-top: 1px solid $edge;
+  }
+}
+
+.picker-group {
+  position: sticky;
+  top: 0;
+  background-color: color(board-2);
+}
+
+.picker-option {
+  color: color(chalk);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid $rule;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: color(board-3);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  &__num {
+    min-width: 24px;
+  }
+
+  &__badge {
+    border: 1px solid tint(kit, 50%);
+  }
+}

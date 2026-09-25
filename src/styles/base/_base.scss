@@ -1,0 +1,108 @@
+@use '../abstracts' as *;
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  background-color: color(board);
+}
+
+body {
+  font-family: $font-family-body;
+  font-size: font-size(md);
+  font-weight: font-weight(regular);
+  line-height: line-height(normal);
+  color: color(text);
+  background-color: color(board);
+}
+
+a {
+  transition: color $transition-fast;
+
+  &:hover {
+    color: color(kit);
+  }
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+::selection {
+  background-color: color(kit);
+  color: color(kit-ink);
+}
+
+// Gap utilities
+@each $n, $value in $spacers {
+  .has-gap-#{$n} {
+    gap: $value;
+  }
+}
+
+// Text size utilities
+@each $name, $value in $font-sizes {
+  .text-#{$name} {
+    font-size: $value;
+  }
+}
+
+// Font weight utilities
+@each $name, $value in $font-weights {
+  .has-font-#{$name} {
+    font-weight: $value;
+  }
+}
+
+// Font family utilities
+.has-font-headline { font-family: $font-family-headline; }
+.has-font-body { font-family: $font-family-body; }
+
+// Numbers that line up in columns: shirt numbers, the clock, counts
+.is-tabular { font-variant-numeric: tabular-nums; }
+
+// Letter spacing utilities
+@each $name, $value in $letter-spacings {
+  .tracking-#{$name} {
+    letter-spacing: $value;
+  }
+}
+
+// Line height utilities
+@each $name, $value in $line-heights {
+  .leading-#{$name} {
+    line-height: $value;
+  }
+}
+
+// Text alignment utilities
+$text-aligns: (left, center, right, justify);
+
+@each $align in $text-aligns {
+  .text-#{$align} {
+    text-align: $align;
+  }
+}
+
+// Text transform utilities
+.uppercase { text-transform: uppercase; }
+.lowercase { text-transform: lowercase; }
+.capitalize { text-transform: capitalize; }
+
+// Common reading-measure helpers
+.measure-52ch { max-width: 52ch; }
+.measure-62ch { max-width: 62ch; }
+.measure-72ch { max-width: 72ch; }
+.max-w-720 { max-width: 720px; }
+
+.is-mx-auto { margin-inline: auto; }
+.is-w-full { width: 100%; }
+
+// Long names cut off with an ellipsis on one line
+.is-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Held still while a layer is open over the page. Set by useScrollLock.
+.is-scroll-locked { overflow: hidden; }

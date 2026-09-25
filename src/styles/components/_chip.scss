@@ -1,0 +1,102 @@
+@use '../abstracts' as *;
+
+// A zone players can be dropped into: the bench, the rest of the squad.
+.chips {
+  min-height: 52px;
+  margin-inline: (-(spacer(1)));
+  border: 1px dashed transparent;
+
+  &--drop {
+    border-color: color(kit);
+    background-color: tint(kit, 7%);
+  }
+
+  &__divider {
+    flex: 0 0 100%;
+  }
+}
+
+.chip {
+  position: relative;
+  padding: 6px 11px 6px 7px;
+  color: color(chalk);
+  background-color: color(board-2);
+  border: 1px solid $edge;
+  cursor: pointer;
+  touch-action: none;
+
+  &:hover {
+    background-color: color(board-3);
+  }
+
+  &__num {
+    min-width: 20px;
+    color: color(dim);
+  }
+
+  &__name {
+    max-width: 170px;
+  }
+
+  &--bench {
+    background-color: color(kit-soft);
+    border-color: tint(kit, 55%);
+
+    &:hover {
+      background-color: tint(kit, 20%);
+    }
+  }
+
+  &--bench &__num,
+  &--bench &__name {
+    color: color(kit);
+  }
+
+  &--selected {
+    background-color: color(board-3);
+    border-color: color(chalk);
+  }
+
+  // Removed from the squad, still visible so a mistake can be undone
+  &--gone {
+    padding-right: spacer(1);
+    border-style: dashed;
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  &--gone &__name {
+    color: color(dim);
+    text-decoration: line-through;
+  }
+
+  &__bare {
+    padding: 0;
+    background: none;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  &__delete {
+    @include icon-hit-area(32px, 0);
+
+    color: color(dimmer);
+
+    &:hover {
+      color: color(out);
+    }
+  }
+
+  // Follows the pointer while a player is dragged.
+  &--ghost {
+    position: fixed;
+    left: var(--ghost-x);
+    top: var(--ghost-y);
+    z-index: z(ghost);
+    opacity: 0.95;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(1.06);
+    filter: drop-shadow(0 8px 14px tint(black, 55%));
+  }
+}

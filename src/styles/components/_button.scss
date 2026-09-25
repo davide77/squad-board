@@ -1,0 +1,56 @@
+@use '../abstracts' as *;
+
+// Soft cornered, nowrap. The hit area is widened to 44px by an overlay, so a
+// row of tiny buttons stays compact on the board.
+.button {
+  position: relative;
+  white-space: nowrap;
+  border: 1px solid $edge;
+  cursor: pointer;
+  transition: background-color $transition-fast, color $transition-fast, filter $transition-fast;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    min-height: 44px;
+    height: 100%;
+    transform: translateY(-50%);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.button--default {
+  background-color: color(board-2);
+  color: color(chalk);
+
+  &:hover:not(:disabled) {
+    background-color: color(board-3);
+  }
+}
+
+.button--primary {
+  background-color: color(kit);
+  border-color: color(kit-edge);
+  color: color(kit-ink);
+  font-weight: font-weight(semibold);
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.15);
+  }
+}
+
+.button--quiet {
+  background-color: transparent;
+  color: color(dim);
+
+  &:hover:not(:disabled) {
+    background-color: color(board-2);
+    color: color(chalk);
+  }
+}
