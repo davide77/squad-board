@@ -1,4 +1,4 @@
-# Squad board - project instructions
+# Gafferboard - project instructions
 
 ## Stack
 
@@ -14,7 +14,7 @@ Imports use `@/...` across folder boundaries (`@/constants/config`, `@/lib/hooks
 
 ## Brand: single source of truth is `brand.md`
 
-The Squad board brand (positioning, voice, colours, typography) is defined in **[brand.md](brand.md)** at the repo root. Everything else (SCSS tokens, JSX components, copy) is derived from it.
+The Gafferboard brand (positioning, voice, colours, typography, logo) is defined in **[brand.md](brand.md)** at the repo root. Everything else (SCSS tokens, JSX components, copy) is derived from it.
 
 **Always read [brand.md](brand.md) before:**
 
@@ -28,7 +28,8 @@ The Squad board brand (positioning, voice, colours, typography) is defined in **
 - [brand.md](brand.md) - narrative source of truth. Update here first.
 - [src/styles/abstracts/_colors.scss](src/styles/abstracts/_colors.scss) - interface colour map. Mirrors `brand.md`. Keep in sync. The `kit*` keys read custom properties, because the coach picks the club colour at runtime.
 - [src/styles/abstracts/_typography.scss](src/styles/abstracts/_typography.scss) - font stacks, size / weight / line-height / tracking scales.
-- [src/constants/brand.ts](src/constants/brand.ts) - the club colours the coach can pick, and the theme colour. The default kit is mirrored in `$kit-defaults` in `_colors.scss`.
+- [public/brand/](public/brand/) - the logo files. The favicon and Apple icon in `src/app/` are made from the same mark.
+- [src/constants/brand.ts](src/constants/brand.ts) - the club colours the coach can pick, the theme colour and the logo. The default kit is mirrored in `$kit-defaults` in `_colors.scss`.
 - [.claude/skills/brand-guidelines/SKILL.md](.claude/skills/brand-guidelines/SKILL.md) - invoked when styling an artifact. Defers to `brand.md`.
 - [.claude/skills/brand-voice/SKILL.md](.claude/skills/brand-voice/SKILL.md) - invoked when writing or auditing copy. Defers to `brand.md`.
 
@@ -142,7 +143,7 @@ Non-negotiables it enforces:
 | [seo.ts](src/constants/seo.ts) | The live URL, `https://gafferboard.com` |
 | [config.ts](src/constants/config.ts) | Storage key, save debounce, drag thresholds, clock tick, toast time, limits |
 | [motion.ts](src/constants/motion.ts) | Every duration, distance and easing the motion layer uses |
-| [brand.ts](src/constants/brand.ts) | Club colours and the theme colour |
+| [brand.ts](src/constants/brand.ts) | Club colours, the theme colour and the logo |
 | [football.ts](src/constants/football.ts) | Positions, role fits, formations, how a custom marker gets its role |
 | [content/board.ts](src/constants/content/board.ts) | Every string on the board: labels, hints, toasts, confirmations |
 

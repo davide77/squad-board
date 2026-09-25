@@ -1,6 +1,6 @@
-# Squad board brand
+# Gafferboard brand
 
-> This file is the **single source of truth** for the Squad board brand. SCSS tokens, components, copy, and assets all derive from it. If anywhere in the repo disagrees with this file, this file wins. Update here first, then reflect downstream.
+> This file is the **single source of truth** for the Gafferboard brand. SCSS tokens, components, copy, and assets all derive from it. If anywhere in the repo disagrees with this file, this file wins. Update here first, then reflect downstream.
 
 ## Positioning
 
@@ -8,7 +8,7 @@
 >
 > A matchday board for grassroots coaches: the squad, who is called up, the shape, the bench and every substitution, on one screen that works on a phone.
 
-Tagline (lock-up): **"Squad board"**
+Name: **Gafferboard**, one word, capital G. Lives at gafferboard.com.
 
 ## Mood
 
@@ -42,7 +42,7 @@ A coach talking to a coach. Short sentences, plain football words, no jargon the
 
 1. **No em-dashes or en-dashes anywhere.** Use plain hyphens with spaces around them. This is enforced project-wide by [CLAUDE.md](CLAUDE.md).
 2. **British English only.** Colour, organise, centre, defence.
-3. **Sentence case for UI and headings.** Title Case only for the product name.
+3. **Sentence case for UI and headings.** The product name is always written Gafferboard.
 4. **One core message at a time.**
 5. **Filler ban list:** revolutionise, game-changer, synergy, unleash, elevate, leverage, cutting-edge, robust, seamless, intuitive, empower, world-class.
 6. **Players are never gendered.** Squads can be boys, girls or mixed. Use the player's name or "they".
@@ -101,7 +101,26 @@ Fallbacks: Saira Condensed -> Barlow -> system sans. Barlow -> system sans.
 
 ## Logo
 
-- No logo. The crest is the coach's own club initials in the kit colour.
+The mark is a G drawn the way a coach draws a run on a tactics board: one chalk stroke that sweeps round from the top right and turns in along the bar, stopping short of a disc in the kit colour. The disc is a player, placed where the coach wants them, at the centre of the board.
+
+- **Concept.** The coach decides, the board shows it. The stroke is the plan, the disc is the pick. The small gap between the bar and the disc is deliberate: the player is placed on the line, not part of it.
+- **Shapes.** A single round-capped stroke, the same weight all the way, like chalk or a marker pen. The disc is the same shape as a shirt on the pitch in the app. No ball, no whistle, no shield: every other football product already uses those.
+- **Colours.** Chalk `#F6F6F3` stroke and a Yellow `#F2D106` disc on Board `#0A0A0A`. The disc is the only colour, just as the kit colour is the only colour on the board.
+- **Wordmark.** "Gafferboard" in Saira Condensed Bold, converted to outlines. Cap height is 22/48 of the mark, so the G leads and the name follows.
+
+Files in [public/brand/](public/brand/):
+
+- `gafferboard-logo.svg` - mark and wordmark, for dark backgrounds. The default.
+- `gafferboard-logo-mono.svg` - one colour, for light backgrounds and print.
+- `gafferboard-mark.svg`, `gafferboard-mark-mono.svg` - the G on its own.
+- `gafferboard-icon.svg` - the G on a Board rounded square: app icon and favicon.
+
+Rules:
+
+- Use the colour version on Board only. On any other background use the mono version, in Board or Chalk.
+- Never recolour the disc to a club colour. The club's colour belongs to the board inside the app, not to the logo.
+- Clear space: half the mark's height on every side. Minimum size: 16px for the mark, 96px wide for the full logo.
+- The crest in the app header is the coach's own club initials, not the Gafferboard logo. Keep the two apart.
 
 ## Design direction
 

@@ -1,5 +1,6 @@
 // Numeric config for the board.
 
+// Kept from before the rename to Gafferboard: changing it would lose every saved board.
 export const STORAGE_KEY = "squad-board:v1";
 
 export const BOARD_CONFIG = {

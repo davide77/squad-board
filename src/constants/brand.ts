@@ -22,3 +22,12 @@ export const KIT_COLOURS: readonly KitColour[] = [
 
 /** Browser chrome colour, matches the board background. */
 export const THEME_COLOUR = "#0A0A0A";
+
+/** The horizontal logo, for dark backgrounds. Width and height match the SVG's viewBox ratio. */
+export const LOGO = {
+  src: "/brand/gafferboard-logo.svg",
+  width: 205,
+  height: 48,
+  /** Shown at this height in the footer. */
+  footerHeight: 24,
+} as const;
