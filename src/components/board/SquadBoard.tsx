@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef, type CSSProperties } from "react";
+import Image from "next/image";
 import { MotionConfig } from "framer-motion";
-import { KIT_COLOURS } from "@/constants/brand";
+import { KIT_COLOURS, LOGO } from "@/constants/brand";
 import { CLUB } from "@/constants/content/board";
+import { SITE } from "@/constants/site";
 import { BenchPanel, PoolPanel } from "./Zones";
 import { BoardHeader } from "./BoardHeader";
 import { BoardProvider, useBoard } from "./BoardProvider";
@@ -46,7 +48,13 @@ function Board() {
         </div>
       </div>
       <ClubPanel />
-      <footer className="board__foot is-flex is-flex-wrap is-justify-between has-gap-3 has-mt-7 has-pt-3 text-sm is-dimmer">
+      <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dimmer">
+        <Image
+          src={LOGO.src}
+          alt={SITE.name}
+          width={Math.round((LOGO.width / LOGO.height) * LOGO.footerHeight)}
+          height={LOGO.footerHeight}
+        />
         <span>{state.ui.storageOK ? CLUB.stored : CLUB.noStorage}</span>
       </footer>
       <Picker />

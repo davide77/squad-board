@@ -1,4 +1,4 @@
-# Squad board
+# Gafferboard
 
 A matchday board for coaches: the squad, who is called up, the shape, the bench and every substitution, on one screen that works on a phone. Live at https://gafferboard.com.
 
