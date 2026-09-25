@@ -1,0 +1,40 @@
+@use 'sass:map';
+@use 'colors' as *;
+
+// Z-index stack
+$z-index: (
+  raised: 5,
+  ghost: 60,
+  overlay: 70,
+  toast: 90,
+  skip: 1000,
+);
+
+@function z($layer) {
+  @if not map.has-key($z-index, $layer) {
+    @error 'Z-index layer `#{$layer}` not found.';
+  }
+
+  @return map.get($z-index, $layer);
+}
+
+// Border radius. The board is soft cornered: fields and buttons, panels, the picker sheet.
+$radius-none: 0;
+$radius-sm: 6px;
+$radius-field: 8px;
+$radius-panel: 10px;
+$radius-sheet: 14px;
+$radius-pill: 9999px;
+
+// Hairlines on the board
+$edge: color(edge);
+$rule: color(rule);
+
+// Transitions
+$transition-fast: 150ms ease;
+$transition-base: 250ms ease;
+
+// Focus ring
+$focus-ring-width: 2px;
+$focus-ring-color: color(kit);
+$focus-ring-offset: 2px;

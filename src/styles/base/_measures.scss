@@ -1,0 +1,45 @@
+@use '../abstracts' as *;
+
+@mixin spacing-utilities {
+  @each $n, $value in $spacers {
+    .has-m-#{$n}  { margin: $value; }
+    .has-mt-#{$n} { margin-top: $value; }
+    .has-mb-#{$n} { margin-bottom: $value; }
+    .has-ml-#{$n} { margin-left: $value; }
+    .has-mr-#{$n} { margin-right: $value; }
+    .has-my-#{$n} { margin-block: $value; }
+    .has-mx-#{$n} { margin-inline: $value; }
+
+    .has-p-#{$n}  { padding: $value; }
+    .has-pt-#{$n} { padding-top: $value; }
+    .has-pb-#{$n} { padding-bottom: $value; }
+    .has-pl-#{$n} { padding-left: $value; }
+    .has-pr-#{$n} { padding-right: $value; }
+    .has-py-#{$n} { padding-block: $value; }
+    .has-px-#{$n} { padding-inline: $value; }
+  }
+}
+
+@include spacing-utilities;
+
+@each $bp-name in (sm, md, lg) {
+  @include min(bp($bp-name)) {
+    @each $n, $value in $spacers {
+      .has-m-#{$bp-name}-#{$n}  { margin: $value; }
+      .has-mt-#{$bp-name}-#{$n} { margin-top: $value; }
+      .has-mb-#{$bp-name}-#{$n} { margin-bottom: $value; }
+      .has-ml-#{$bp-name}-#{$n} { margin-left: $value; }
+      .has-mr-#{$bp-name}-#{$n} { margin-right: $value; }
+      .has-my-#{$bp-name}-#{$n} { margin-block: $value; }
+      .has-mx-#{$bp-name}-#{$n} { margin-inline: $value; }
+
+      .has-p-#{$bp-name}-#{$n}  { padding: $value; }
+      .has-pt-#{$bp-name}-#{$n} { padding-top: $value; }
+      .has-pb-#{$bp-name}-#{$n} { padding-bottom: $value; }
+      .has-pl-#{$bp-name}-#{$n} { padding-left: $value; }
+      .has-pr-#{$bp-name}-#{$n} { padding-right: $value; }
+      .has-py-#{$bp-name}-#{$n} { padding-block: $value; }
+      .has-px-#{$bp-name}-#{$n} { padding-inline: $value; }
+    }
+  }
+}

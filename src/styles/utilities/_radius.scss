@@ -1,0 +1,16 @@
+@use '../abstracts' as *;
+
+$radii: (
+  none: $radius-none,
+  sm: $radius-sm,
+  field: $radius-field,
+  panel: $radius-panel,
+  sheet: $radius-sheet,
+  pill: $radius-pill,
+);
+
+@each $name, $value in $radii {
+  .has-radius-#{$name} {
+    border-radius: $value;
+  }
+}

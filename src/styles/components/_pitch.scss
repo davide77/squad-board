@@ -1,0 +1,116 @@
+@use '../abstracts' as *;
+
+.pitch {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: linear-gradient(175deg, color(pitch-top), color(pitch-bottom) 66%);
+  border: 1px solid $edge;
+
+  &__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.4;
+    pointer-events: none;
+  }
+
+  &__spot {
+    fill: var(--line);
+  }
+}
+
+// A marker on the pitch, placed by --x and --y from the formation.
+.pitch-slot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 66px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+
+  &__disc {
+    width: 44px;
+    height: 44px;
+    color: color(dimmer);
+    background-color: tint(black, 14%);
+    border: 1px dashed var(--line);
+  }
+
+  &__name {
+    max-width: 96px;
+    padding: 2px 5px;
+    color: color(chalk);
+    background-color: tint(black, 76%);
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  &__cover {
+    max-width: 80px;
+    text-shadow: 0 1px 3px tint(black, 75%);
+  }
+
+  &--wide &__name {
+    max-width: 124px;
+  }
+
+  &--filled &__disc {
+    color: color(kit-ink);
+    background-color: color(kit);
+    border: 1px solid color(kit-edge);
+    box-shadow: 0 2px 0 tint(black, 35%);
+  }
+
+  &--keeper &__disc {
+    color: color(board);
+    background-color: color(chalk);
+    border-color: color(keeper-edge);
+  }
+
+  &--misfit &__disc {
+    box-shadow: 0 2px 0 tint(black, 35%), 0 0 0 2px color(out);
+  }
+
+  &--selected &__disc {
+    box-shadow: 0 0 0 3px color(chalk);
+  }
+
+  &--movable {
+    cursor: grab;
+  }
+
+  &--movable &__disc,
+  &--drop &__disc {
+    border-style: solid;
+    border-color: color(kit);
+  }
+
+  &--drop &__disc {
+    box-shadow: 0 0 0 4px tint(kit, 25%);
+  }
+
+  // Narrow pitch, smaller labels. Viewport query: the pitch is page chrome here.
+  @include max(bp(pitch-sm)) {
+    &__name {
+      max-width: 74px;
+      padding: 1px 4px;
+      font-size: font-size(3xs);
+    }
+
+    &--wide &__name {
+      max-width: 92px;
+    }
+  }
+}

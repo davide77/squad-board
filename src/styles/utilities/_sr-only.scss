@@ -1,0 +1,38 @@
+@use '../abstracts' as *;
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Skip-to-content link. Hidden until keyboard-focused, then springs into
+// the top-left so the path to `<main>` is one Tab away.
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: z(skip);
+  padding: spacer(3) spacer(4);
+  background-color: color(kit);
+  color: color(kit-ink);
+  font-family: $font-family-body;
+  font-weight: font-weight(semibold);
+  font-size: font-size(sm);
+  text-decoration: none;
+  border-radius: 0 0 $radius-sm 0;
+  transform: translateY(-120%);
+
+  &:focus,
+  &:focus-visible {
+    transform: translateY(0);
+    outline: none;
+    @include focus-ring;
+  }
+}

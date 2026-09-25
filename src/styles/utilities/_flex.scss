@@ -1,0 +1,70 @@
+@use '../abstracts' as *;
+
+.is-flex { display: flex; }
+.is-inline-flex { display: inline-flex; }
+
+$justify-values: (
+  center: center,
+  between: space-between,
+  start: flex-start,
+  end: flex-end,
+  around: space-around,
+);
+
+@each $name, $value in $justify-values {
+  .is-justify-#{$name} {
+    justify-content: $value;
+  }
+}
+
+$align-values: (
+  center: center,
+  start: flex-start,
+  end: flex-end,
+  stretch: stretch,
+  baseline: baseline,
+);
+
+@each $name, $value in $align-values {
+  .is-align-#{$name} {
+    align-items: $value;
+  }
+}
+
+// A child that has to align itself differently from its siblings.
+@each $name, $value in $align-values {
+  .is-self-#{$name} {
+    align-self: $value;
+  }
+}
+
+.is-flex-column { flex-direction: column; }
+.is-flex-row { flex-direction: row; }
+.is-flex-wrap { flex-wrap: wrap; }
+.is-flex-nowrap { flex-wrap: nowrap; }
+.is-flex-1 { flex: 1; }
+.is-shrink-0 { flex-shrink: 0; }
+.is-min-w-0 { min-width: 0; }
+
+$responsive-breakpoints: (sm, md, lg);
+
+@each $bp-name in $responsive-breakpoints {
+  @include min(bp($bp-name)) {
+    .is-flex-#{$bp-name} { display: flex; }
+
+    @each $name, $value in $justify-values {
+      .is-justify-#{$bp-name}-#{$name} {
+        justify-content: $value;
+      }
+    }
+
+    @each $name, $value in $align-values {
+      .is-align-#{$bp-name}-#{$name} {
+        align-items: $value;
+      }
+    }
+
+    .is-flex-#{$bp-name}-column { flex-direction: column; }
+    .is-flex-#{$bp-name}-row { flex-direction: row; }
+  }
+}

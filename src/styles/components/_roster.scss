@@ -1,0 +1,201 @@
+@use '../abstracts' as *;
+
+.roster-row {
+  position: relative;
+  background-color: color(board);
+  border-bottom: 1px solid $rule;
+
+  &__grip {
+    @include icon-hit-area(28px, 0);
+
+    flex: 0 0 18px;
+    width: 18px;
+    min-width: 18px;
+    letter-spacing: -1px;
+    cursor: grab;
+    touch-action: none;
+
+    &:hover {
+      color: color(kit);
+    }
+  }
+
+  // A checkbox drawn as a kit coloured tick box
+  &__pick {
+    width: 20px;
+    height: 20px;
+    background-color: color(board-2);
+    border: 1.5px solid color(dimmer);
+    cursor: pointer;
+    appearance: none;
+
+    &:hover {
+      border-color: color(kit);
+    }
+
+    &:checked {
+      background-color: color(kit);
+      border-color: color(kit);
+    }
+
+    &:checked::after {
+      content: '';
+      width: 10px;
+      height: 6px;
+      margin-top: -2px;
+      border-left: 2px solid color(kit-ink);
+      border-bottom: 2px solid color(kit-ink);
+      transform: rotate(-45deg);
+    }
+
+    &:disabled {
+      border-style: dashed;
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__num {
+    width: 40px;
+    padding: spacer(1) 2px;
+    color: color(chalk);
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    appearance: textfield;
+
+    &::placeholder {
+      color: color(dimmer);
+    }
+
+    &:hover {
+      border-color: color(kit-edge);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: color(kit);
+      box-shadow: 0 0 0 2px color(kit-soft);
+    }
+
+    &--dupe {
+      color: color(out);
+      background-color: tint(out, 12%);
+      border-color: color(out);
+    }
+  }
+
+  &__edit {
+    @include icon-hit-area(44px, 10px);
+
+    min-width: 0;
+    padding-inline: spacer(1);
+
+    &:hover {
+      color: color(chalk);
+    }
+  }
+
+  &--xi,
+  &--bench {
+    margin-left: (-(spacer(3)));
+    padding-left: spacer(3);
+  }
+
+  &--xi {
+    box-shadow: inset 3px 0 0 tint(chalk, 50%);
+  }
+
+  &--bench {
+    box-shadow: inset 3px 0 0 color(kit);
+  }
+
+  &--bench &__name {
+    color: color(kit);
+  }
+
+  &--pool &__name {
+    color: color(dim);
+  }
+
+  &--out {
+    opacity: 0.55;
+  }
+
+  &--out &__name {
+    color: color(dimmer);
+    text-decoration: line-through;
+  }
+
+  &--dragging {
+    z-index: z(raised);
+    background-color: color(board-2);
+    border-radius: $radius-field;
+    box-shadow: 0 0 0 1px color(kit), 0 10px 20px tint(black, 55%);
+    opacity: 0.95;
+  }
+
+  &--dragging &__grip {
+    cursor: grabbing;
+  }
+}
+
+// Where a player is this week
+.status-pill {
+  padding-block: 1px;
+  color: color(dimmer);
+  white-space: nowrap;
+  border: 1px solid transparent;
+
+  &--xi {
+    color: color(kit-ink);
+    background-color: color(kit);
+    border-color: color(kit);
+    font-weight: font-weight(semibold);
+  }
+
+  &--bench {
+    color: color(kit);
+    background-color: color(kit-soft);
+    border-color: color(kit);
+  }
+
+  &--out {
+    color: color(out);
+    border-color: tint(out, 50%);
+  }
+
+  &--inj {
+    color: color(board);
+    background-color: color(out);
+    border-color: color(out);
+    font-weight: font-weight(semibold);
+  }
+
+  &--una {
+    color: color(board);
+    background-color: color(dim);
+    border-color: color(dim);
+    font-weight: font-weight(semibold);
+  }
+}
+
+.roster-editor {
+  border-bottom: 1px solid $rule;
+
+  &__label {
+    width: 120px;
+  }
+}
+
+.position-toggle {
+  color: color(dim);
+  background-color: color(board-2);
+  border: 1px solid $edge;
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    color: color(kit-ink);
+    background-color: color(kit);
+    border-color: color(kit-edge);
+  }
+}

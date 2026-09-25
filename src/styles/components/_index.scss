@@ -1,0 +1,8 @@
+// Global component files. Chrome first, then the board's parts.
+@forward 'button';
+@forward 'board';
+@forward 'pitch';
+@forward 'chip';
+@forward 'roster';
+@forward 'picker';
+@forward 'toast';

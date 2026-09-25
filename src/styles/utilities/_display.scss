@@ -1,0 +1,27 @@
+@use '../abstracts' as *;
+
+$display-values: (block, inline, inline-block, grid, inline-grid, hidden);
+
+@mixin display-utility($name) {
+  @if $name == hidden {
+    display: none;
+  } @else {
+    display: $name;
+  }
+}
+
+@each $name in $display-values {
+  .is-#{$name} {
+    @include display-utility($name);
+  }
+}
+
+@each $bp-name in (sm, md, lg) {
+  @include min(bp($bp-name)) {
+    @each $name in $display-values {
+      .is-#{$bp-name}-#{$name} {
+        @include display-utility($name);
+      }
+    }
+  }
+}

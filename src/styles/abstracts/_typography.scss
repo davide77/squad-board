@@ -1,0 +1,84 @@
+@use 'sass:map';
+
+// Font stacks. CSS variables are injected by next/font in src/app/layout.tsx:
+// Barlow as --font-body, Saira Condensed as --font-headline.
+
+$font-family-body: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
+$font-family-headline: var(--font-headline), var(--font-body), system-ui, sans-serif;
+
+// The board is dense: a phone screen holds the pitch, the bench and the squad.
+$font-sizes: (
+  3xs: 0.65625rem, // 10.5px  name under a shirt on a narrow pitch
+  2xs: 0.6875rem,  // 11px  role under an empty marker, name under a shirt, status pills
+  xs: 0.75rem,     // 12px  position tags, control labels
+  sm: 0.8125rem,   // 13px  hints, counts, the picker subtitle
+  base: 0.875rem,  // 14px  names, buttons, fields
+  md: 0.9375rem,   // 15px  body copy
+  lg: 1.0625rem,   // 17px  shirt numbers in lists, card titles
+  xl: 1.1875rem,   // 19px  panel headings, the formation picker, numbers on shirts
+  2xl: 1.3125rem,  // 21px  picker title
+  3xl: 1.875rem,   // 30px  match clock
+  4xl: 2.625rem,   // 42px  team name ceiling
+  5xl: 4rem,
+  6xl: 5rem,
+  hero: 7.5rem,
+);
+
+@function font-size($name) {
+  @if not map.has-key($font-sizes, $name) {
+    @error 'Font size `#{$name}` not found.';
+  }
+
+  @return map.get($font-sizes, $name);
+}
+
+// Barlow is loaded at 400-600 and Saira Condensed at 500-700.
+$font-weights: (
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+);
+
+@function font-weight($name) {
+  @if not map.has-key($font-weights, $name) {
+    @error 'Font weight `#{$name}` not found.';
+  }
+
+  @return map.get($font-weights, $name);
+}
+
+$line-heights: (
+  tight: 1,
+  compact: 1.1,   // picker title
+  snug: 1.2,      // names under a shirt
+  normal: 1.45,   // body copy
+  relaxed: 1.6,   // the getting-started list
+  loose: 2,
+);
+
+@function line-height($name) {
+  @if not map.has-key($line-heights, $name) {
+    @error 'Line height `#{$name}` not found.';
+  }
+
+  @return map.get($line-heights, $name);
+}
+
+// Saira Condensed labels carry a little air. Named by intent, not by value.
+$letter-spacings: (
+  normal: 0,
+  number: 0.02em,   // team name, crest
+  tag: 0.04em,      // position tags, the formation picker
+  heading: 0.05em,  // panel headings, status pills
+  group: 0.07em,    // picker group headers, roles on the pitch
+  caps: 0.09em,     // uppercase control labels
+);
+
+@function tracking($name) {
+  @if not map.has-key($letter-spacings, $name) {
+    @error 'Letter spacing `#{$name}` not found.';
+  }
+
+  @return map.get($letter-spacings, $name);
+}
