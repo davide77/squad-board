@@ -33,6 +33,8 @@ button,
 textarea,
 select {
   font: inherit;
+  // Without this, typed text falls back to the browser's black on a dark field.
+  color: inherit;
 }
 
 a {
