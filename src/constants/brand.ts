@@ -28,7 +28,7 @@ export const BOARD_PALETTE = {
   board: "#0A0A0A",
   chalk: "#F6F6F3",
   dim: "#96968F",
-  dimmer: "#67675F",
+  dimmer: "#7E7E76",
   keeperEdge: "#C9C9C3",
   pitchTop: "#1A1A18",
   pitchBottom: "#0C0C0B",

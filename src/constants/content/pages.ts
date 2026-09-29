@@ -21,6 +21,9 @@ export const MAKER = {
   name: "Davide Domenghini",
   site: "originsocialclub.com",
   url: "https://originsocialclub.com",
+  /** Who the maker is on the touchline. Confirmed by Davide: the team is Ayat U15. */
+  bio: "A grassroots football manager for many years, now running Ayat U15.",
+  role: "Grassroots football manager",
 } as const;
 
 export const PRIVACY = {
@@ -73,7 +76,7 @@ export const PRIVACY = {
 
 export const CREDITS = {
   title: "Credits",
-  description: `Gafferboard is designed and built by ${MAKER.name}.`,
+  description: `Gafferboard is designed and built by ${MAKER.name}, a grassroots football manager who runs Ayat U15.`,
   heading: "Credits",
   makerLabel: "Designed and built by",
   makerLink: `Visit ${MAKER.site}`,
