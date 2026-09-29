@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { GAFFER } from "@/constants/content/gaffer";
 import { sheetText } from "@/lib/board/sheet";
+import type { BoardData } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
 
 /** Puts text on the clipboard, with the old textarea route where the API is missing. */
@@ -22,12 +23,15 @@ async function copyText(text: string): Promise<boolean> {
   }
 }
 
-/** Copies the team sheet and lets the Gaffer say how it went. Used by the pitch and the sheet panel. */
-export function useCopySheet() {
+/**
+ * Copies the team sheet, or another message built from the board, and lets the Gaffer say how it went.
+ * Used by the pitch, the sheet panel and the squad message.
+ */
+export function useCopySheet(build: (d: BoardData) => string = sheetText) {
   const { state, act } = useBoard();
   const { data } = state;
   return useCallback(async () => {
-    const ok = await copyText(sheetText(data));
+    const ok = await copyText(build(data));
     act({ type: "notify", text: ok ? GAFFER[data.voice].copied : GAFFER[data.voice].copyFailed });
-  }, [data, act]);
+  }, [data, act, build]);
 }

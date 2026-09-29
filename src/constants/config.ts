@@ -34,6 +34,31 @@ export const BOARD_CONFIG = {
   noPositionNamesMax: 3,
 } as const;
 
+// The club badge a coach can add. It is shrunk to a small square PNG in the browser,
+// so it fits in localStorage and in the squad file next to everything else.
+export const BADGE_CONFIG = {
+  accept: "image/png,image/jpeg,image/webp,image/gif,image/svg+xml",
+  /** Width and height of the stored badge. Sharp on the header crest and the shared picture. */
+  size: 192,
+  type: "image/png",
+  /** A stored badge longer than this is not one we made, so it is dropped on read. */
+  maxChars: 300_000,
+  /** The board header crest, in CSS pixels. Mirrors .crest in components/_board.scss. */
+  crestPx: 46,
+} as const;
+
+// The squad message for the parents' group.
+export const MESSAGE_CONFIG = {
+  /** A Google Maps search for the address. Opens the Maps app on a phone, and WhatsApp previews it. */
+  mapUrl: "https://www.google.com/maps/search/?api=1&query=",
+  whatsappUrl: "https://wa.me/?text=",
+  dateLocale: "en-GB",
+  addressRows: 2,
+} as const;
+
+/** "Sunday 4 October", the way a coach writes it. */
+export const MESSAGE_DATE_FORMAT: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "long" };
+
 const MINUTE_MS = 60_000;
 const DAY_MS = 24 * 60 * MINUTE_MS;
 
@@ -88,3 +113,7 @@ export const LANDING_CONFIG = {
 export const ONBOARDING_CONFIG = {
   mediaSizes: "(max-width: 900px) 100vw, 50vw",
 } as const;
+
+// Each chapter of the homepage story stays up this long before the next one. The
+// tab's progress bar reads it as --story-ms, and the next chapter comes when it fills.
+export const STORY_DURATION_MS = 9000;

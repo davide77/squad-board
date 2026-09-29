@@ -1,38 +1,54 @@
-import type { ReactNode } from "react";
+import Link from "next/link";
 import { NAV } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
 import { cx } from "./cx";
 import { SiteLogo } from "./SiteLogo";
+import { TeamDock, TeamRail } from "./TeamRail";
 
 interface SiteHeaderProps {
-  /** The button on the right, when the page has one. */
-  readonly action?: ReactNode;
+  /** On the board the header is only the logo, so nothing on it pulls the coach off the board mid-match. */
+  readonly onBoard?: boolean;
   /** On the home page the section links jump down the page. Everywhere else they go back to it. */
   readonly onHome?: boolean;
   /** Pinned to the top as the page scrolls. The board turns it off so the pitch keeps the room. */
   readonly sticky?: boolean;
 }
 
-/** The floating header on every page: the logo, the way round the home page, and one action. */
-export function SiteHeader({ action, onHome = false, sticky = true }: SiteHeaderProps) {
+/**
+ * The floating header on every page: the logo, the way round the home page, and the way to the board.
+ * The coach's teams sit in a rail of their own beside it, and fold into the header's far end when the screen is too narrow.
+ * On the board the team is already on screen, so neither shows.
+ */
+export function SiteHeader({ onBoard = false, onHome = false, sticky = true }: SiteHeaderProps) {
   return (
-    <header className={cx("landing-header", !sticky && "landing-header--static")}>
-      <div className="container">
-        <div className="landing-header__bar is-flex is-align-center is-justify-between has-gap-3 has-radius-sheet">
-          <SiteLogo label={NAV.home} />
-          <nav aria-label={NAV.label} className="is-flex is-align-center has-gap-5 text-md">
-            {/* The jump links wait for room. On a phone the logo is the way home. */}
-            <span className="is-hidden is-md-flex is-align-center has-gap-5">
-              {NAV.links.map((l) => (
-                <a key={l.href} href={onHome ? l.href : `${ROUTES.home}${l.href}`} className="hit-area is-dim">
-                  {l.label}
-                </a>
-              ))}
-            </span>
-            {action}
-          </nav>
+    <>
+      <header className={cx("landing-header", !sticky && "landing-header--static")}>
+        <div className="container">
+          <div className="landing-header__bar is-flex is-align-center is-justify-between has-gap-3 has-radius-sheet">
+            <SiteLogo label={NAV.home} />
+            {!onBoard && (
+              <nav aria-label={NAV.label} className="is-flex is-align-center has-gap-5 text-md">
+                {/* The jump links wait for room. On a phone the logo is the way home. */}
+                <span className="is-hidden is-md-flex is-align-center has-gap-5">
+                  {NAV.links.map((l) => (
+                    <a key={l.href} href={onHome ? l.href : `${ROUTES.home}${l.href}`} className="hit-area is-dim">
+                      {l.label}
+                    </a>
+                  ))}
+                </span>
+                <Link
+                  href={ROUTES.board}
+                  className="landing-header__cta button button--primary is-inline-flex is-align-center has-font-bold has-radius-field has-py-2 has-px-4 text-md"
+                >
+                  {NAV.cta}
+                </Link>
+                <TeamDock />
+              </nav>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      {!onBoard && <TeamRail />}
+    </>
   );
 }

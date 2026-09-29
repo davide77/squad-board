@@ -2,9 +2,10 @@
 
 // The landing page at /. Layout, spacing and type sit in the JSX; this file holds
 // what a utility cannot say: the sticky blurred header, fluid display type,
-// auto-fit grids, hairlines and the voice picker's pressed state.
+// auto-fit grids, hairlines and the story carousel's progress bars.
 
 // The header floats clear of the page edges, so the page shows round it as it scrolls.
+// Its height sets scroll-padding-top on html in base/_base.scss. Change both together.
 .landing-header {
   position: sticky;
   top: 0;
@@ -33,6 +34,83 @@
     @include min(bp(md)) {
       padding: spacer(3) spacer(5);
     }
+  }
+}
+
+// The coach's teams, each a crest in their kit like a magnet on the board. They
+// stand clear of the header in a fixed rail at the top left, one under another,
+// wherever the page leaves room beside the container. Narrower, they fold into
+// the header's far end as .team-dock, away from the logo.
+.team-rail {
+  position: fixed;
+  top: spacer(4);
+  left: spacer(4);
+  z-index: z(overlay);
+  display: none;
+
+  @include min(bp(rail)) {
+    display: flex;
+  }
+}
+
+.team-dock {
+  display: inline-flex;
+
+  @include min(bp(rail)) {
+    display: none;
+  }
+}
+
+// The dock stands in for the header button on a phone, where there is no room for both.
+.landing-header__bar:has(.team-dock) .landing-header__cta {
+  display: none;
+
+  @include min(bp(md)) {
+    display: inline-flex;
+  }
+}
+
+// 52px round a 44px crest in the rail, 48px round a 40px crest in the header.
+.team-magnet {
+  position: relative;
+  width: spacer(9) + spacer(1);
+  height: spacer(9) + spacer(1);
+  background-color: color(board-2);
+  border: 1px solid color(board-3);
+  transition: border-color $transition-fast, background-color $transition-fast;
+
+  & .crest {
+    width: $hit-size;
+    height: $hit-size;
+  }
+
+  .team-dock & {
+    width: spacer(9);
+    height: spacer(9);
+
+    & .crest {
+      width: spacer(8);
+      height: spacer(8);
+    }
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: color(board-3);
+    border-color: color(kit-edge);
+  }
+
+  // Put down one after another, like magnets onto the board.
+  @media (prefers-reduced-motion: no-preference) {
+    animation: team-magnet-in 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+}
+
+@keyframes team-magnet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-(spacer(2))) scale(0.9);
   }
 }
 
@@ -109,41 +187,13 @@
   }
 }
 
-// The hero line changes length with every tap. Holding two lines stops the page jumping.
+// The hero title changes with every chapter. Holding two lines stops the page jumping.
 .landing-hero__line {
   min-height: 1.8em;
 }
 
 .landing-pretty {
   text-wrap: pretty;
-}
-
-.voice-picker {
-  max-width: 420px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.voice-option {
-  min-height: 64px;
-  background-color: color(board-2);
-  border: 2px solid color(board-3);
-  color: color(chalk);
-  cursor: pointer;
-  transition: background-color $transition-fast, border-color $transition-fast, color $transition-fast;
-
-  &__desc {
-    opacity: 0.8;
-  }
-
-  &:hover {
-    border-color: color(dimmer);
-  }
-
-  &[aria-pressed='true'] {
-    background-color: color(kit);
-    border-color: color(kit);
-    color: color(kit-ink);
-  }
 }
 
 .landing-demo {
@@ -177,14 +227,25 @@
   }
 }
 
-// The film is shot vertical, like a phone. The play button sits over the loop.
+// The clips are shot vertical, like a phone. The play button sits over the loop.
 .landing-film {
   position: relative;
-  max-width: 380px;
+  max-width: 360px;
   justify-self: center;
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border: 1px solid color(board-3);
+
+  // On a phone a full 9:16 frame would push the chapter tabs a screen away. The clip crops instead.
+  @include max(bp(md)) {
+    max-height: 64svh;
+  }
+
+  // Each chapter's clip is a layer, so the next can fade in over the last.
+  &__layer {
+    position: absolute;
+    inset: 0;
+  }
 
   &__video {
     display: block;
@@ -200,6 +261,116 @@
   }
 }
 
+// The hero carousel. The tabs keep three to a row on a phone and take one row once
+// there is room. The active tab's bar fills over --story-ms (STORY_DURATION_MS in
+// config.ts), and the chapter changes when it is full. Paused, the bar holds.
+.landing-story {
+  &__tabs {
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 30%), 1fr));
+  }
+
+  &__tab {
+    min-height: $hit-size;
+    padding: 0 0 spacer(2);
+    color: color(chalk);
+    background: none;
+    border: 0;
+    cursor: pointer;
+
+    span {
+      transition: color $transition-base;
+    }
+  }
+
+  // A 3px line reads as a progress bar without competing with the tab label.
+  &__track {
+    height: 3px;
+    overflow: hidden;
+    background-color: color(board-3);
+  }
+
+  &__fill {
+    height: 100%;
+    background-color: color(kit);
+    transform: scaleX(0);
+    transform-origin: left;
+
+    &--done {
+      transform: scaleX(1);
+    }
+
+    &--run {
+      animation: landing-story-fill var(--story-ms) linear forwards;
+    }
+  }
+
+  // The pause and play mark beside the label, drawn in the label's colour.
+  &__glyph {
+    width: spacer(3);
+    height: spacer(3);
+    flex-shrink: 0;
+    fill: currentColor;
+  }
+
+  &[data-paused='true'] &__fill--run {
+    animation-play-state: paused;
+  }
+
+  // Nothing moves on by itself: the active bar is simply full.
+  @media (prefers-reduced-motion: reduce) {
+    &__fill--run {
+      animation: none;
+      transform: scaleX(1);
+    }
+  }
+
+  // Stands in for a clip until it is rendered: the shot, on the pitch surface.
+  &__board {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(175deg, color(pitch-top), color(pitch-bottom) 66%);
+  }
+
+  &__pill {
+    border: 1px dashed tint(chalk, 40%);
+  }
+
+  &__ages {
+    max-width: 480px;
+    grid-template-columns: repeat(auto-fill, minmax(spacer(10) + spacer(4), 1fr));
+  }
+
+  &__age {
+    min-height: $hit-size;
+    padding: 0 spacer(2);
+    color: color(chalk);
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    cursor: pointer;
+    transition: border-color $transition-fast, background-color $transition-fast;
+
+    &:hover {
+      border-color: color(kit);
+    }
+
+    &[aria-pressed='true'] {
+      color: color(kit-ink);
+      background-color: color(kit);
+      border-color: color(kit);
+    }
+  }
+}
+
+@keyframes landing-story-fill {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
 .landing-link-button {
   padding: 0;
   background: none;
@@ -210,11 +381,6 @@
   &:hover {
     color: color(chalk);
   }
-}
-
-.landing-steps {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-  border-top: 2px solid color(chalk);
 }
 
 .landing-check {

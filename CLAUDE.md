@@ -86,7 +86,7 @@ Even in that file, anything a utility covers still belongs in the JSX.
 | Text | `text-{left\|center\|right\|justify}` `uppercase` `lowercase` `capitalize` `is-truncate` | [base/_base.scss](src/styles/base/_base.scss) |
 | Colour | `is-{name}` (text), `bg-{name}` (background), `has-border-{name}` (border colour), for every key in `$theme-colors`: `board` `board-2` `board-3` `chalk` `dim` `dimmer` `out` `kit` `kit-ink` `kit-edge` `kit-soft` `edge` `rule` `black` `text` `text-muted` `keeper-edge` `pitch-top` `pitch-bottom` | [abstracts/_colors.scss](src/styles/abstracts/_colors.scss) |
 | Radius | `has-radius-{none\|sm\|field\|panel\|sheet\|pill}` | [utilities/_radius.scss](src/styles/utilities/_radius.scss) |
-| Measure | `measure-{52\|62\|72}ch` `max-w-720` `is-mx-auto` `is-w-full` | [base/_base.scss](src/styles/base/_base.scss) |
+| Measure | `measure-{48\|52\|62\|72}ch` `max-w-720` `is-mx-auto` `is-w-full` | [base/_base.scss](src/styles/base/_base.scss) |
 | Containers | `container` `container-fluid` `container-sm` `container-lg` | [layout/_container.scss](src/styles/layout/_container.scss) |
 | Accessibility | `sr-only` `skip-link` | [utilities/_sr-only.scss](src/styles/utilities/_sr-only.scss) |
 

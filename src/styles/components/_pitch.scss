@@ -95,6 +95,13 @@ $pitch-tight: 300px;
     cursor: grab;
   }
 
+  // A new shape: each player glides to their new spot. Not while positions are dragged by hand.
+  @media (prefers-reduced-motion: no-preference) {
+    &:not(.pitch-slot--movable) {
+      transition: left $transition-base, top $transition-base;
+    }
+  }
+
   &--movable &__disc,
   &--drop &__disc {
     border-style: solid;

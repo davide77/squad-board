@@ -1,31 +1,24 @@
 "use client";
 
 import { useId } from "react";
-import { HEADER } from "@/constants/content/board";
-import { cx } from "../cx";
-import { monogram } from "@/lib/board/names";
+import { HEADER, SHEET } from "@/constants/content/board";
+import { matchDate } from "@/lib/board/message";
 import { useBoard } from "./BoardProvider";
+import { Crest } from "./Crest";
 import { MatchClock } from "./MatchClock";
 
 export function BoardHeader() {
   const { state, act } = useBoard();
   const teamId = useId();
-  const fixtureId = useId();
-  const mono = monogram(state.data.team);
+  const { fixture, match } = state.data;
+  // Filled in under This week's match. Here it is only a reminder on the touchline.
+  const summary = [fixture.trim(), matchDate(match.date), match.kickoff].filter(Boolean).join(SHEET.pictureJoin);
 
   return (
     <header className="board-header is-flex is-flex-wrap is-align-end is-justify-between has-gap-3 has-mb-4 has-pb-3">
       <div className="board-header__ident is-min-w-0">
         <div className="is-flex is-align-center has-gap-3">
-          <div
-            className={cx(
-              "crest is-flex is-align-center is-justify-center is-shrink-0 has-radius-pill has-font-headline has-font-bold text-lg tracking-number",
-              !mono && "crest--empty",
-            )}
-            aria-hidden="true"
-          >
-            {mono}
-          </div>
+          <Crest team={state.data.team} badge={state.data.badge} />
           <div className="is-flex-1 is-min-w-0">
             <label htmlFor={teamId} className="sr-only">
               {HEADER.teamLabel}
@@ -40,17 +33,7 @@ export function BoardHeader() {
             />
           </div>
         </div>
-        <label htmlFor={fixtureId} className="sr-only">
-          {HEADER.fixtureLabel}
-        </label>
-        <input
-          id={fixtureId}
-          className="board-header__fixture is-w-full has-py-1 text-base is-dim"
-          placeholder={HEADER.fixturePlaceholder}
-          autoComplete="off"
-          value={state.data.fixture}
-          onChange={(e) => act({ type: "setFixture", value: e.target.value })}
-        />
+        {summary && <p className="has-mt-1 text-base is-dim is-truncate">{summary}</p>}
       </div>
       <MatchClock />
     </header>

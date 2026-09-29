@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function BoardPage() {
   return (
     <>
-      <SiteHeader sticky={false} />
+      <SiteHeader onBoard sticky={false} />
       <main id="main">
         <BoardClient />
       </main>

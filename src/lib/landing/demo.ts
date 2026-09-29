@@ -111,7 +111,6 @@ export function demoSheet(s: DemoState, useInitials: boolean): string {
   if (s.subs.length) {
     lines.push(t.subs + s.subs.map((u) => `${u.min}' ${nm(u.on)} ${t.subFor} ${nm(u.off)}`).join(", "));
   }
-  if (s.injured.length) lines.push(t.injuredLine + s.injured.map(nm).join(", "));
   return lines.join("\n");
 }
 

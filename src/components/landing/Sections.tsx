@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FOOTER, PRIVATE_ROWS } from "@/constants/content/landing";
+import { PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
 import { SITE } from "@/constants/site";
@@ -12,14 +12,19 @@ export function PrivateSection() {
         <h2 className="landing-display landing-display--section">
           <VoiceText k="privH" />
         </h2>
-        <ul className="landing-rows is-flex is-flex-column">
-          {PRIVATE_ROWS.map((r) => (
-            <li key={r.title} className="is-flex is-flex-column has-gap-1 has-py-4">
-              <span className="has-font-semibold text-lg">{r.title}</span>
-              <span className="text-md is-dim">{r.body}</span>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <ul className="landing-rows is-flex is-flex-column">
+            {PRIVATE_ROWS.map((r) => (
+              <li key={r.title} className="is-flex is-flex-column has-gap-1 has-py-4">
+                <span className="has-font-semibold text-lg">{r.title}</span>
+                <span className="text-md is-dim">{r.body}</span>
+              </li>
+            ))}
+          </ul>
+          <Link href={ROUTES.privacy} className="hit-area is-inline-block has-mt-4 text-md has-font-semibold is-kit">
+            {PRIVATE_MORE}
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -50,11 +55,13 @@ export function LandingFooter() {
           <Link href={ROUTES.credits} className="hit-area">
             {FOOTER_LINKS.credits}
           </Link>
-          <a href={MAKER.url} className="hit-area">
-            {MAKER.name}
-          </a>
         </nav>
-        <span>{FOOTER.domain}</span>
+        <p>
+          {FOOTER_LINKS.madeBy} {MAKER.name} {FOOTER_LINKS.at}{" "}
+          <a href={MAKER.url} className="hit-area is-dim has-font-semibold">
+            {MAKER.studio}
+          </a>
+        </p>
       </div>
     </footer>
   );

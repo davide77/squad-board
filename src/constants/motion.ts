@@ -13,6 +13,14 @@ export const MOTION = {
   toastY: 8,
   /** A player dragged off the pitch or bench is lifted slightly. */
   ghostScale: 1.06,
+  /** The homepage story. The words slide in the way the story is going, one line after another. */
+  story: { duration: 0.42, ease: [0.22, 0.61, 0.36, 1] as const },
+  storyOut: { duration: 0.18 },
+  storyX: 28,
+  storyStagger: 0.06,
+  /** The clips cross-fade, and the new one settles from a slight push in. */
+  storyMedia: { duration: 0.6, ease: [0.22, 0.61, 0.36, 1] as const },
+  storyMediaScale: 1.06,
   /** Anything that must change without being seen to change. */
   instant: { duration: 0 },
 } as const;

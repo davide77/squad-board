@@ -68,10 +68,22 @@ export interface Minutes {
   played: Record<string, number>;
 }
 
+/** What the parents need to get their child there. All optional, all plain text. */
+export interface MatchDetails {
+  /** yyyy-mm-dd, from a date input. */
+  date: string;
+  /** HH:MM, from a time input. */
+  kickoff: string;
+  meet: string;
+  kit: string;
+  address: string;
+}
+
 export interface BoardData {
   team: string;
   season: string;
   fixture: string;
+  match: MatchDetails;
   formation: string;
   players: Player[];
   xi: XI;
@@ -87,6 +99,8 @@ export interface BoardData {
   saved: Lineup | null;
   removed: Player[];
   colour: number;
+  /** The club badge as a small PNG data URL. Empty when the crest shows initials. */
+  badge: string;
   clock: Clock;
   /** The made-up team from "Try the example team", not the coach's own. */
   example: boolean;

@@ -67,8 +67,9 @@ export function Pitch() {
   return (
     <div className="pitch is-w-full has-radius-panel" data-pitch>
       <PitchMarkings />
+      {/* Keyed by the player, so a player's marker glides to their spot in a new shape rather than being redrawn. */}
       {slots(state.data).map((s) => (
-        <PitchSlot key={s.id} slot={s} />
+        <PitchSlot key={state.data.xi[s.id] ?? s.id} slot={s} />
       ))}
     </div>
   );

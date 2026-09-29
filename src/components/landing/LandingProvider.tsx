@@ -2,9 +2,9 @@
 
 import { createContext, use, useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { LANDING_CONFIG } from "@/constants/config";
-import { COPY, DEFAULT_VOICE, type VoiceCopy, type VoiceKey } from "@/constants/content/landing";
+import { COPY, LANDING_VOICE, type VoiceCopy, type VoiceKey } from "@/constants/content/landing";
 import { DEMO_START, demoReducer, demoSheet, type DemoAction, type DemoState } from "@/lib/landing/demo";
-import { TONE_FOR_PHASE, VOICE_FOR_TONE, type Tone } from "@/constants/content/onboarding";
+import { TONE_FOR_PHASE, type Tone } from "@/constants/content/onboarding";
 import { AGE_GROUPS, type AgeKey } from "@/constants/football";
 import { writeAgePref } from "@/lib/voice";
 
@@ -14,7 +14,7 @@ interface LandingContextValue {
   readonly setAge: (age: AgeKey) => void;
   /** The Gaffer's tone for that age: very soft up to under 11s, rough from under 12s. */
   readonly tone: Tone | null;
-  /** The voice the page's copy is written in, which follows the tone. */
+  /** The voice the page's copy is written in. The website always speaks Hairdryer. */
   readonly voice: VoiceKey;
   readonly copy: VoiceCopy;
   readonly demo: DemoState;
@@ -38,7 +38,7 @@ interface LandingProviderProps {
   readonly children: ReactNode;
 }
 
-/** The age picked in the hero, the voice it sets and the demo board, shared by every section of the page. */
+/** The age picked in the hero and the demo board, shared by every section of the page. */
 export function LandingProvider({ children }: LandingProviderProps) {
   const [age, setAgeState] = useState<AgeKey | null>(null);
   // Remembered too, so the start screen opens on the same age group.
@@ -48,8 +48,6 @@ export function LandingProvider({ children }: LandingProviderProps) {
   }, []);
   const phase = AGE_GROUPS.find((a) => a.key === age)?.phase;
   const tone = phase ? TONE_FOR_PHASE[phase] : null;
-  // Every headline on the page speaks in the Gaffer for that age.
-  const voice = tone ? VOICE_FOR_TONE[tone] : DEFAULT_VOICE;
   const [demo, act] = useReducer(demoReducer, DEMO_START);
   const [initials, setInitials] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -70,8 +68,8 @@ export function LandingProvider({ children }: LandingProviderProps) {
   const toggleInitials = useCallback(() => setInitials((v) => !v), []);
 
   const value = useMemo(
-    () => ({ age, setAge, tone, voice, copy: COPY[voice], demo, act, initials, toggleInitials, sheet, copied, copySheet }),
-    [age, setAge, tone, voice, demo, initials, toggleInitials, sheet, copied, copySheet],
+    () => ({ age, setAge, tone, voice: LANDING_VOICE, copy: COPY[LANDING_VOICE], demo, act, initials, toggleInitials, sheet, copied, copySheet }),
+    [age, setAge, tone, demo, initials, toggleInitials, sheet, copied, copySheet],
   );
 
   return <LandingContext value={value}>{children}</LandingContext>;
