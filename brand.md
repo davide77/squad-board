@@ -147,7 +147,7 @@ All HEX values are canonical. Mirror them exactly in [src/styles/abstracts/_colo
 ### Secondary (complementary, smaller scale)
 
 - **Dim** `#96968F` - secondary text, counts.
-- **Dimmer** `#67675F` - hints, placeholders, quiet labels.
+- **Dimmer** `#7E7E76` - hints, placeholders, quiet labels. The darkest grey that keeps small text at 4.5:1 on Board and Board 2.
 
 ### Kit (club colour, chosen by the coach)
 

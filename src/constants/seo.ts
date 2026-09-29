@@ -69,6 +69,8 @@ export const JSON_LD = {
       "@id": `${SITE_URL}/#maker`,
       name: MAKER.name,
       url: MAKER.url,
+      jobTitle: MAKER.role,
+      description: MAKER.bio,
     },
   ],
 } as const;
