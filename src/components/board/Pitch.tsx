@@ -8,22 +8,7 @@ import { byId, coverFor, fitLevel, slots } from "@/lib/board/queries";
 import type { Slot } from "@/lib/board/types";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
-
-/** Pitch lines, drawn in a 300 x 400 box and stretched to the pitch. */
-export function PitchMarkings() {
-  return (
-    <svg className="pitch__lines" viewBox="0 0 300 400" preserveAspectRatio="none" aria-hidden="true">
-      <rect x="10" y="10" width="280" height="380" />
-      <line x1="10" y1="200" x2="290" y2="200" />
-      <circle cx="150" cy="200" r="42" />
-      <circle className="pitch__spot" cx="150" cy="200" r="2.5" />
-      <rect x="66" y="10" width="168" height="62" />
-      <rect x="112" y="10" width="76" height="24" />
-      <rect x="66" y="328" width="168" height="62" />
-      <rect x="112" y="366" width="76" height="24" />
-    </svg>
-  );
-}
+import { PitchMarkings } from "./PitchMarkings";
 
 interface PitchSlotProps {
   readonly slot: Slot;
@@ -59,7 +44,7 @@ function PitchSlot({ slot }: PitchSlotProps) {
       style={position}
       data-slot={slot.id}
       data-player={p?.id}
-      aria-label={p ? SHAPE.slotFilled(slot.role, p.name) : SHAPE.slotEmpty(slot.role)}
+      aria-label={p ? SHAPE.slotFilled(p.num || NO_NUMBER, shirtName(p, data.nameStyle, data.players), slot.role) : SHAPE.slotEmpty(slot.role)}
       onClick={() => act({ type: "tapSlot", slotId: slot.id })}
     >
       <span className="pitch-slot__disc is-flex is-align-center is-justify-center has-radius-pill has-font-headline has-font-bold text-xl leading-tight is-tabular">

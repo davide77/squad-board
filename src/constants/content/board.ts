@@ -50,7 +50,8 @@ export const SHAPE = {
   hideCover: "Hide cover names",
   showCover: "Show cover names",
   slotEmpty: (role: string) => `${role}, empty`,
-  slotFilled: (role: string, name: string) => `${role}: ${name}`,
+  /** Starts with what the slot shows, number then name, so voice control matches it. */
+  slotFilled: (num: number | string, name: string, role: string) => `${num} ${name}, ${role}`,
 } as const;
 
 export const ZONES = {
