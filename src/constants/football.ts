@@ -41,6 +41,27 @@ export const POSITION_CODES: Readonly<Record<string, PositionKey>> = {
   ST: "ST",
   CF: "ST",
 };
+/** A flank. A player can be kept to one, and most pitch roles sit on one. */
+export type Side = "L" | "R";
+
+// The flank a typed code names, so "RB" plays on the right and "LW" on the left.
+export const POSITION_SIDES: Readonly<Record<string, Side>> = {
+  LB: "L",
+  RB: "R",
+  LWB: "L",
+  RWB: "R",
+  LW: "L",
+  RW: "R",
+  LM: "L",
+  RM: "R",
+};
+
+// How a sided position reads in lists: a right-sided full-back is an RB.
+export const SIDED_CODES: Readonly<Partial<Record<PositionKey, Readonly<Record<Side, string>>>>> = {
+  FB: { L: "LB", R: "RB" },
+  W: { L: "LW", R: "RW" },
+};
+
 export const POSITION_WORDS: Readonly<Record<string, PositionKey>> = {
   goalkeeper: "GK",
   keeper: "GK",

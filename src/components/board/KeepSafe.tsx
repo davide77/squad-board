@@ -2,7 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 import { KEEP_CONFIG } from "@/constants/config";
-import { CLUB, KEEP, TOASTS } from "@/constants/content/board";
+import { CLUB, KEEP } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { exportSquadFile } from "@/lib/board/files";
 import { useInstallPrompt, useIsInstalled, useIsTouch, useStoredFlag } from "@/lib/hooks";
 import { Button } from "../Button";
@@ -72,7 +73,7 @@ export function KeepSafe() {
     const save = () => {
       exportSquadFile(data, Date.now());
       act({ type: "backedUp" });
-      act({ type: "notify", text: TOASTS.exported });
+      act({ type: "notify", text: GAFFER[data.voice].exported });
     };
     return (
       <Card title={KEEP.backupTitle} body={data.backedUpAt ? KEEP.backupOld : KEEP.backupNever}>

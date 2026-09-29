@@ -1,6 +1,8 @@
-import { NAME_STYLES, TOASTS } from "@/constants/content/board";
+import { NAME_STYLES } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
+import type { VoiceKey } from "@/constants/content/landing";
 import { BOARD_CONFIG } from "@/constants/config";
-import { CUSTOM_FORMATION, DEFAULT_FORMATION, type PositionKey } from "@/constants/football";
+import { CUSTOM_FORMATION, DEFAULT_FORMATION, type PositionKey, type Side } from "@/constants/football";
 import { firstName } from "./names";
 import {
   bestFree,
@@ -42,6 +44,8 @@ export type Action =
   | { type: "toggleEdit"; id: string }
   | { type: "editDone" }
   | { type: "togglePos"; pos: PositionKey }
+  | { type: "setSide"; side: Side | null }
+  | { type: "setVoice"; voice: VoiceKey }
   | { type: "toggleInjured"; id: string }
   | { type: "toggleUnavailable"; id: string }
   | { type: "setCalledUp"; id: string; called: boolean }
@@ -135,28 +139,31 @@ function detach(d: BoardData, pid: string) {
   d.bench = d.bench.filter((id) => id !== pid);
 }
 
-function logSub(d: BoardData, onId: string, offId: string, now: number) {
+type Note = (text: string) => void;
+
+/** Logs a change once the clock is running, and the Gaffer has a word about it. */
+function logSub(d: BoardData, onId: string, offId: string, now: number, note: Note) {
   if (!started(d)) return;
   const on = byId(d, onId);
   const off = byId(d, offId);
   if (!on || !off) return;
   d.subs.push({ min: Math.floor(elapsed(d, now) / 60000) + 1, onName: on.name, offName: off.name });
+  note(GAFFER[d.voice].sub(firstName(on.name), firstName(off.name)));
 }
 
-/** Why a player cannot be picked, or null when they can. */
-function refusal(p: Player | null): string | null {
+/** Why a player cannot be picked, in the Gaffer's words, or null when they can. */
+function refusal(d: BoardData, p: Player | null): string | null {
   if (!p) return null;
   const n = firstName(p.name);
-  if (p.inj) return TOASTS.injured(n);
-  if (p.una) return TOASTS.unavailable(n);
-  if (p.out) return TOASTS.notCalledUp(n);
+  const say = GAFFER[d.voice];
+  if (p.inj) return say.cantPickInjured(n);
+  if (p.una) return say.cantPickUnavailable(n);
+  if (p.out) return say.cantPickNotCalledUp(n);
   return null;
 }
 
-type Note = (text: string) => void;
-
 function toSlot(d: BoardData, pid: string, slotId: string, now: number, note: Note) {
-  const why = refusal(byId(d, pid));
+  const why = refusal(d, byId(d, pid));
   if (why) return note(why);
   const occupant = d.xi[slotId] ?? null;
   if (occupant === pid) return;
@@ -164,7 +171,7 @@ function toSlot(d: BoardData, pid: string, slotId: string, now: number, note: No
   if (occupant && fromSlot) {
     d.xi[fromSlot] = occupant;
   } else if (occupant) {
-    if (onBench(d, pid)) logSub(d, pid, occupant, now);
+    if (onBench(d, pid)) logSub(d, pid, occupant, now, note);
     detach(d, pid);
     d.bench.unshift(occupant);
   } else {
@@ -174,7 +181,7 @@ function toSlot(d: BoardData, pid: string, slotId: string, now: number, note: No
 }
 
 function toBench(d: BoardData, pid: string, note: Note) {
-  const why = refusal(byId(d, pid));
+  const why = refusal(d, byId(d, pid));
   if (why) return note(why);
   if (onBench(d, pid)) return;
   detach(d, pid);
@@ -192,12 +199,12 @@ function drop(d: BoardData, pid: string, target: DropTarget, now: number, note: 
     const a = slotOf(d, pid);
     const b = slotOf(d, other);
     if (a && !b) {
-      const why = refusal(byId(d, other));
+      const why = refusal(d, byId(d, other));
       if (why) {
         note(why);
         return true;
       }
-      if (onBench(d, other)) logSub(d, other, pid, now);
+      if (onBench(d, other)) logSub(d, other, pid, now, note);
       detach(d, other);
       detach(d, pid);
       d.xi[a] = other;
@@ -250,6 +257,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
   const next = structuredClone(state);
   const d = next.data;
   const ui = next.ui;
+  const say = GAFFER[d.voice];
   const { now } = action;
   const note: Note = (text) => {
     ui.notice = { id: (state.ui.notice?.id ?? 0) + 1, text };
@@ -313,7 +321,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
 
     case "resetCustom":
       d.custom = slotsFor(DEFAULT_FORMATION, []).map(({ x, y }) => ({ x, y }));
-      note(TOASTS.shapeReset);
+      note(say.shapeReset);
       return next;
 
     case "moveCustom":
@@ -395,6 +403,13 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       return next;
     }
 
+    case "setSide": {
+      const p = ui.editing ? player(ui.editing) : null;
+      if (!p) return state;
+      p.side = action.side;
+      return next;
+    }
+
     case "toggleInjured": {
       const p = player(action.id);
       if (!p) return state;
@@ -405,7 +420,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
         p.out = true;
         detach(d, p.id);
       }
-      note(p.inj ? TOASTS.markedInjured(firstName(p.name)) : TOASTS.fitAgain(firstName(p.name)));
+      note(p.inj ? say.markedInjured(firstName(p.name)) : say.fitAgain(firstName(p.name)));
       return next;
     }
 
@@ -418,7 +433,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
         p.out = true;
         detach(d, p.id);
       }
-      note(p.una ? TOASTS.markedUnavailable(firstName(p.name)) : TOASTS.availableAgain(firstName(p.name)));
+      note(p.una ? say.markedUnavailable(firstName(p.name)) : say.availableAgain(firstName(p.name)));
       return next;
     }
 
@@ -428,7 +443,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       p.out = !action.called;
       // leaves their position empty, for the coach to fill
       if (p.out) detach(d, p.id);
-      note(p.out ? TOASTS.notCalledUp(firstName(p.name)) : TOASTS.calledUp(firstName(p.name)));
+      note(p.out ? say.notCalledUp(firstName(p.name)) : say.calledUp(firstName(p.name)));
       return next;
     }
 
@@ -441,7 +456,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       d.removed.unshift(p);
       if (ui.selected === p.id) ui.selected = null;
       if (ui.editing === p.id) ui.editing = null;
-      note(TOASTS.removed(firstName(p.name)));
+      note(say.removed(firstName(p.name)));
       return next;
     }
 
@@ -452,7 +467,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       // back in the squad, not called up yet
       p.out = true;
       d.players.push(p);
-      note(TOASTS.restored(firstName(p.name)));
+      note(say.restored(firstName(p.name)));
       return next;
     }
 
@@ -483,6 +498,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
         name,
         init: "",
         pos: [],
+        side: null,
         out: false,
         inj: false,
         una: false,
@@ -505,7 +521,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
 
     case "sortByNumber":
       d.players.sort(numberOrder);
-      note(TOASTS.sorted);
+      note(say.sorted);
       return next;
 
     case "toggleCallUps": {
@@ -519,7 +535,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
           detach(d, p.id);
         }
       }
-      note(anyOut ? TOASTS.everyoneCalledUp : TOASTS.callUpsCleared);
+      note(anyOut ? say.everyoneCalledUp : say.callUpsCleared);
       return next;
     }
 
@@ -534,7 +550,12 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       d.clock = { running: false, base: 0, since: 0 };
       ui.selected = null;
       closePicker();
-      note(TOASTS.newMatchday);
+      note(say.newMatchday);
+      return next;
+
+    case "setVoice":
+      d.voice = action.voice;
+      note(GAFFER[action.voice].hello);
       return next;
 
     case "setColour":
@@ -543,31 +564,31 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
 
     case "saveLineup":
       d.saved = captureLineup(d);
-      note(TOASTS.lineupSaved);
+      note(say.lineupSaved);
       return next;
 
     case "setStrongest":
       d.preset = captureLineup(d);
       d.saved = captureLineup(d);
-      note(TOASTS.strongestSaved);
+      note(say.strongestSaved);
       return next;
 
     case "backToStrongest": {
       if (!d.preset) {
-        note(TOASTS.noStrongest);
+        note(say.noStrongest);
         return next;
       }
       const changes = applyLineup(d, d.preset);
       ui.selected = null;
       closePicker();
-      note(changes ? TOASTS.strongestWithChanges(changes) : TOASTS.backToStrongest);
+      note(changes ? say.strongestWithChanges(changes) : say.backToStrongest);
       return next;
     }
 
     case "saveNamed":
       d.lineups.unshift({ ...captureLineup(d), name: action.name });
       d.lineups = d.lineups.slice(0, BOARD_CONFIG.maxSavedLineups);
-      note(TOASTS.lineupSaved);
+      note(say.lineupSaved);
       return next;
 
     case "loadNamed": {
@@ -577,7 +598,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       applyLineup(d, l, false);
       ui.selected = null;
       closePicker();
-      note(TOASTS.loaded(l.name));
+      note(say.loaded(l.name));
       return next;
     }
 

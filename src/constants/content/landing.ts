@@ -123,7 +123,7 @@ export const HERO = {
   heading: "Line-ups and team sheets for grassroots football",
   kicker: "The gaffer says",
   voiceLabel: "Who's your gaffer?",
-  voiceNote: "Just for fun on this page. Team sheets and anything about your data always stay plain.",
+  voiceNote: "Your gaffer comes with you to the board. Team sheets and anything about your data always stay plain.",
 } as const;
 
 export const DEMO = {

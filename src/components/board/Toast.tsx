@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { TOAST_MS } from "@/constants/config";
+import { TOAST_MAX_MS, TOAST_MS, TOAST_MS_PER_CHAR } from "@/constants/config";
 import { MOTION } from "@/constants/motion";
 import { useBoard } from "./BoardProvider";
 
@@ -10,13 +10,15 @@ export function Toast() {
   const { state } = useBoard();
   const notice = state.ui.notice;
   const noticeId = notice?.id ?? null;
+  // Long enough to read: "Saved. Good." goes quickly, a longer word from the Gaffer stays.
+  const holdMs = Math.min(TOAST_MAX_MS, Math.max(TOAST_MS, (notice?.text.length ?? 0) * TOAST_MS_PER_CHAR));
   const [hiddenId, setHiddenId] = useState<number | null>(null);
 
   useEffect(() => {
     if (noticeId === null) return;
-    const timer = setTimeout(() => setHiddenId(noticeId), TOAST_MS);
+    const timer = setTimeout(() => setHiddenId(noticeId), holdMs);
     return () => clearTimeout(timer);
-  }, [noticeId]);
+  }, [noticeId, holdMs]);
 
   const show = notice && notice.id !== hiddenId;
   return (

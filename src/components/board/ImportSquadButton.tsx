@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { CLUB, CONFIRM, TOASTS } from "@/constants/content/board";
+import { CLUB, CONFIRM } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { readBoard } from "@/lib/board/storage";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
+import { readVoicePref } from "@/lib/voice";
 
 interface ImportSquadButtonProps {
   readonly size?: "regular" | "tiny";
@@ -15,22 +17,25 @@ export function ImportSquadButton({ size = "tiny" }: ImportSquadButtonProps) {
   const { state, act } = useBoard();
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // On the start screen there is no board yet, so the gaffer is the one picked last.
+  const say = GAFFER[state.data.players.length ? state.data.voice : readVoicePref()];
+
   async function importFile(file: File) {
     let raw: unknown;
     try {
       raw = JSON.parse(await file.text());
     } catch {
-      act({ type: "notify", text: TOASTS.unreadable });
+      act({ type: "notify", text: say.unreadable });
       return;
     }
     const board = readBoard(raw);
     if (!board) {
-      act({ type: "notify", text: TOASTS.notASquad });
+      act({ type: "notify", text: say.notASquad });
       return;
     }
     if (state.data.players.length && !state.data.example && !window.confirm(CONFIRM.replaceSquad)) return;
     // The file is itself a copy, so the board counts as backed up.
-    act({ type: "load", data: { ...board, backedUpAt: Date.now() }, notice: TOASTS.imported });
+    act({ type: "load", data: { ...board, backedUpAt: Date.now() }, notice: say.imported });
   }
 
   return (

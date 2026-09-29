@@ -4,7 +4,9 @@ import {
   DEFAULT_FORMATION,
   FORMATIONS,
   ROLE_FIT,
+  SIDED_CODES,
   type Role,
+  type Side,
 } from "@/constants/football";
 import type { BoardData, Lineup, Player, Point, Slot } from "./types";
 
@@ -76,6 +78,24 @@ export function fitLevel(p: Player, role: Role): 0 | 1 | 2 {
   return 0;
 }
 
+/** The flank a pitch role sits on, from its code: LCB and LW are left, CB and ST neither. */
+export function roleSide(role: Role): Side | null {
+  if (role.length < 2) return null;
+  return role[0] === "L" ? "L" : role[0] === "R" ? "R" : null;
+}
+
+/** 0 their side or a central role, 1 plays either side, 2 the other flank. */
+export function sideRank(p: Player, role: Role): 0 | 1 | 2 {
+  const side = roleSide(role);
+  if (!side || p.side === side) return 0;
+  return p.side ? 2 : 1;
+}
+
+/** Positions as a coach writes them: a right-sided full-back reads RB, not FB. */
+export function positionCodes(p: Player): string[] {
+  return p.pos.map((k) => (p.side && SIDED_CODES[k]?.[p.side]) || k);
+}
+
 // Injured and unavailable both put a player beyond selection. "out" alone is the coach's choice.
 export function blocked(p: Player): boolean {
   return p.inj || p.una;
@@ -90,11 +110,12 @@ function benchFirst(d: BoardData) {
   return (a: Player, b: Player) => Number(!onBench(d, a.id)) - Number(!onBench(d, b.id));
 }
 
-/** Called-up players off the pitch at a given fit level, bench first. */
+/** Called-up players off the pitch at a given fit level, bench first, then those on the role's side. */
 export function freeAt(d: BoardData, role: Role, level: 0 | 1 | 2, except: string | null = null): Player[] {
+  const bench = benchFirst(d);
   return d.players
     .filter((p) => !p.out && p.id !== except && !slotOf(d, p.id) && fitLevel(p, role) === level)
-    .sort(benchFirst(d));
+    .sort((a, b) => bench(a, b) || sideRank(a, role) - sideRank(b, role));
 }
 
 // Only players who actually play the position. No falling back to stand-ins:

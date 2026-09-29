@@ -4,6 +4,7 @@ import { createContext, use, useCallback, useEffect, useMemo, useReducer, useRef
 import { LANDING_CONFIG } from "@/constants/config";
 import { COPY, DEFAULT_VOICE, type VoiceCopy, type VoiceKey } from "@/constants/content/landing";
 import { DEMO_START, demoReducer, demoSheet, type DemoAction, type DemoState } from "@/lib/landing/demo";
+import { writeVoicePref } from "@/lib/voice";
 
 interface LandingContextValue {
   readonly voice: VoiceKey;
@@ -32,7 +33,12 @@ interface LandingProviderProps {
 
 /** The voice picked in the hero and the demo board, shared by every section of the page. */
 export function LandingProvider({ children }: LandingProviderProps) {
-  const [voice, setVoice] = useState<VoiceKey>(DEFAULT_VOICE);
+  const [voice, setVoiceState] = useState<VoiceKey>(DEFAULT_VOICE);
+  // Remembered on this device, so the board starts with the same gaffer.
+  const setVoice = useCallback((v: VoiceKey) => {
+    setVoiceState(v);
+    writeVoicePref(v);
+  }, []);
   const [demo, act] = useReducer(demoReducer, DEMO_START);
   const [initials, setInitials] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -54,7 +60,7 @@ export function LandingProvider({ children }: LandingProviderProps) {
 
   const value = useMemo(
     () => ({ voice, setVoice, copy: COPY[voice], demo, act, initials, toggleInitials, sheet, copied, copySheet }),
-    [voice, demo, initials, toggleInitials, sheet, copied, copySheet],
+    [voice, setVoice, demo, initials, toggleInitials, sheet, copied, copySheet],
   );
 
   return <LandingContext value={value}>{children}</LandingContext>;

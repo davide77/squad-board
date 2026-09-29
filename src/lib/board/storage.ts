@@ -1,6 +1,7 @@
 import { KIT_COLOURS } from "@/constants/brand";
 import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { STORAGE_KEY } from "@/constants/config";
+import { DEFAULT_VOICE } from "@/constants/content/landing";
 import {
   CUSTOM_FORMATION,
   DEFAULT_FORMATION,
@@ -10,6 +11,7 @@ import {
   XI_SIZE,
   type PositionKey,
 } from "@/constants/football";
+import { isVoice } from "@/lib/voice";
 import { captureLineup, elapsed } from "./queries";
 import type { BoardData, Lineup, NamedLineup, Player, Point, Sub, XI } from "./types";
 
@@ -35,6 +37,7 @@ export function emptyData(): BoardData {
     example: false,
     createdAt: 0,
     backedUpAt: 0,
+    voice: DEFAULT_VOICE,
   };
   d.preset = captureLineup(d);
   d.saved = captureLineup(d);
@@ -62,6 +65,7 @@ function readPlayer(v: unknown): Player | null {
     name: str(v.name),
     init: str(v.init),
     pos: [...new Set(pos)],
+    side: v.side === "L" || v.side === "R" ? v.side : null,
     out: !!v.out,
     inj: !!v.inj,
     una: !!v.una,
@@ -131,6 +135,7 @@ export function readBoard(raw: unknown): BoardData | null {
     example: raw.example === true,
     createdAt: num(raw.createdAt),
     backedUpAt: num(raw.backedUpAt),
+    voice: isVoice(raw.voice) ? raw.voice : DEFAULT_VOICE,
   };
 }
 

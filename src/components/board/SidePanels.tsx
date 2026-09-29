@@ -2,7 +2,8 @@
 
 import { useId, useState, type FormEvent } from "react";
 import { PICTURE_CONFIG } from "@/constants/config";
-import { CLUB, GLYPHS, SAVED, SHEET, SUBS, TOASTS } from "@/constants/content/board";
+import { CLUB, GLYPHS, SAVED, SHEET, SUBS } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { teamSlug } from "@/lib/board/names";
 import { lineupPicture, sharePicture } from "@/lib/board/picture";
 import { sheetText } from "@/lib/board/sheet";
@@ -27,7 +28,7 @@ export function SubsPanel() {
           ))}
         </ul>
       ) : (
-        <p className="text-base is-dimmer has-py-2">{SUBS.empty}</p>
+        <p className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].subsEmpty}</p>
       )}
     </Panel>
   );
@@ -63,7 +64,7 @@ export function SavedPanel() {
             </div>
           ))
         ) : (
-          <p className="text-base is-dimmer has-py-2">{SAVED.empty}</p>
+          <p className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].savedEmpty}</p>
         )}
       </div>
       <form className="is-flex is-flex-wrap has-gap-2 has-mt-3" onSubmit={save}>
@@ -99,7 +100,7 @@ export function SheetPanel() {
   const [making, setMaking] = useState(false);
   async function copy() {
     const ok = await copyText(sheetText(state.data));
-    act({ type: "notify", text: ok ? TOASTS.copied : TOASTS.copyFailed });
+    act({ type: "notify", text: ok ? GAFFER[state.data.voice].copied : GAFFER[state.data.voice].copyFailed });
   }
   async function share() {
     setMaking(true);
@@ -108,9 +109,9 @@ export function SheetPanel() {
       const blob = await lineupPicture(data);
       const name = teamSlug(data.team, CLUB.fileFallback) + PICTURE_CONFIG.fileSuffix;
       const result = await sharePicture(blob, name, data.team || SHEET.fallbackTitle);
-      if (result === "downloaded") act({ type: "notify", text: TOASTS.pictureSaved });
+      if (result === "downloaded") act({ type: "notify", text: GAFFER[state.data.voice].pictureSaved });
     } catch {
-      act({ type: "notify", text: TOASTS.pictureFailed });
+      act({ type: "notify", text: GAFFER[state.data.voice].pictureFailed });
     } finally {
       setMaking(false);
     }
