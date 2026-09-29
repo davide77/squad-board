@@ -1,57 +1,56 @@
 "use client";
 
-import { useId } from "react";
-import { HERO, VOICES } from "@/constants/content/landing";
-import { sayLine } from "@/lib/landing/demo";
-import { DemoBoard } from "./DemoBoard";
+import Link from "next/link";
+import { HERO } from "@/constants/content/landing";
+import { HOME_HERO, HOME_QUESTION } from "@/constants/content/onboarding";
+import { AGE_GROUPS, FORMATS } from "@/constants/football";
+import { ROUTES } from "@/constants/routes";
+import { AgeChooser } from "./AgeChooser";
+import { GafferClip } from "./GafferClip";
 import { useLanding } from "./LandingProvider";
 import { VoiceCta } from "./VoiceText";
 
+// Before anyone answers, the Gaffer is shown with the youngest side: the softest first impression.
+const FIRST_CLIP_AGE = "U7";
+
+/**
+ * The page sells first, then asks. The question is optional and changes the page in
+ * place: the Gaffer's clip, the headline, the tone of every section and the start button.
+ */
 export function Hero() {
-  const { voice, setVoice, copy, demo } = useLanding();
-  const line = sayLine(voice, demo.ev);
-  const voiceLabelId = useId();
+  const { age, tone, copy } = useLanding();
+  const group = AGE_GROUPS.find((a) => a.key === age);
+  const key = tone ?? "none";
 
   return (
     <section id="top" className="container landing-split landing-split--hero is-grid is-align-center has-gap-9 has-pt-9 has-pb-11">
       <div className="is-flex is-flex-column has-gap-7 is-min-w-0">
         <div className="is-flex is-flex-column has-gap-3">
           <h1 className="has-font-body has-font-medium text-md leading-snug is-dim">{HERO.heading}</h1>
-          <p className="has-font-headline has-font-bold text-base tracking-caps uppercase is-kit">{HERO.kicker}</p>
-          <p aria-live="polite" className="landing-display landing-display--hero landing-hero__line">
-            {line}
+          <p aria-live="polite" className="landing-display landing-display--hero">
+            {HOME_HERO.headline[key]}
           </p>
           <p className="landing-pretty text-lg is-dim measure-52ch">{copy.sub}</p>
         </div>
 
-        <div className="is-flex is-flex-column has-gap-2">
-          <p id={voiceLabelId} className="text-base has-font-semibold">
-            {HERO.voiceLabel}
-          </p>
-          <div role="group" aria-labelledby={voiceLabelId} className="voice-picker is-grid has-gap-2">
-            {VOICES.map((v) => (
-              <button
-                key={v.key}
-                type="button"
-                aria-pressed={v.key === voice}
-                className="voice-option is-flex is-flex-column is-justify-center has-gap-1 has-py-2 has-px-3 has-radius-panel text-left"
-                onClick={() => setVoice(v.key)}
-              >
-                <span className="has-font-headline has-font-bold text-xl leading-tight uppercase">{v.name}</span>
-                <span className="voice-option__desc text-xs leading-snug">{v.desc}</span>
-              </button>
-            ))}
-          </div>
-          <p className="text-sm is-dimmer measure-52ch">{HERO.voiceNote}</p>
-        </div>
+        <AgeChooser />
 
         <div className="is-flex is-flex-wrap is-align-center has-gap-4">
-          <VoiceCta />
+          {group ? (
+            <Link
+              href={ROUTES.board}
+              className="button button--primary is-inline-flex is-align-center has-font-bold has-radius-field has-py-4 has-px-6 text-lg"
+            >
+              {HOME_QUESTION.start(FORMATS[group.format].label)}
+            </Link>
+          ) : (
+            <VoiceCta />
+          )}
           <span className="text-base is-dimmer">{copy.note}</span>
         </div>
       </div>
 
-      <DemoBoard line={line} />
+      <GafferClip age={age ?? FIRST_CLIP_AGE} caption={HOME_HERO.caption[key]} priority />
     </section>
   );
 }

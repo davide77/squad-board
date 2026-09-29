@@ -82,3 +82,9 @@ export const LANDING_CONFIG = {
   /** How long the Copy button reads "Copied". Same length as the board's toast. */
   copiedMs: TOAST_MS,
 } as const;
+
+// The Gaffer's clip in the homepage hero: the full width on a phone, half the page
+// beside the headline from the md breakpoint (900px, see _breakpoints.scss).
+export const ONBOARDING_CONFIG = {
+  mediaSizes: "(max-width: 900px) 100vw, 50vw",
+} as const;

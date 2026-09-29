@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
+import { DemoSection, HowItWorksSection } from "@/components/landing/GafferSections";
 import { Hero } from "@/components/landing/Hero";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { LandingProvider } from "@/components/landing/LandingProvider";
 import { EndSection, LandingFooter, PrivateSection } from "@/components/landing/Sections";
 import { SheetSection } from "@/components/landing/SheetSection";
-import { WeekSection } from "@/components/landing/WeekSection";
 import { LANDING_META } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
 import { JSON_LD } from "@/constants/seo";
@@ -25,7 +25,8 @@ export default function Home() {
       <LandingHeader />
       <main id="main">
         <Hero />
-        <WeekSection />
+        <HowItWorksSection />
+        <DemoSection />
         <SheetSection />
         <PrivateSection />
         <EndSection />

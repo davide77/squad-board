@@ -1,0 +1,213 @@
+@use '../abstracts' as *;
+
+// The homepage's Gaffer: the age question, the clip and the how-it-works cards.
+// Layout, type and colour sit in the JSX. This file holds only what a class cannot:
+// the age grid, the clip frame and its caption shade, the swipe track, the pitch
+// markers placed by --x and --y, and the entrance motion, off under reduced motion.
+
+.age-chooser {
+  grid-template-columns: repeat(auto-fill, minmax(spacer(10) + spacer(9), 1fr));
+  max-width: 480px;
+
+  &__option {
+    min-height: $hit-size + spacer(3);
+    padding: spacer(2) spacer(3);
+    color: color(chalk);
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    cursor: pointer;
+    transition: border-color $transition-fast, background-color $transition-fast;
+
+    &:hover {
+      border-color: color(kit);
+    }
+
+    &[aria-pressed='true'] {
+      color: color(kit-ink);
+      background-color: color(kit);
+      border-color: color(kit);
+    }
+  }
+
+  &__format {
+    color: color(dim);
+  }
+
+  // A thin ring in the kit colour picks the Gaffer out of the dark page.
+  &__face {
+    border: 2px solid color(kit);
+  }
+
+  &__option[aria-pressed='true'] &__format {
+    color: color(kit-ink);
+  }
+}
+
+// The Gaffer's clip. A band of shade under the caption keeps it readable on any frame.
+.gaffer-clip {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 70dvh;
+  overflow: hidden;
+  background-color: color(board-2);
+  border: 1px solid color(board-3);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 55% 0 0;
+    background: linear-gradient(180deg, tint(black, 0%), tint(black, 78%));
+    pointer-events: none;
+  }
+
+  &__media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1;
+    padding: spacer(4);
+    color: color(chalk);
+  }
+}
+
+// Cards that snap one at a time on a phone and sit three abreast on a wide screen.
+.how-it-works {
+  &__track {
+    margin: 0;
+    padding: 0 0 spacer(1);
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__card {
+    flex: 0 0 min(86%, 360px);
+    scroll-snap-align: start;
+    background-color: color(board-2);
+    border: 1px solid color(board-3);
+  }
+
+  &__visual {
+    min-height: spacer(11) * 3;
+  }
+
+  &__heading {
+    font-family: $font-family-headline;
+    font-weight: font-weight(bold);
+    color: color(chalk);
+    text-wrap: balance;
+  }
+
+  &__name {
+    color: color(chalk);
+    background-color: color(board);
+    border: 1px solid $edge;
+  }
+
+  &__pitch {
+    width: min(100%, spacer(11) * 3 * 0.75);
+  }
+
+  &__marker {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: spacer(5);
+    height: spacer(5);
+    background-color: color(kit);
+    border: 1px solid color(kit-edge);
+    transform: translate(-50%, -50%);
+
+    &--keeper {
+      background-color: color(chalk);
+      border-color: color(keeper-edge);
+    }
+  }
+
+  // What the Gaffer says, as a speech bubble from the left.
+  &__bubble {
+    max-width: 26ch;
+    padding: spacer(3) spacer(4);
+    color: color(kit-ink);
+    background-color: color(kit);
+    border-radius: $radius-panel $radius-panel $radius-panel $radius-sm;
+  }
+
+  &__arrow {
+    width: $hit-size;
+    height: $hit-size;
+    color: color(chalk);
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+  }
+
+  &__dot {
+    width: spacer(2);
+    height: spacer(2);
+    background-color: color(board-3);
+    transition: width $transition-fast, background-color $transition-fast;
+
+    &--on {
+      width: spacer(5);
+      background-color: color(kit);
+    }
+  }
+
+  // On a wide screen all three fit, so the buttons and dots have nothing to do.
+  @include min(bp(md)) {
+    &__card {
+      flex: 1 1 0;
+    }
+
+    &__controls {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &__name {
+      animation: home-gaffer-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-delay: calc(var(--i) * 45ms + 120ms);
+    }
+
+    &__marker {
+      animation: home-gaffer-marker 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-delay: calc(var(--i) * 50ms + 150ms);
+    }
+  }
+}
+
+@keyframes home-gaffer-in {
+  from {
+    opacity: 0;
+    transform: translateY(spacer(2));
+  }
+}
+
+@keyframes home-gaffer-marker {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
