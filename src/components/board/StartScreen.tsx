@@ -7,7 +7,7 @@ import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
 import { GAFFER, PHASE_GAFFER } from "@/constants/content/gaffer";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import { buildBoard, parseSquad, startingCount } from "@/lib/board/start";
-import { readVoicePref } from "@/lib/voice";
+import { readAgePref, readVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ExampleSheet } from "./ExampleSheet";
@@ -23,12 +23,14 @@ export function StartScreen() {
   const countId = useId();
   const [squadText, setSquadText] = useState("");
   const ageId = useId();
-  const [age, setAge] = useState<AgeKey | "">("");
+  // Opens on the age group picked on the homepage, when there was one.
+  const [age, setAge] = useState<AgeKey | "">(() => readAgePref() ?? "");
   const [showExample, setShowExample] = useState(false);
   const group = AGE_GROUPS.find((a) => a.key === age) ?? null;
-  // The gaffer picked on the landing page comes along. Without one, the age group decides.
+  // The age group sets the Gaffer's tone: very soft up to under 11s, rough from under 12s.
+  // Before an age is picked, the last gaffer this device used, or the default.
   const [picked] = useState(readVoicePref);
-  const voice = picked ?? (group ? PHASE_GAFFER[group.phase] : DEFAULT_VOICE);
+  const voice = group ? PHASE_GAFFER[group.phase] : (picked ?? DEFAULT_VOICE);
   const say = GAFFER[voice];
   const size = group ? FORMATS[group.format].size : 0;
 
