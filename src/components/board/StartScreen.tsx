@@ -5,10 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { VISOR_MARK } from "@/constants/brand";
 import { BOARD_CONFIG } from "@/constants/config";
-import { START, TOASTS } from "@/constants/content/board";
+import { START } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { ROUTES } from "@/constants/routes";
 import { SITE } from "@/constants/site";
 import { buildBoard, exampleBoard, parseSquad, startingCount } from "@/lib/board/start";
+import { readVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
@@ -22,6 +24,9 @@ export function StartScreen() {
   const squadId = useId();
   const countId = useId();
   const [squadText, setSquadText] = useState("");
+  // The gaffer picked on the landing page comes along to the new board.
+  const [voice] = useState(readVoicePref);
+  const say = GAFFER[voice];
 
   const squad = parseSquad(squadText);
   const capped = squadText.split(/\r?\n/).filter((l) => l.trim()).length > BOARD_CONFIG.pasteMaxPlayers;
@@ -33,12 +38,12 @@ export function StartScreen() {
     e.preventDefault();
     if (!squad.length) return;
     const team = String(new FormData(e.currentTarget).get("team") ?? "");
-    act({ type: "load", data: buildBoard(team, squad, newId), notice: TOASTS.teamPicked });
+    act({ type: "load", data: { ...buildBoard(team, squad, newId), voice }, notice: say.teamPicked });
     window.scrollTo({ top: 0 });
   }
 
   function tryExample() {
-    act({ type: "load", data: exampleBoard(newId), notice: TOASTS.exampleLoaded });
+    act({ type: "load", data: { ...exampleBoard(newId), voice }, notice: say.exampleLoaded });
     window.scrollTo({ top: 0 });
   }
 
@@ -56,6 +61,7 @@ export function StartScreen() {
       <h1 id={`${teamId}-heading`} className="text-4xl leading-tight tracking-heading has-mb-2">
         {START.heading}
       </h1>
+      <p className="text-lg has-font-semibold leading-snug has-mb-2">{say.welcome}</p>
       <p className="text-md leading-relaxed is-dim has-mb-5">{START.intro}</p>
 
       <form onSubmit={pickTeam}>

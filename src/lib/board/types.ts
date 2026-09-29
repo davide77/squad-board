@@ -1,5 +1,6 @@
 import type { NameStyle } from "@/constants/content/board";
-import type { PositionKey, Role } from "@/constants/football";
+import type { VoiceKey } from "@/constants/content/landing";
+import type { PositionKey, Role, Side } from "@/constants/football";
 
 export interface Player {
   readonly id: string;
@@ -8,6 +9,8 @@ export interface Player {
   /** Shirt label used when shirts are labelled by initials. */
   init: string;
   pos: PositionKey[];
+  /** The flank they play, from "RB" or "LW" in the pasted list. Null plays either side. */
+  side: Side | null;
   /** Not called up this week. Also set while injured or unavailable. */
   out: boolean;
   inj: boolean;
@@ -81,6 +84,8 @@ export interface BoardData {
   createdAt: number;
   /** When a squad file was last exported or imported. 0 when never. */
   backedUpAt: number;
+  /** Which gaffer talks on this board. */
+  voice: VoiceKey;
 }
 
 export type Zone = "bench" | "pool";

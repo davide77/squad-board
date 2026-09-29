@@ -1,8 +1,16 @@
 import { BOARD_CONFIG } from "@/constants/config";
 import { EXAMPLE } from "@/constants/content/board";
 import { DEMO_BENCH, DEMO_SHAPES, DEMO_XI } from "@/constants/content/landing";
-import { DEFAULT_FORMATION, POSITION_CODES, POSITION_WORDS, XI_SIZE, type PositionKey } from "@/constants/football";
-import { canonical, captureLineup, fitLevel, slotOf, slots } from "./queries";
+import {
+  DEFAULT_FORMATION,
+  POSITION_CODES,
+  POSITION_SIDES,
+  POSITION_WORDS,
+  XI_SIZE,
+  type PositionKey,
+  type Side,
+} from "@/constants/football";
+import { canonical, captureLineup, fitLevel, sideRank, slotOf, slots } from "./queries";
 import { emptyData } from "./storage";
 import type { BoardData } from "./types";
 
@@ -11,6 +19,8 @@ export interface SquadEntry {
   readonly num: string;
   readonly name: string;
   readonly pos: readonly PositionKey[];
+  /** From a sided code such as "RB". Null when none was typed, or both flanks were. */
+  readonly side?: Side | null;
 }
 
 // Pasted lists come from WhatsApp, notes apps and spreadsheets, so they carry
@@ -23,8 +33,10 @@ const LEAD_NUMBER = /^#?(\d{1,2})(?:[.):\-\s]+|$)/;
 const TRAIL_NUMBER = /[\s(#,\-]+#?(\d{1,2})\)?$/;
 const WORD_SPLIT = /[\s,/|()]+/;
 
+const bareToken = (token: string) => token.replace(/[.:;]+$/, "");
+
 function positionOf(token: string): PositionKey | null {
-  const bare = token.replace(/[.:;]+$/, "");
+  const bare = bareToken(token);
   return POSITION_CODES[bare] ?? POSITION_WORDS[bare.toLowerCase()] ?? null;
 }
 
@@ -47,11 +59,14 @@ function readLine(raw: string): SquadEntry | null {
   }
 
   const pos: PositionKey[] = [];
+  const sides = new Set<Side>();
   const words: string[] = [];
   for (const token of line.split(WORD_SPLIT).filter(Boolean)) {
     const p = positionOf(token);
     if (p) {
       if (!pos.includes(p)) pos.push(p);
+      const side = POSITION_SIDES[bareToken(token)];
+      if (side) sides.add(side);
     } else {
       words.push(token);
     }
@@ -59,7 +74,9 @@ function readLine(raw: string): SquadEntry | null {
   // A line that was only position words is a name after all.
   const name = (words.length ? words.join(" ") : line).replace(/[\s.,;:\-]+$/, "").trim();
   if (!name || /^\d+$/.test(name)) return null;
-  return { num, name, pos: words.length ? pos : [] };
+  // "LB RB" means either flank, so only a single side is kept.
+  const side = sides.size === 1 ? [...sides][0] : null;
+  return words.length ? { num, name, pos, side } : { num, name, pos: [], side: null };
 }
 
 /** Reads a pasted or typed squad, one player per line, or a single comma separated line. */
@@ -80,7 +97,8 @@ export function startingCount(squad: number): number {
 /**
  * A ready board for a new squad: everyone called up, the first eleven listed on the
  * pitch and the rest on the bench. Among the eleven, players go where their positions
- * suit first, then fill the gaps in list order, so a plain list starts with the keeper.
+ * suit first, on their own flank before the other one, then fill the gaps in list order,
+ * so a plain list starts with the keeper.
  */
 export function buildBoard(
   team: string,
@@ -97,6 +115,7 @@ export function buildBoard(
     name: e.name,
     init: "",
     pos: [...e.pos],
+    side: e.side ?? null,
     out: false,
     inj: false,
     una: false,
@@ -105,11 +124,15 @@ export function buildBoard(
   const starters = d.players.slice(0, XI_SIZE);
   const unplaced = () => starters.filter((p) => !slotOf(d, p.id));
   const order = canonical(slots(d));
+  // For each fit level: first players on the role's own flank, then those who play
+  // either side, and only then someone from the other flank. An RB lands at RB.
   for (const level of [2, 1] as const) {
-    for (const s of order) {
-      if (d.xi[s.id]) continue;
-      const p = unplaced().find((c) => fitLevel(c, s.role) === level);
-      if (p) d.xi[s.id] = p.id;
+    for (const worstSide of [0, 1, 2] as const) {
+      for (const s of order) {
+        if (d.xi[s.id]) continue;
+        const p = unplaced().find((c) => fitLevel(c, s.role) === level && sideRank(c, s.role) <= worstSide);
+        if (p) d.xi[s.id] = p.id;
+      }
     }
   }
   for (const s of order) {

@@ -3,6 +3,9 @@
 // Kept from before the rename to Gafferboard: changing it would lose every saved board.
 export const STORAGE_KEY = "squad-board:v1";
 
+// The gaffer picked on the landing page, so a new board starts with the same one.
+export const VOICE_STORAGE_KEY = "gafferboard:voice";
+
 export const BOARD_CONFIG = {
   /** Wait after the last change before writing to localStorage. */
   saveDebounceMs: 350,
@@ -60,6 +63,10 @@ export const PICTURE_CONFIG = {
 // The toast fades in, holds and fades out over this time. The SCSS animation
 // in components/_toast.scss uses the same duration: keep them in sync.
 export const TOAST_MS = 1800;
+
+// A longer line stays up long enough to read: this much per character, up to the cap.
+export const TOAST_MS_PER_CHAR = 55;
+export const TOAST_MAX_MS = 5000;
 
 // The demo board on the landing page. Minutes jump forward with each change so
 // the substitutions on the example team sheet read like a real second half.

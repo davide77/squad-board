@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { CONFIRM, NAME_STYLES, SHAPE } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { CUSTOM_FORMATION, FORMATION_NAMES } from "@/constants/football";
 import { matchUnderway, unsaved } from "@/lib/board/queries";
 import { Button } from "../Button";
@@ -18,7 +19,7 @@ export function ShapePanel() {
   const styleLabel = (NAME_STYLES.find((o) => o.key === data.nameStyle) ?? NAME_STYLES[0]).label;
 
   function backToStrongest() {
-    if (data.preset && matchUnderway(data) && !window.confirm(CONFIRM.matchUnderway)) return;
+    if (data.preset && matchUnderway(data) && !window.confirm(GAFFER[data.voice].matchUnderway)) return;
     act({ type: "backToStrongest" });
   }
 

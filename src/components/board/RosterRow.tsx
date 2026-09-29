@@ -4,7 +4,7 @@ import type { KeyboardEvent } from "react";
 import { GLYPHS, NO_NUMBER, SQUAD } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { POSITIONS } from "@/constants/football";
-import { blocked, reasonOf, where } from "@/lib/board/queries";
+import { blocked, positionCodes, reasonOf, where } from "@/lib/board/queries";
 import type { Player } from "@/lib/board/types";
 import { Button } from "../Button";
 import { cx } from "../cx";
@@ -75,7 +75,7 @@ export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
         <span className="is-flex-1 is-min-w-0">
           <b className="roster-row__name is-block has-font-medium is-truncate">{p.name}</b>
           <span className="has-font-headline text-xs tracking-tag is-dimmer">
-            {p.pos.length ? p.pos.join(" · ") : SQUAD.noPosition}
+            {p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition}
           </span>
         </span>
         <span
@@ -121,6 +121,20 @@ function PlayerEditor({ player: p }: PlayerEditorProps) {
             onClick={() => act({ type: "togglePos", pos: o.key })}
           >
             {o.key}
+          </button>
+        ))}
+      </div>
+      <p className="text-sm is-dim has-mb-2">{SQUAD.sideLabel}</p>
+      <div className="is-flex is-flex-wrap has-gap-2 has-mb-3">
+        {SQUAD.sides.map((o) => (
+          <button
+            key={o.label}
+            type="button"
+            className="position-toggle text-base has-radius-pill has-px-3 has-py-1"
+            aria-pressed={p.side === o.key}
+            onClick={() => act({ type: "setSide", side: o.key })}
+          >
+            {o.label}
           </button>
         ))}
       </div>

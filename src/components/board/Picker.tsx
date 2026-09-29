@@ -3,10 +3,11 @@
 import { useCallback, useId, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { GLYPHS, NO_NUMBER, PICKER } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { MOTION } from "@/constants/motion";
 import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
 import { firstName } from "@/lib/board/names";
-import { blocked, byId, freeAt, onBench, slotById, slotOf } from "@/lib/board/queries";
+import { blocked, byId, freeAt, onBench, positionCodes, slotById, slotOf } from "@/lib/board/queries";
 import type { Player } from "@/lib/board/types";
 import { Button } from "../Button";
 import { cx } from "../cx";
@@ -31,7 +32,7 @@ function Option({ player: p, disabled = false }: OptionProps) {
         {p.num || NO_NUMBER}
       </span>
       <span className="is-flex-1 is-min-w-0 is-truncate">{p.name}</span>
-      <span className="has-font-headline text-xs tracking-tag is-dimmer">{p.pos.join(" ")}</span>
+      <span className="has-font-headline text-xs tracking-tag is-dimmer">{positionCodes(p).join(" ")}</span>
       {badge && (
         <span className="picker-option__badge has-font-headline text-xs tracking-heading is-kit has-radius-pill has-px-2">
           {badge}
@@ -102,7 +103,7 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
         {greyed.map((g) => (
           <Group key={g.title} title={g.title} players={g.players} disabled />
         ))}
-        {nobody && <p className="text-base is-dimmer has-py-2">{PICKER.nobody}</p>}
+        {nobody && <p className="text-base is-dimmer has-py-2">{GAFFER[data.voice].nobody}</p>}
       </div>
       <div className="picker__actions is-flex is-flex-wrap has-gap-2 has-pt-3 has-mt-1">
         {current ? (

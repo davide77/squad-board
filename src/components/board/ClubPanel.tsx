@@ -2,9 +2,12 @@
 
 import type { CSSProperties } from "react";
 import { KIT_COLOURS } from "@/constants/brand";
-import { CLUB, CONFIRM, TOASTS } from "@/constants/content/board";
+import { CLUB, CONFIRM } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
+import { VOICES, type VoiceKey } from "@/constants/content/landing";
 import { exportSquadFile } from "@/lib/board/files";
 import { clearStored, emptyData } from "@/lib/board/storage";
+import { writeVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
@@ -17,17 +20,30 @@ export function ClubPanel() {
   function exportFile() {
     exportSquadFile(data, Date.now());
     act({ type: "backedUp" });
-    act({ type: "notify", text: TOASTS.exported });
+    act({ type: "notify", text: GAFFER[data.voice].exported });
   }
 
   function wipe() {
     if (!window.confirm(CONFIRM.wipe)) return;
     clearStored();
-    act({ type: "load", data: emptyData() });
+    // Everything goes but the gaffer: that is the coach's choice, not the squad's.
+    act({ type: "load", data: { ...emptyData(), voice: data.voice } });
+  }
+
+  function pickVoice(voice: VoiceKey) {
+    writeVoicePref(voice);
+    act({ type: "setVoice", voice });
   }
 
   return (
     <Panel heading={CLUB.heading} className="has-mt-6">
+      <ControlRow label={CLUB.gaffer}>
+        {VOICES.map((v) => (
+          <Button key={v.key} size="tiny" on={v.key === data.voice} aria-pressed={v.key === data.voice} onClick={() => pickVoice(v.key)}>
+            {v.name}
+          </Button>
+        ))}
+      </ControlRow>
       <ControlRow label={CLUB.colourLabel}>
         <div className="is-flex is-flex-wrap has-gap-2">
           {KIT_COLOURS.map((c, i) => (

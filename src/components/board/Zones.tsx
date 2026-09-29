@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { CONFIRM, GLYPHS, NO_NUMBER, ZONES } from "@/constants/content/board";
+import { GAFFER } from "@/constants/content/gaffer";
 import { byId, where } from "@/lib/board/queries";
 import type { Player, Zone } from "@/lib/board/types";
 import { cx } from "../cx";
@@ -39,7 +40,7 @@ export function BenchPanel() {
         {bench.length ? (
           bench.map((p) => <PlayerChip key={p.id} player={p} onBench />)
         ) : (
-          <span className="text-base is-dimmer has-py-2">{ZONES.benchEmpty}</span>
+          <span className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].benchEmpty}</span>
         )}
       </DropZone>
     </Panel>
@@ -86,7 +87,7 @@ export function PoolPanel() {
         {pool.length ? (
           pool.map((p) => <PlayerChip key={p.id} player={p} />)
         ) : (
-          <span className="text-base is-dimmer has-py-2">{ZONES.poolEmpty}</span>
+          <span className="text-base is-dimmer has-py-2">{GAFFER[data.voice].poolEmpty}</span>
         )}
         {data.removed.length > 0 && (
           <>

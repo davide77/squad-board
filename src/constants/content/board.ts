@@ -56,9 +56,7 @@ export const SHAPE = {
 
 export const ZONES = {
   bench: "Bench",
-  benchEmpty: "Drop players here to name them as substitutes.",
   pool: "Rest of squad",
-  poolEmpty: "Everyone called up is on the pitch or on the bench.",
   poolCount: (n: number, removed: number) => (removed ? `${n} + ${removed} removed` : String(n)),
   removed: "Removed from the squad",
   restore: (name: string) => `Bring ${name} back`,
@@ -99,6 +97,12 @@ export const SQUAD = {
   edit: "Edit",
   editLabel: (name: string) => `Edit ${name}`,
   positionsLabel: "Positions this player can cover",
+  sideLabel: "Which side",
+  sides: [
+    { key: "L", label: "Left" },
+    { key: null, label: "Either" },
+    { key: "R", label: "Right" },
+  ],
   shirtLabelHint: "Shirt label, used when shirts are labelled by initials",
   shirtLabelPlaceholder: "Shirt label",
   markInjured: "Mark injured",
@@ -166,13 +170,11 @@ export const EXAMPLE = {
 
 export const SUBS = {
   heading: "Substitutions",
-  empty: "Start the clock, then bring a bench player on. Every change is logged with the minute.",
   for: "for",
 } as const;
 
 export const SAVED = {
   heading: "Saved line-ups",
-  empty: "Save a line-up to come back to it. Useful for a plan A and a plan B.",
   nameLabel: "Name this line-up",
   namePlaceholder: "e.g. Plan A, press high",
   save: "Save XI",
@@ -198,6 +200,7 @@ export const SHEET = {
 
 export const CLUB = {
   heading: "Your club",
+  gaffer: "Gaffer",
   colourLabel: "Colour",
   backupLabel: "Backup",
   export: "Export squad file",
@@ -222,7 +225,6 @@ export const PICKER = {
   notCalledUp: "Not called up",
   injured: "Injured",
   unavailable: "Unavailable",
-  nobody: "Nobody else is available.",
   toBench: "Move to the bench",
   toPool: "Take out of the squad list",
   close: "Close",
@@ -236,39 +238,6 @@ export const CONFIRM = {
   deleteForGood: (name: string) => `Delete ${name} for good? This cannot be undone.`,
   replaceSquad: "Replace the squad on this board with the one in the file?",
   wipe: "Clear this board and start again? Everything on it is deleted. Export a file first if you want a copy.",
-  matchUnderway: "A match is under way. Go back to your strongest XI anyway?",
 } as const;
 
-export const TOASTS = {
-  injured: (n: string) => `${n} is injured`,
-  unavailable: (n: string) => `${n} is unavailable`,
-  notCalledUp: (n: string) => `${n} is not called up`,
-  calledUp: (n: string) => `${n} is called up`,
-  markedInjured: (n: string) => `${n} marked injured`,
-  fitAgain: (n: string) => `${n} is fit, tick the box to call them up`,
-  markedUnavailable: (n: string) => `${n} marked unavailable`,
-  availableAgain: (n: string) => `${n} is available, tick the box to call them up`,
-  removed: (n: string) => `${n} removed, find them under Rest of squad`,
-  restored: (n: string) => `${n} is back in the squad, not called up`,
-  newMatchday: "New matchday, tick who is called up",
-  sorted: "Sorted by shirt number",
-  everyoneCalledUp: "Everyone available is called up",
-  callUpsCleared: "Call-ups cleared, tick who is in",
-  lineupSaved: "Line-up saved",
-  strongestSaved: "Saved as your strongest XI",
-  noStrongest: "No strongest XI saved yet",
-  strongestWithChanges: (n: number) => `Strongest XI, with ${n} change${n > 1 ? "s" : ""}`,
-  backToStrongest: "Back to your strongest XI",
-  loaded: (name: string) => `Loaded ${name}`,
-  shapeReset: "Shape reset to 4-3-3 spacing",
-  copied: "Team sheet copied",
-  copyFailed: "Copy not available here",
-  exported: "Squad file downloaded",
-  unreadable: "That file could not be read",
-  notASquad: "That does not look like a squad file",
-  imported: "Squad file loaded",
-  teamPicked: "Team picked. Tap any position to change it.",
-  pictureSaved: "Line-up picture downloaded",
-  pictureFailed: "The picture could not be made here",
-  exampleLoaded: "Example team loaded. Tap any position to try it.",
-} as const;
+// Toasts, empty states and the match-under-way check are said by the Gaffer: see gaffer.ts.
