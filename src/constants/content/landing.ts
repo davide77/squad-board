@@ -89,30 +89,17 @@ export interface VoiceCopy {
   readonly endH: string;
 }
 
-/** Headings and calls to action that change with the voice. */
-export const COPY: Readonly<Record<VoiceKey, VoiceCopy>> = {
-  hairdryer: {
-    sub: "Squad. Call-ups. Shape. Bench. Subs. One screen, on your phone.",
-    cta: "Get picking",
-    note: "No account. Nothing to install.",
-    weekH: "Four taps. Every Saturday.",
-    steps: ["Squad in", "Who's here?", "Pick a shape", "Make changes"],
-    filmH: "Chalk. Magnets. Chaos.",
-    sheetH: "Send the team sheet",
-    privH: "Your team. Nobody else's.",
-    endH: "Matchday's coming. Squad in first.",
-  },
-  arm: {
-    sub: "Your squad, who's made it, the shape, the bench and every sub, all on one screen. You've got this.",
-    cta: "Let's get started",
-    note: "No account needed. Take your time.",
-    weekH: "Matchday, one step at a time",
-    steps: ["Bring the squad in", "See who's made it", "Find your shape", "Give everyone a go"],
-    filmH: "We've all been there, Coach.",
-    sheetH: "Let the parents know",
-    privH: "Your team, safe with you",
-    endH: "Matchday's coming. Let's get your squad in.",
-  },
+/** Headings and calls to action on the home page. The website always speaks Hairdryer (brand.md). */
+export const LANDING_COPY: VoiceCopy = {
+  sub: "Squad. Call-ups. Shape. Bench. Subs. One screen, on your phone.",
+  cta: "Get picking",
+  note: "No account. Nothing to install.",
+  weekH: "Four taps. Every Saturday.",
+  steps: ["Squad in", "Who's here?", "Pick a shape", "Make changes"],
+  filmH: "Chalk. Magnets. Chaos.",
+  sheetH: "Send the team sheet",
+  privH: "Your team. Nobody else's.",
+  endH: "Matchday's coming. Squad in first.",
 };
 
 export const LANDING_META = {
@@ -136,7 +123,7 @@ export const NAV = {
   /** The coach's own team, pinned beside the logo once they have one. It stands in for the button above. */
   team: {
     label: "Your team",
-    fallback: "Your board",
+    fallback: "your team",
     aria: (team: string) => `Back to ${team} on the board`,
   },
 } as const;
@@ -181,9 +168,8 @@ export interface StoryChapter {
   readonly kicker: string;
   readonly title: string;
   readonly body: string;
-  /** The chapter's clip, in public/story. Missing until rendered: show the storyboard frame with `shot`. */
-  readonly media?: { readonly webm: string; readonly mp4: string; readonly poster: string };
-  readonly shot: string;
+  /** The chapter's clip, in public/story. */
+  readonly media: { readonly webm: string; readonly mp4: string; readonly poster: string };
 }
 
 /** The hero carousel: one matchday in six chapters, each with its own vertical clip. */
@@ -195,21 +181,19 @@ export const STORY: readonly StoryChapter[] = [
     title: "Right. You're the coach. I'm the Gaffer.",
     body: "A matchday board for grassroots football. Squad, shape, bench, subs, team sheet. One screen, on your phone. I tell you what's next.",
     media: { webm: "/film/gafferboard-teaser.webm", mp4: "/film/gafferboard-teaser.mp4", poster: "/film/gafferboard-film-poster.jpg" },
-    shot: "Changing room, ten minutes to kick-off. The chalk snaps, the magnets slide off the board. The Gaffer looks up.",
   },
   {
     key: "age",
     tab: "Age group",
-    kicker: "Step one",
+    kicker: "Age group",
     title: "How old are they?",
-    body: "Pick the age group. I set the format and the shapes. Under 11s, I go easy. From under 12s, you get this.",
+    body: "Pick the age group. I set the format and the shapes. Under 11s, everyone gets a go. From under 12s, it's about results.",
     media: { webm: "/story/gafferboard-story-age.webm", mp4: "/story/gafferboard-story-age.mp4", poster: "/story/gafferboard-story-age.jpg" },
-    shot: "The Gaffer crouched at a little one's level on a 5-a-side pitch, cones everywhere. Then a cut to an under 15s side, arms folded.",
   },
   {
     key: "squad",
     tab: "Squad",
-    kicker: "Step two",
+    kicker: "Squad",
     title: "Squad in. Then we talk.",
     body: "Paste the names from the parents' group. Numbers and positions if you've got them. Type them once, they're there every week.",
     media: {
@@ -217,12 +201,11 @@ export const STORY: readonly StoryChapter[] = [
       mp4: "/story/gafferboard-story-squad.mp4",
       poster: "/story/gafferboard-story-squad.jpg",
     },
-    shot: "A thumb copies a list of names from a group chat. Cut to the board: the names drop onto the squad list one by one.",
   },
   {
     key: "shape",
     tab: "Formation",
-    kicker: "Step three",
+    kicker: "Formation",
     title: "Pick your strongest side.",
     body: "Tap a shape. Drag players where you want them. Save it. I'll question it. You'll pick it anyway.",
     media: {
@@ -230,12 +213,11 @@ export const STORY: readonly StoryChapter[] = [
       mp4: "/story/gafferboard-story-shape.mp4",
       poster: "/story/gafferboard-story-shape.jpg",
     },
-    shot: "Top-down on the phone. Markers glide from 4-4-2 into 4-3-3. A finger drags the number 9 a little wider.",
   },
   {
     key: "match",
     tab: "Matchday",
-    kicker: "Step four",
+    kicker: "Matchday",
     title: "Clock on. Make your changes.",
     body: "Tap a player, bring the bench on. Every sub logged to the minute. Injured players stay flagged for next week.",
     media: {
@@ -243,12 +225,11 @@ export const STORY: readonly StoryChapter[] = [
       mp4: "/story/gafferboard-story-match.mp4",
       poster: "/story/gafferboard-story-match.jpg",
     },
-    shot: "Touchline, drizzle, 62 minutes. The coach taps a player, the sub comes on. The minute stamps onto the screen.",
   },
   {
     key: "share",
     tab: "Parents",
-    kicker: "Step five",
+    kicker: "Parents",
     title: "Send it to the parents.",
     body: "The team sheet goes to the WhatsApp group or by email. Initials only if the group goes beyond the club. It goes out plain, in your name.",
     media: {
@@ -256,11 +237,12 @@ export const STORY: readonly StoryChapter[] = [
       mp4: "/story/gafferboard-story-share.mp4",
       poster: "/story/gafferboard-story-share.jpg",
     },
-    shot: "A phone buzzes on a kitchen table. The parents' group chat opens and the team sheet lands. A thumbs up comes back.",
   },
 ];
 
 export const STORY_UI = {
+  /** The page's one h1, fixed while the chapters turn. The positioning line, then what it is in the words coaches search with. */
+  heading: "Pick the team on the touchline. Line-ups and team sheets for grassroots football.",
   label: "How Gafferboard works",
   chapters: "Chapters",
   count: (n: number, total: number) => `${String(n).padStart(2, "0")} / ${String(total).padStart(2, "0")}`,
@@ -270,12 +252,9 @@ export const STORY_UI = {
   play: "Play",
   keysHint: "Use the arrow keys, or tap a chapter.",
   playFilm: "Play the film",
-  clipLabel: (n: string) => `Runway clip ${n}`,
-  toCome: "To come",
-  shotLabel: "Shot",
   ageLabel: "Age group",
   ageLine: (label: string, phase: Phase) =>
-    phase === "development" ? `${label}. Everyone gets a go. I'll go easy on you.` : `${label}. Results count now. So do your decisions.`,
+    phase === "development" ? `${label}. Everyone gets a go. I'll keep an eye on minutes.` : `${label}. Results count now. So do your decisions.`,
 } as const;
 
 export const TRY_SECTION = {

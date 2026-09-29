@@ -110,6 +110,8 @@ export function HeroCarousel() {
         onFocus={onFocus}
         onBlur={onBlur}
       >
+        {/* The chapter titles turn, so the page's heading stays put for search and screen readers. */}
+        <h1 className="sr-only">{STORY_UI.heading}</h1>
         <div
           id={panelId}
           role="tabpanel"
@@ -144,9 +146,9 @@ export function HeroCarousel() {
                     <span className="is-kit">{chapter.kicker}</span>
                     <span className="is-dimmer is-tabular">{STORY_UI.count(index + 1, STORY.length)}</span>
                   </motion.p>
-                  <motion.h1 custom={dir} variants={LINE} className="landing-display landing-display--hero landing-hero__line">
+                  <motion.h2 custom={dir} variants={LINE} className="landing-display landing-display--hero landing-hero__line">
                     {chapter.title}
-                  </motion.h1>
+                  </motion.h2>
                   <motion.p custom={dir} variants={LINE} className="landing-pretty text-lg is-dim measure-48ch">
                     {chapter.body}
                   </motion.p>
@@ -173,7 +175,7 @@ export function HeroCarousel() {
           {/* On a phone the clip sits under the words, so it glides rather than jumps when they change length. */}
           <motion.div layout="position" transition={MOTION.story} className="landing-film bg-board-2 has-radius-sheet is-w-full">
             <AnimatePresence initial={false}>
-              <StoryMedia key={chapter.key} chapter={chapter} n={chapterNumber(index)} still={reduced} onFilm={setFilm} />
+              <StoryMedia key={chapter.key} chapter={chapter} still={reduced} onFilm={setFilm} />
             </AnimatePresence>
           </motion.div>
         </div>
@@ -272,16 +274,14 @@ function AgePicker({ onPick }: AgePickerProps) {
 
 interface StoryMediaProps {
   readonly chapter: StoryChapter;
-  /** The chapter number, as the storyboard frame labels its clip. */
-  readonly n: string;
   readonly still: boolean;
   readonly onFilm: (playing: boolean) => void;
 }
 
-/** The chapter's clip, or its storyboard frame until the clip is rendered. Keyed by chapter, so each loads fresh and cross-fades. */
-function StoryMedia({ chapter, n, still, onFilm }: StoryMediaProps) {
+/** The chapter's clip. Keyed by chapter, so each loads fresh and cross-fades. */
+function StoryMedia({ chapter, still, onFilm }: StoryMediaProps) {
   const { videoRef, playRef, playing, play, stop } = useFilmPlayer(FILM_MEDIA.film, still, onFilm);
-  const media = chapter.media;
+  const { media } = chapter;
   // Only the first chapter has the whole film behind its loop.
   const hasFilm = chapter.key === "gaffer";
 
@@ -294,56 +294,37 @@ function StoryMedia({ chapter, n, still, onFilm }: StoryMediaProps) {
       exit={{ opacity: 0 }}
       transition={MOTION.storyMedia}
     >
-      {media ? (
-        <>
-          <video
-            ref={videoRef}
-            className="landing-film__video"
-            poster={media.poster}
-            width={FILM_MEDIA.width}
-            height={FILM_MEDIA.height}
-            aria-label={playing ? FILM.label : undefined}
-            aria-hidden={playing ? undefined : true}
-            tabIndex={playing ? undefined : -1}
-            controls={playing}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onEnded={stop}
-          >
-            <source src={media.webm} type="video/webm" />
-            <source src={media.mp4} type="video/mp4" />
-            {hasFilm && (
-              <track kind="captions" src={FILM_MEDIA.captions} srcLang={FILM.captionsLang} label={FILM.captionsLabel} default />
-            )}
-          </video>
-          {hasFilm && !playing && (
-            <Button
-              ref={playRef}
-              variant="primary"
-              className="landing-film__play has-py-3 has-px-5 has-font-bold text-md"
-              onClick={play}
-            >
-              {STORY_UI.playFilm}
-            </Button>
-          )}
-        </>
-      ) : (
-        <div className="landing-story__board is-flex is-flex-column is-justify-between has-p-5">
-          <div className="is-flex is-align-center is-justify-between has-gap-3">
-            <span className="is-kit has-font-headline has-font-bold text-sm uppercase tracking-caps">
-              {STORY_UI.clipLabel(n)}
-            </span>
-            <span className="landing-story__pill has-radius-pill has-py-1 has-px-3 text-xs uppercase tracking-caps is-chalk">
-              {STORY_UI.toCome}
-            </span>
-          </div>
-          <p className="is-flex is-flex-column has-gap-2">
-            <span className="has-font-headline has-font-bold text-sm uppercase tracking-caps is-chalk">{STORY_UI.shotLabel}</span>
-            <span className="text-md leading-relaxed is-chalk">{chapter.shot}</span>
-          </p>
-        </div>
+      <video
+        ref={videoRef}
+        className="landing-film__video"
+        poster={media.poster}
+        width={FILM_MEDIA.width}
+        height={FILM_MEDIA.height}
+        aria-label={playing ? FILM.label : undefined}
+        aria-hidden={playing ? undefined : true}
+        tabIndex={playing ? undefined : -1}
+        controls={playing}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        onEnded={stop}
+      >
+        <source src={media.webm} type="video/webm" />
+        <source src={media.mp4} type="video/mp4" />
+        {hasFilm && (
+          <track kind="captions" src={FILM_MEDIA.captions} srcLang={FILM.captionsLang} label={FILM.captionsLabel} default />
+        )}
+      </video>
+      {hasFilm && !playing && (
+        <Button
+          ref={playRef}
+          variant="primary"
+          className="landing-film__play has-py-3 has-px-5 has-font-bold text-md"
+          onClick={play}
+        >
+          {STORY_UI.playFilm}
+        </Button>
       )}
     </motion.div>
   );
