@@ -124,7 +124,7 @@ export function DemoBoard({ line }: DemoBoardProps) {
 
       <div className="is-flex is-justify-between has-gap-3 text-xs is-dimmer">
         <span>{DEMO.hint}</span>
-        <button type="button" className="landing-link-button is-dim text-xs" onClick={() => act({ type: "reset" })}>
+        <button type="button" className="landing-link-button hit-area is-dim text-xs" onClick={() => act({ type: "reset" })}>
           {DEMO.reset}
         </button>
       </div>

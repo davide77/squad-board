@@ -17,7 +17,9 @@
 }
 
 .chip {
-  position: relative;
+  // Bench rows sit 44px apart, so the overlay reaches 44px without overlapping.
+  @include hit-overlay;
+
   padding: 6px 11px 6px 7px;
   color: color(chalk);
   background-color: color(board-2);

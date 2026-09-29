@@ -1,7 +1,11 @@
 @use '../abstracts' as *;
 
+// Below this width the rows of a shape sit closer than a full size marker is tall.
+$pitch-tight: 300px;
+
 .pitch {
   position: relative;
+  container: pitch / inline-size;
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: linear-gradient(175deg, color(pitch-top), color(pitch-bottom) 66%);
@@ -112,5 +116,15 @@
     &--wide &__name {
       max-width: 92px;
     }
+  }
+}
+
+// A pitch this narrow (a small phone) gets smaller shirts, so each row keeps
+// clear of the names on the row behind it. The marker is still over 44px tall.
+@container pitch (max-width: #{$pitch-tight}) {
+  .pitch-slot__disc {
+    width: spacer(7) + spacer(1);
+    height: spacer(7) + spacer(1);
+    font-size: font-size(lg);
   }
 }

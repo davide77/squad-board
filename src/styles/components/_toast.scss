@@ -5,10 +5,16 @@
   left: 50%;
   bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
   z-index: z(toast);
+  // Sized to its message, but never wider than the screen less a gutter each side.
+  width: max-content;
+  max-width: calc(100vw - #{spacer(4) * 2});
   transform: translateX(-50%);
   pointer-events: none;
 }
 
+// One line when it fits. A long message on a small phone wraps, evenly, instead
+// of running off both edges.
 .toast {
-  white-space: nowrap;
+  text-align: center;
+  text-wrap: balance;
 }

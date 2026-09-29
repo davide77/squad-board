@@ -43,10 +43,16 @@ export function LandingFooter() {
     <footer className="landing-section">
       <div className="container is-flex is-flex-wrap is-justify-between has-gap-3 has-py-6 text-sm is-dimmer">
         <span>{SITE.name}</span>
-        <nav aria-label={FOOTER_LINKS.label} className="is-flex is-flex-wrap has-gap-5">
-          <Link href={ROUTES.privacy}>{FOOTER_LINKS.privacy}</Link>
-          <Link href={ROUTES.credits}>{FOOTER_LINKS.credits}</Link>
-          <a href={MAKER.url}>{MAKER.name}</a>
+        <nav aria-label={FOOTER_LINKS.label} className="is-flex is-flex-wrap has-gap-6">
+          <Link href={ROUTES.privacy} className="hit-area">
+            {FOOTER_LINKS.privacy}
+          </Link>
+          <Link href={ROUTES.credits} className="hit-area">
+            {FOOTER_LINKS.credits}
+          </Link>
+          <a href={MAKER.url} className="hit-area">
+            {MAKER.name}
+          </a>
         </nav>
         <span>{FOOTER.domain}</span>
       </div>

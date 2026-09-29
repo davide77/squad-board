@@ -37,3 +37,20 @@
   background: none;
   cursor: pointer;
 }
+
+// An invisible 44px touch target centred on a control that looks smaller, such as
+// a compact button or a text link. Nothing moves: the extra area is an overlay on
+// ::after, so the element cannot use ::after for anything else.
+@mixin hit-overlay($size: 44px) {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, #{$size});
+    height: max(100%, #{$size});
+    transform: translate(-50%, -50%);
+  }
+}

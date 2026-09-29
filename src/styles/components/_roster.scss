@@ -86,6 +86,9 @@
 
   &__edit {
     @include icon-hit-area(44px, 10px);
+    // The word is narrower than 44px. Only the status pill sits beside it, and that
+    // is not a control, so the overlay can take the width too.
+    @include hit-overlay;
 
     min-width: 0;
     padding-inline: spacer(1);

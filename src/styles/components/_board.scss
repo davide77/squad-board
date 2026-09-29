@@ -36,6 +36,9 @@
 
   &__team,
   &__fixture {
+    // The team name sits right above, so the tap area cannot be padded out over it.
+    // 24px is the WCAG 2.2 minimum for a target this close to its neighbour.
+    min-height: spacer(6);
     padding: 0;
     border: 0;
     background: none;

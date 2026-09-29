@@ -20,7 +20,7 @@ export function PageShell({ children }: PageShellProps) {
           <Link
             href={ROUTES.home}
             aria-label={PAGE_SHELL.home}
-            className="is-inline-flex is-align-center has-gap-2 is-chalk has-font-headline has-font-bold text-2xl tracking-number"
+            className="hit-area is-inline-flex is-align-center has-gap-3 is-chalk has-font-headline has-font-bold text-3xl leading-tight tracking-number"
           >
             <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.headerSize} height={VISOR_MARK.headerSize} priority />
             <span>{SITE.name}</span>
