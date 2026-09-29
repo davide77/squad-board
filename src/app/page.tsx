@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { FilmSection } from "@/components/landing/FilmSection";
-import { DemoSection, HowItWorksSection } from "@/components/landing/GafferSections";
-import { Hero } from "@/components/landing/Hero";
+import { HeroCarousel } from "@/components/landing/HeroCarousel";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { LandingProvider } from "@/components/landing/LandingProvider";
 import { EndSection, LandingFooter, PrivateSection } from "@/components/landing/Sections";
 import { SheetSection } from "@/components/landing/SheetSection";
+import { TrySection } from "@/components/landing/TrySection";
 import { LANDING_META } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
 import { JSON_LD } from "@/constants/seo";
@@ -25,10 +24,8 @@ export default function Home() {
       <JsonLd data={JSON_LD} />
       <LandingHeader />
       <main id="main">
-        <Hero />
-        <FilmSection />
-        <HowItWorksSection />
-        <DemoSection />
+        <HeroCarousel />
+        <TrySection />
         <SheetSection />
         <PrivateSection />
         <EndSection />

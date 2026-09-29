@@ -9,6 +9,7 @@ import { DEFAULT_VOICE } from "@/constants/content/landing";
 import { buildBoard, parseSquad, startingCount } from "@/lib/board/start";
 import { readAgePref, readVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
+import { BadgePicker } from "./BadgePicker";
 import { useBoard } from "./BoardProvider";
 import { ExampleSheet } from "./ExampleSheet";
 import { ImportSquadButton } from "./ImportSquadButton";
@@ -26,6 +27,8 @@ export function StartScreen() {
   // Opens on the age group picked on the homepage, when there was one.
   const [age, setAge] = useState<AgeKey | "">(() => readAgePref() ?? "");
   const [showExample, setShowExample] = useState(false);
+  const [badge, setBadge] = useState("");
+  const badgeHintId = useId();
   const group = AGE_GROUPS.find((a) => a.key === age) ?? null;
   // The age group sets the Gaffer's tone: very soft up to under 11s, rough from under 12s.
   // Before an age is picked, the last gaffer this device used, or the default.
@@ -46,7 +49,7 @@ export function StartScreen() {
     e.preventDefault();
     if (!squad.length || !group) return;
     const team = String(new FormData(e.currentTarget).get("team") ?? "");
-    act({ type: "load", data: { ...buildBoard(team, squad, newId, group.key), voice }, notice: say.teamPicked });
+    act({ type: "load", data: { ...buildBoard(team, squad, newId, group.key), badge, voice }, notice: say.teamPicked });
     window.scrollTo({ top: 0 });
   }
 
@@ -69,6 +72,12 @@ export function StartScreen() {
           placeholder={START.teamPlaceholder}
           autoComplete="off"
         />
+
+        <p className="has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">{START.badgeLabel}</p>
+        <BadgePicker team="" badge={badge} onChange={setBadge} size="regular" describedBy={badgeHintId} />
+        <p id={badgeHintId} className="text-sm is-dimmer has-mt-1 has-mb-4">
+          {START.badgeHint}
+        </p>
 
         <label htmlFor={ageId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
           {START.ageLabel}

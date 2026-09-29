@@ -1,23 +1,18 @@
 import { NO_NUMBER, SHEET, SUBS } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
+import { matchHeader } from "./message";
 import { firstName } from "./names";
 import { byId, canonical, coverFor, slots } from "./queries";
-import type { BoardData, Player } from "./types";
+import type { BoardData } from "./types";
 
 const pad = (s: string, n: number) => s.padEnd(n, " ");
 const INDENT = "    ";
 
-function section(out: string[], title: string, players: readonly Player[]) {
-  if (!players.length) return;
-  out.push("", title, ...players.map((p) => INDENT + p.name));
-}
-
 /** Plain text team sheet, ready to paste into a message. */
 export function sheetText(d: BoardData): string {
-  const out: string[] = [];
-  out.push((d.team || SHEET.fallbackTitle) + (d.season ? `  ${d.season}` : ""));
-  if (d.fixture) out.push(d.fixture);
-  out.push(d.formation, "");
+  // The same match details as the squad message, so the line-up can go out on its own.
+  const out = matchHeader(d);
+  out.push("", d.formation, "");
 
   for (const s of canonical(slots(d))) {
     const p = byId(d, d.xi[s.id]);
@@ -35,10 +30,7 @@ export function sheetText(d: BoardData): string {
       if (p) out.push(INDENT + pad(p.num, 3) + p.name);
     }
   }
-  // Missed training stays between coach and player: on the sheet it is just not called up.
-  section(out, SHEET.notCalledUp, d.players.filter((p) => p.out && !p.inj && !p.una));
-  section(out, SHEET.injured, d.players.filter((p) => p.inj));
-  section(out, SHEET.unavailable, d.players.filter((p) => p.una));
+  // Who was left out, injured or unavailable stays with the coach. The sheet names only who is playing.
 
   if (d.subs.length) {
     out.push("", SHEET.subs, ...d.subs.map((s) => `  ${s.min}' ${s.onName} ${SUBS.for} ${s.offName}`));

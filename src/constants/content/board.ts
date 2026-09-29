@@ -21,8 +21,6 @@ export const GLYPHS = {
 export const HEADER = {
   teamLabel: "Team name",
   teamPlaceholder: "Team name",
-  fixtureLabel: "Fixture",
-  fixturePlaceholder: "Opponent, venue, kick-off",
   clockLabel: "Match clock",
   start: "Start",
   pause: "Pause",
@@ -143,6 +141,8 @@ export const START = {
   ageHint: "Sets the format, and whether everyone gets equal time. You can change both later.",
   countNeedsAge: "Choose an age group first.",
   teamPlaceholder: "e.g. Riverside Under 10s",
+  badgeLabel: "Club badge",
+  badgeHint: "Optional. A badge, crest or logo sits next to your team name. PNG, JPG or SVG.",
   squadLabel: "Your squad",
   squadPlaceholder: "1 Alex GK\n2 Charlie\n3 Sam\n4 Jamie\n5 Riley\n...",
   squadHint: "Copy it straight from WhatsApp, your notes or a spreadsheet.",
@@ -177,7 +177,9 @@ export const EXAMPLE = {
   team: "Ashford Juniors",
   /** Eleven players in the example, so an 11-a-side age group. */
   age: "U14",
-  fixture: "v Northgate, home, 10:30",
+  fixture: "v Northgate, league",
+  /** Times and kit for the example's squad message. No address: a made-up team has no ground. */
+  match: { kickoff: "10:30", meet: "09:45", kit: "Pink kit" },
   note: "This is an example team. Play with it as much as you like.",
   ownTeam: "Start my own team",
   /** The example plays in its own colour, so it never looks like the coach's board. A name from KIT_COLOURS. */
@@ -210,15 +212,44 @@ export const SHEET = {
   credit: "Made with gafferboard.com",
   creditLabel: "End with \u201cMade with gafferboard.com\u201d",
   copy: "Copy team sheet",
+  whatsapp: "Send team sheet on WhatsApp",
   sharePicture: "Share line-up picture",
   pictureHint: "A picture of the pitch for the parents' group. Names show the way your shirts are labelled.",
   pictureFooter: "gafferboard.com",
+  /** Between the fixture, the day and the kick-off on the line-up picture. */
+  pictureJoin: " \u00b7 ",
   fallbackTitle: "Team sheet",
   bench: "Bench",
-  notCalledUp: "Not called up",
-  injured: "Injured",
-  unavailable: "Unavailable",
   subs: "Substitutions",
+} as const;
+
+/** The call-up for the parents' group. It goes out in the coach's name, so it stays straight. */
+export const MESSAGE = {
+  heading: "This week's match",
+  hint: "All optional. What you fill in goes at the top of the squad message and the team sheet. It clears when you start a new matchday.",
+  squadHint: "The call-up for the parents' group. Only the players you called up are named.",
+  opponentLabel: "Opponent",
+  opponentPlaceholder: "e.g. v City Select, friendly",
+  dateLabel: "Date",
+  kickoffLabel: "Kick-off",
+  meetLabel: "Meet",
+  kitLabel: "Kit",
+  kitPlaceholder: "e.g. Blue kit",
+  addressLabel: "Address",
+  addressPlaceholder: "Ground name, street, postcode",
+  addressHint: "Parents get a Google Maps link with it.",
+  mapCheck: "Check it on the map",
+  whatsapp: "Send squad on WhatsApp",
+  copy: "Copy squad message",
+  preview: "See the message",
+  /** Lines of the message itself. */
+  kickoff: "Kick-off: ",
+  meet: "Meet: ",
+  address: "Address: ",
+  map: "Map: ",
+  squad: "Matchday squad:",
+  nobody: "Squad to follow.",
+  confirm: "Please confirm availability.",
 } as const;
 
 export const CLUB = {
@@ -228,6 +259,12 @@ export const CLUB = {
   formatLabel: "Format",
   ageNotSet: "Not set",
   colourLabel: "Colour",
+  badgeLabel: "Badge",
+  badgeAdd: "Add badge",
+  badgeChange: "Change",
+  badgeRemove: "Remove",
+  badgeInput: "Club badge image",
+  badgeUnreadable: "That image didn't load. Try a PNG or JPG.",
   backupLabel: "Backup",
   export: "Export squad file",
   import: "Import squad file",

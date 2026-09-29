@@ -10,6 +10,7 @@ import { exportSquadFile } from "@/lib/board/files";
 import { clearStored, emptyData } from "@/lib/board/storage";
 import { writeVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
+import { BadgePicker } from "./BadgePicker";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
 import { ControlRow, Panel } from "./Panel";
@@ -100,6 +101,9 @@ export function ClubPanel() {
             />
           ))}
         </div>
+      </ControlRow>
+      <ControlRow label={CLUB.badgeLabel}>
+        <BadgePicker team={data.team} badge={data.badge} onChange={(value) => act({ type: "setBadge", value })} />
       </ControlRow>
       {/* A made-up team has nothing worth keeping, and wiping it would reach the coach's own board. */}
       {!sandbox && (

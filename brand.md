@@ -28,7 +28,13 @@ Gafferboard talks like the Gaffer: the kind of coach everyone wishes they had. T
 
 The Gaffer has two ways of talking, and the coach picks which one they get. Same Gaffer, different day. Both want the same thing: your team on the pitch, sorted, and you feeling good about it.
 
-| | Hairdryer | Arm round |
+**Where each way is used.**
+
+- **The website always speaks Hairdryer.** The home page, the story in the hero, the demo board's lines and every page around the board talk to the coach as the Hairdryer Gaffer. There is no voice picker on the site.
+- **The coach's own board can use either way.** Onboarding sets it from the age group (Pat on the back up to under 11s, Hairdryer from under 12s), and the coach can change it under Your club.
+- Straight lines stay straight everywhere (see "Turn it up, keep it straight").
+
+| | Hairdryer | Pat on the back |
 | --- | --- | --- |
 | Who | The old pro. Played at a level, seen it all, says very little. Gruff on the outside, would walk through a wall for your team. | The eternal optimist. Believes in you before you do, finds the good in a 6-0 defeat, always has a homely line ready. |
 | Sounds like | Short, flat, dry. Deadpan. | Warm, chatty, a pat on the back. |
@@ -43,14 +49,14 @@ The Gaffer has two ways of talking, and the coach picks which one they get. Same
 
 **Hairdryer.** Few words, all of them useful. The Gaffer tells you the next job, flat and dry, and trusts you to get on with it. Instructions are one line ("Who's in? Tick them."), confirmations are a nod ("Saved. Good."), and when something goes wrong it is said once, with the fix, and nobody gets the blame. Underneath, the Gaffer cares more than anyone and would never say so.
 
-**Arm round.** Short, friendly sentences, like a word in your ear on the touchline. The Gaffer believes in you before you do, points you at the next job with a smile, and makes bad news feel like part of the game. Instructions are encouragement ("Tick who's in this week, Coach."), confirmations are a pat on the back ("Line-up saved. Lovely stuff."), and when something goes wrong it is never your fault and always fixable.
+**Pat on the back.** Short, friendly sentences, like a word in your ear on the touchline. The Gaffer believes in you before you do, points you at the next job with a smile, and makes bad news feel like part of the game. Instructions are encouragement ("Tick who's in this week, Coach."), confirmations are a kind word ("Line-up saved. Lovely stuff."), and when something goes wrong it is never your fault and always fixable.
 
 ### How the Gaffer works, both ways
 
-1. **On your side.** Arm round says so. Hairdryer shows it by expecting a lot of you. Neither uses fear: "Don't mess it up" is banned in both.
+1. **On your side.** Pat on the back says so. Hairdryer shows it by expecting a lot of you. Neither uses fear: "Don't mess it up" is banned in both.
 2. **Coach to coach.** Address the reader as "Coach" at most once per screen, and never in a label or button. Hairdryer uses it even less.
-3. **Specific.** Arm round reaches for small, homely comparisons: "Neat as a new kit." "A plan B never hurt anybody." Hairdryer uses plain nouns and verbs and no comparisons at all. One per moment, and only where it lands.
-4. **Gracious when things go wrong.** Arm round: "Happens to the best of us." Hairdryer: "Wrong file. You want the one ending in -board.json." No blame and no sigh in either.
+3. **Specific.** Pat on the back reaches for small, homely comparisons: "Neat as a new kit." "A plan B never hurt anybody." Hairdryer uses plain nouns and verbs and no comparisons at all. One per moment, and only where it lands.
+4. **Gracious when things go wrong.** Pat on the back: "Happens to the best of us." Hairdryer: "Wrong file. You want the one ending in -board.json." No blame and no sigh in either.
 5. **Tough on the job, never on people.** Hairdryer's bluntness is aimed at the task. Never at the coach's worth, a player, the ref or the other team. No insults, no sarcasm, no shouting: no capitals for emphasis, no exclamation marks.
 6. **Nobody is the punchline.** Not a player, not the coach, not the ref, not the other team. The only fair targets for a joke are the weather and the technology.
 7. **Useful first.** Take the attitude out and the line still says what to do. If it does not, rewrite it.
@@ -68,7 +74,7 @@ The more often a line is seen, the shorter it is. A toast that pops every matchd
 ### We sound like
 
 - **Hairdryer:** the old pro on the touchline who says "Good" and you remember it all week. A nod from the dugout.
-- **Arm round:** the coach who remembers every player's name and something nice about each of them. A word in your ear at half-time that makes you stand a bit taller.
+- **Pat on the back:** the coach who remembers every player's name and something nice about each of them. A word in your ear at half-time that makes you stand a bit taller.
 - **Both:** someone who says "we'll sort it" and then does.
 
 ### We do not sound like
@@ -93,11 +99,11 @@ The more often a line is seen, the shorter it is. A toast that pops every matchd
 8. **No swearing, not even the mild stuff, and not in Hairdryer either.** This is kids' football. The toughness comes from short sentences, not bad words.
 9. **Touchline phrases, not internet slang.** "Get stuck in", "early doors", "lovely stuff" are fine. Memes and slang that date are not.
 10. **Our own voice, nobody else's.** The two ways are inspired by archetypes, never by a named person. Never quote, name or borrow catchphrases from a TV show, a film or a real manager.
-11. **One way per line.** A line is Hairdryer or Arm round, never a mix. Both ways share the Straight lines.
+11. **One way per line.** A line is Hairdryer or Pat on the back, never a mix. Both ways share the Straight lines.
 
 ### Do say
 
-| Moment | Straight | Hairdryer | Arm round |
+| Moment | Straight | Hairdryer | Pat on the back |
 | --- | --- | --- | --- |
 | Hero | Pick the team on the touchline. | Your team. Your call. | You pick the team, Coach. We'll hold the clipboard. |
 | Getting started | Getting started | Right. Squad in first. | Welcome, Coach. Let's get your squad in. |
@@ -195,7 +201,7 @@ Rules:
 - Use the colour version on Board only. On any other background use the mono version, in Board or Chalk.
 - Never recolour the disc to a club colour. The club's colour belongs to the board inside the app, not to the logo.
 - Clear space: half the mark's height on every side. Minimum size: 16px for the mark, 96px wide for the full logo.
-- The crest in the app header is the coach's own club initials, not the Gafferboard logo. Keep the two apart.
+- The crest in the app header is the coach's own club: their badge when they add one, otherwise their initials. It is never the Gafferboard logo, and the Gafferboard logo stays in the site header above it. Keep the two apart.
 
 ## Design direction
 
@@ -219,5 +225,5 @@ Rules:
 
 - Human. Direct. No apology theatre. The Gaffer picks you up, or just gets on with it, then says what to do.
 - Good, Hairdryer: "Wrong file. You want the one ending in -board.json."
-- Good, Arm round: "That's not a squad file. Happens to the best of us. Look for the one ending in -board.json."
+- Good, Pat on the back: "That's not a squad file. Happens to the best of us. Look for the one ending in -board.json."
 - Bad: "Oops! Something went wrong. Please try again later."

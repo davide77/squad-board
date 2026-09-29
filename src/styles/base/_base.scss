@@ -3,7 +3,15 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  // A jump link lands below the floating header, not under it. Just over the
+  // header's height: 94px on a phone, 122px from md (.landing-header in
+  // components/_landing.scss). Change both together.
+  scroll-padding-top: spacer(11) + spacer(4);
   background-color: color(board);
+
+  @include min(bp(md)) {
+    scroll-padding-top: spacer(11) + spacer(9);
+  }
 }
 
 body {
@@ -89,6 +97,7 @@ $text-aligns: (left, center, right, justify);
 .capitalize { text-transform: capitalize; }
 
 // Common reading-measure helpers
+.measure-48ch { max-width: 48ch; }
 .measure-52ch { max-width: 52ch; }
 .measure-62ch { max-width: 62ch; }
 .measure-72ch { max-width: 72ch; }

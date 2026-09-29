@@ -8,17 +8,20 @@ export interface PageSection {
 
 export const PAGE_SHELL = {
   home: "Gafferboard home",
-  cta: "Open the board",
 } as const;
 
 export const FOOTER_LINKS = {
   label: "About Gafferboard",
   privacy: "Privacy and safety",
   credits: "Credits",
+  madeBy: "Made by",
+  at: "at",
 } as const;
 
 export const MAKER = {
   name: "Davide Domenghini",
+  /** The studio Gafferboard is made under. */
+  studio: "Origin Social",
   site: "originsocialclub.com",
   url: "https://originsocialclub.com",
   /** Who the maker is on the touchline. Confirmed by Davide: the team is Ayat U15. */

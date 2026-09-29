@@ -31,15 +31,17 @@ import {
   teamSize,
 } from "./queries";
 import { placeStarters } from "./start";
-import { emptyData, loadStored } from "./storage";
-import type { BoardData, BoardState, DropTarget, Lineup, Player, Point, UiState } from "./types";
+import { emptyData, emptyMatch, loadStored } from "./storage";
+import type { BoardData, BoardState, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
 
 export type Action =
   | { type: "load"; data: BoardData; notice?: string }
   | { type: "notify"; text: string }
   | { type: "storageFailed" }
   | { type: "setTeam"; value: string }
+  | { type: "setBadge"; value: string }
   | { type: "setFixture"; value: string }
+  | { type: "setMatch"; field: keyof MatchDetails; value: string }
   | { type: "clockToggle" }
   | { type: "clockReset" }
   | { type: "setFormation"; name: string }
@@ -369,8 +371,16 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       d.team = action.value;
       return next;
 
+    case "setBadge":
+      d.badge = action.value;
+      return next;
+
     case "setFixture":
       d.fixture = action.value;
+      return next;
+
+    case "setMatch":
+      d.match[action.field] = action.value;
       return next;
 
     case "clockToggle":
@@ -652,6 +662,8 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       d.subs = [];
       d.clock = { running: false, base: 0, since: 0 };
       d.minutes = { on: {}, played: {} };
+      // The date, times, kit and ground are this week's. Last week's must never go out again.
+      d.match = emptyMatch();
       ui.selected = null;
       closePicker();
       note(say.newMatchday);

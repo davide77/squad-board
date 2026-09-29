@@ -2,7 +2,8 @@
 
 import { MotionConfig } from "framer-motion";
 import { BoardProvider, useBoard } from "./BoardProvider";
-import { BoardView, kitColours } from "./BoardView";
+import { kitColours } from "@/lib/board/kit";
+import { BoardView } from "./BoardView";
 import { StartScreen } from "./StartScreen";
 import { Toast } from "./Toast";
 

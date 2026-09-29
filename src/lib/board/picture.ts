@@ -1,7 +1,9 @@
 import { BOARD_PALETTE, KIT_COLOURS, VISOR_MARK } from "@/constants/brand";
 import { NO_NUMBER, SHEET, SUBS } from "@/constants/content/board";
 import { PICTURE_CONFIG } from "@/constants/config";
+import { containIn, loadImage } from "./badge";
 import { downloadBlob } from "./files";
+import { matchDate } from "./message";
 import { monogram, shirtName } from "./names";
 import { byId, slots } from "./queries";
 import type { BoardData } from "./types";
@@ -57,15 +59,6 @@ function cssFont(variable: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(variable).trim() || "sans-serif";
 }
 
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
-  });
-}
-
 function hexAlpha(hex: string, alpha: number): string {
   const n = parseInt(hex.slice(1), 16);
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
@@ -116,6 +109,7 @@ export async function lineupPicture(d: BoardData): Promise<Blob> {
   const body = cssFont("--font-body");
   await Promise.all([document.fonts.load(`700 40px ${head}`), document.fonts.load(`500 30px ${body}`)]);
   const mark = await loadImage(VISOR_MARK.src).catch(() => null);
+  const badge = d.badge ? await loadImage(d.badge).catch(() => null) : null;
 
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -130,16 +124,21 @@ export async function lineupPicture(d: BoardData): Promise<Blob> {
 
   // Header: crest, team, fixture, shape.
   const cx = L.pad + L.crestR;
-  ctx.fillStyle = kit.kit;
-  ctx.beginPath();
-  ctx.arc(cx, L.crestY, L.crestR, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = kit.ink;
-  ctx.font = `700 34px ${head}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(monogram(d.team), cx, L.crestY + 2);
-  ctx.textBaseline = "alphabetic";
+  if (badge) {
+    const box = containIn(badge, L.crestR * 2);
+    ctx.drawImage(badge, L.pad + box.x, L.crestY - L.crestR + box.y, box.w, box.h);
+  } else {
+    ctx.fillStyle = kit.kit;
+    ctx.beginPath();
+    ctx.arc(cx, L.crestY, L.crestR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = kit.ink;
+    ctx.font = `700 34px ${head}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(monogram(d.team), cx, L.crestY + 2);
+    ctx.textBaseline = "alphabetic";
+  }
 
   ctx.textAlign = "right";
   ctx.font = `700 ${L.shapeSize}px ${head}`;
@@ -152,11 +151,13 @@ export async function lineupPicture(d: BoardData): Promise<Blob> {
   ctx.textAlign = "left";
   ctx.fillStyle = kit.kit;
   ctx.font = `700 ${L.teamSize}px ${head}`;
-  ctx.fillText(fit(ctx, d.team || SHEET.fallbackTitle, textW), textX, d.fixture ? L.crestY + 8 : L.crestY + 20);
-  if (d.fixture) {
+  // The fixture, then the day and kick-off when the coach filled them in.
+  const sub = [d.fixture.trim(), matchDate(d.match.date), d.match.kickoff].filter(Boolean).join(SHEET.pictureJoin);
+  ctx.fillText(fit(ctx, d.team || SHEET.fallbackTitle, textW), textX, sub ? L.crestY + 8 : L.crestY + 20);
+  if (sub) {
     ctx.fillStyle = BOARD_PALETTE.dim;
     ctx.font = `500 ${L.fixtureSize}px ${body}`;
-    ctx.fillText(fit(ctx, d.fixture, textW), textX, L.crestY + 48);
+    ctx.fillText(fit(ctx, sub, textW), textX, L.crestY + 48);
   }
 
   // Pitch surface and lines.

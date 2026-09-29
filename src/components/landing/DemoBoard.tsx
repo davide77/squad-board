@@ -123,12 +123,11 @@ export function DemoBoard({ line }: DemoBoardProps) {
       </div>
 
       <div className="is-flex is-justify-between has-gap-3 text-xs is-dimmer">
-        <span>{DEMO.hint}</span>
+        <p>{DEMO.disclaimer}</p>
         <button type="button" className="landing-link-button hit-area is-dim text-xs" onClick={() => act({ type: "reset" })}>
           {DEMO.reset}
         </button>
       </div>
-      <p className="text-xs is-dimmer">{DEMO.disclaimer}</p>
     </div>
   );
 }

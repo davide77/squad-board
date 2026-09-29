@@ -1,4 +1,6 @@
-import { useEffect, useState, useSyncExternalStore, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type RefObject } from "react";
+import { parseStored, readStoredRaw } from "@/lib/board/storage";
+import type { BoardData } from "@/lib/board/types";
 
 /** The current time, refreshed every `everyMs` while `active`, for anything that counts with the match clock. */
 export function useNow(active: boolean, everyMs: number): number {
@@ -202,4 +204,76 @@ export function useStoredFlag(key: string): readonly [boolean, () => void] {
     window.dispatchEvent(new Event(FLAG_EVENT));
   };
   return [value, set] as const;
+}
+
+/**
+ * A silent loop that turns into a film with sound on request, in the same video element:
+ * browsers only allow sound when play() runs inside the click. The loop moves only while
+ * `still` is false, and the film goes back to the loop when it ends.
+ */
+export function useFilmPlayer(film: string, still: boolean, onPlayingChange?: (playing: boolean) => void) {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const playRef = useRef<HTMLButtonElement>(null);
+  const watched = useRef(false);
+
+  // It starts here rather than through autoPlay, so the motion choice is known before it plays.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (playing || !video) return;
+    if (still) {
+      video.pause();
+      return;
+    }
+    video.play().catch(() => {});
+  }, [playing, still]);
+
+  // Focus follows the swap, so a keyboard user is never left on a button that has gone.
+  useEffect(() => {
+    if (playing) {
+      watched.current = true;
+      videoRef.current?.focus();
+    } else if (watched.current) {
+      playRef.current?.focus();
+    }
+  }, [playing]);
+
+  function play() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.src = film;
+    video.loop = false;
+    video.muted = false;
+    video.play().catch(() => {});
+    setPlaying(true);
+    onPlayingChange?.(true);
+  }
+
+  function stop() {
+    const video = videoRef.current;
+    if (video) {
+      // Without a src the element falls back to its <source> children: the loop.
+      video.removeAttribute("src");
+      video.muted = true;
+      video.loop = true;
+      video.load();
+    }
+    setPlaying(false);
+    onPlayingChange?.(false);
+  }
+
+  return { videoRef, playRef, playing, play, stop } as const;
+}
+
+function subscribeToStorage(onChange: () => void) {
+  // Fires when another tab saves the board. This tab reads it fresh on every page.
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+
+/** The coach's saved board in this browser. Null on the server and when there is none. */
+export function useStoredBoard(): BoardData | null {
+  const raw = useSyncExternalStore(subscribeToStorage, readStoredRaw, () => null);
+  // The snapshot is the raw string, so the board is only parsed again when it changes.
+  return useMemo(() => parseStored(raw), [raw]);
 }

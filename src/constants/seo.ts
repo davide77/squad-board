@@ -71,6 +71,7 @@ export const JSON_LD = {
       url: MAKER.url,
       jobTitle: MAKER.role,
       description: MAKER.bio,
+      worksFor: { "@type": "Organization", name: MAKER.studio, url: MAKER.url },
     },
   ],
 } as const;

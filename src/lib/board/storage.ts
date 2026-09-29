@@ -1,6 +1,6 @@
 import { KIT_COLOURS } from "@/constants/brand";
 import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
-import { STORAGE_KEY } from "@/constants/config";
+import { BADGE_CONFIG, STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import {
   AGE_GROUPS,
@@ -16,13 +16,18 @@ import {
 } from "@/constants/football";
 import { isVoice } from "@/lib/voice";
 import { captureLineup, elapsed } from "./queries";
-import type { BoardData, Lineup, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
+import type { BoardData, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
+
+export function emptyMatch(): MatchDetails {
+  return { date: "", kickoff: "", meet: "", kit: "", address: "" };
+}
 
 export function emptyData(): BoardData {
   const d: BoardData = {
     team: "",
     season: "",
     fixture: "",
+    match: emptyMatch(),
     formation: FORMATS[DEFAULT_FORMAT].shapes[0],
     players: [],
     xi: {},
@@ -36,6 +41,7 @@ export function emptyData(): BoardData {
     saved: null,
     removed: [],
     colour: 0,
+    badge: "",
     clock: { running: false, base: 0, since: 0 },
     example: false,
     createdAt: 0,
@@ -107,6 +113,26 @@ function readPlanFormation(v: unknown, custom: readonly Point[]): string {
   return f in FORMATIONS ? f : "";
 }
 
+// Only the PNG this app writes. Anything else in the field could be a link, so it is dropped.
+const BADGE_PREFIX = "data:image/png;base64,";
+const isBadge = (v: unknown): v is string =>
+  typeof v === "string" && v.startsWith(BADGE_PREFIX) && v.length <= BADGE_CONFIG.maxChars;
+
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const TIME = /^\d{2}:\d{2}$/;
+const matching = (v: unknown, re: RegExp) => (re.test(str(v)) ? str(v) : "");
+
+function readMatch(v: unknown): MatchDetails {
+  if (!isRec(v)) return emptyMatch();
+  return {
+    date: matching(v.date, DATE),
+    kickoff: matching(v.kickoff, TIME),
+    meet: matching(v.meet, TIME),
+    kit: str(v.kit),
+    address: str(v.address),
+  };
+}
+
 const isFormat = (v: unknown): v is FormatKey => typeof v === "string" && v in FORMATS;
 const isAge = (v: unknown): v is AgeKey => AGE_GROUPS.some((a) => a.key === v);
 
@@ -148,6 +174,7 @@ export function readBoard(raw: unknown): BoardData | null {
     team: str(raw.team),
     season: str(raw.season),
     fixture: str(raw.fixture),
+    match: readMatch(raw.match),
     formation: readFormation(raw.formation, custom, format),
     players: raw.players.map(readPlayer).filter(notNull),
     xi: readXI(raw.xi),
@@ -161,6 +188,7 @@ export function readBoard(raw: unknown): BoardData | null {
     saved: readLineup(raw.saved),
     removed: list(raw.removed).map(readPlayer).filter(notNull),
     colour: KIT_COLOURS[colour] ? colour : 0,
+    badge: isBadge(raw.badge) ? raw.badge : "",
     // A board always reopens with the clock paused where it was left.
     clock: { running: false, base: isRec(raw.clock) ? num(raw.clock.base) : 0, since: 0 },
     example: raw.example === true,
@@ -181,15 +209,28 @@ export function snapshot(d: BoardData, now: number): BoardData {
 
 /* ---------- localStorage ---------- */
 
-export function loadStored(): BoardData | null {
+/** The saved board as written, for anything that watches it change. */
+export function readStoredRaw(): string | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
+    return localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/** A stored board with players on it, or null. */
+export function parseStored(raw: string | null): BoardData | null {
+  if (!raw) return null;
+  try {
     const d = readBoard(JSON.parse(raw));
     return d && d.players.length ? d : null;
   } catch {
     return null;
   }
+}
+
+export function loadStored(): BoardData | null {
+  return parseStored(readStoredRaw());
 }
 
 /** Returns false when the browser refuses to store anything. */

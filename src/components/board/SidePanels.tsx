@@ -1,12 +1,13 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { PICTURE_CONFIG } from "@/constants/config";
+import { MESSAGE_CONFIG, PICTURE_CONFIG } from "@/constants/config";
 import { CLUB, GLYPHS, SAVED, SHEET, SUBS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { teamSlug } from "@/lib/board/names";
 import { fitsFormat } from "@/lib/board/queries";
 import { lineupPicture, sharePicture } from "@/lib/board/picture";
+import { sheetText } from "@/lib/board/sheet";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
@@ -102,9 +103,19 @@ export function SheetPanel() {
   return (
     <Panel heading={SHEET.heading}>
       <p className="text-sm is-dimmer">{SHEET.hint}</p>
-      <Button variant="primary" className="has-mt-3" onClick={copy}>
-        {SHEET.copy}
-      </Button>
+      <div className="is-flex is-flex-wrap has-gap-2 has-mt-3">
+        <a
+          href={MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(sheetText(state.data))}
+          target="_blank"
+          rel="noopener"
+          className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
+        >
+          {SHEET.whatsapp}
+        </a>
+        <Button className="has-py-3" onClick={copy}>
+          {SHEET.copy}
+        </Button>
+      </div>
       <label className="is-flex is-align-center has-gap-2 text-sm is-dim has-mt-3">
         <input type="checkbox" checked={state.data.sheetCredit} onChange={() => act({ type: "toggleSheetCredit" })} />
         {SHEET.creditLabel}
