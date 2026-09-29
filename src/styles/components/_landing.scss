@@ -177,6 +177,29 @@
   }
 }
 
+// The film is shot vertical, like a phone. The play button sits over the loop.
+.landing-film {
+  position: relative;
+  max-width: 380px;
+  justify-self: center;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 1px solid color(board-3);
+
+  &__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__play {
+    position: absolute;
+    left: spacer(4);
+    bottom: spacer(4);
+  }
+}
+
 .landing-link-button {
   padding: 0;
   background: none;

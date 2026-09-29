@@ -72,6 +72,7 @@ export interface VoiceCopy {
   readonly note: string;
   readonly weekH: string;
   readonly steps: readonly [string, string, string, string];
+  readonly filmH: string;
   readonly sheetH: string;
   readonly privH: string;
   readonly endH: string;
@@ -85,6 +86,7 @@ export const COPY: Readonly<Record<VoiceKey, VoiceCopy>> = {
     note: "No account. Nothing to install.",
     weekH: "Four taps. Every Saturday.",
     steps: ["Squad in", "Who's here?", "Pick a shape", "Make changes"],
+    filmH: "Chalk. Magnets. Chaos.",
     sheetH: "Send the team sheet",
     privH: "Your team. Nobody else's.",
     endH: "Kick-off's at half ten. Be there.",
@@ -95,6 +97,7 @@ export const COPY: Readonly<Record<VoiceKey, VoiceCopy>> = {
     note: "No account needed. Take your time.",
     weekH: "Matchday, one step at a time",
     steps: ["Bring the squad in", "See who's made it", "Find your shape", "Give everyone a go"],
+    filmH: "We've all been there, Coach.",
     sheetH: "Let the parents know",
     privH: "Your team, safe with you",
     endH: "Kick-off's at half ten. You'll be brilliant.",
@@ -112,6 +115,7 @@ export const NAV = {
   label: "Sections",
   home: "Gafferboard home",
   links: [
+    { href: "#film", label: "Film" },
     { href: "#week", label: "Matchday" },
     { href: "#sheet", label: "Team sheet" },
     { href: "#private", label: "Private" },
@@ -142,6 +146,25 @@ export const DEMO = {
   reset: "Reset",
   disclaimer: "An example team, made up for this page.",
   playerLabel: (num: number, name: string) => `${num} ${name}`,
+} as const;
+
+/** The film section under the hero. A short silent loop plays until the visitor asks for the film with sound. */
+export const FILM = {
+  body: "Ten minutes to kick-off. The chalk snaps, the magnets slide off, and the team still isn't picked. Here's how matchday goes with Gafferboard.",
+  play: "Play with sound",
+  label: "Gafferboard film. A coach gives up on chalk and magnets, picks the team on a phone and sends the players out to play.",
+  captionsLabel: "English",
+  captionsLang: "en-GB",
+} as const;
+
+/** The film files in public/film. Vertical 9:16, cut from the Runway renders. */
+export const FILM_MEDIA = {
+  teaser: { mp4: "/film/gafferboard-teaser.mp4", webm: "/film/gafferboard-teaser.webm" },
+  film: "/film/gafferboard-film.mp4",
+  poster: "/film/gafferboard-film-poster.jpg",
+  captions: "/film/gafferboard-film.vtt",
+  width: 720,
+  height: 1280,
 } as const;
 
 export const WEEK_BODIES: readonly [string, string, string, string] = [

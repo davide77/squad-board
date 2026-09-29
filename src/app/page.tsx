@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
+import { FilmSection } from "@/components/landing/FilmSection";
 import { DemoSection, HowItWorksSection } from "@/components/landing/GafferSections";
 import { Hero } from "@/components/landing/Hero";
 import { LandingHeader } from "@/components/landing/LandingHeader";
@@ -25,6 +26,7 @@ export default function Home() {
       <LandingHeader />
       <main id="main">
         <Hero />
+        <FilmSection />
         <HowItWorksSection />
         <DemoSection />
         <SheetSection />
