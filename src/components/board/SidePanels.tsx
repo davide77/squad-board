@@ -5,11 +5,12 @@ import { PICTURE_CONFIG } from "@/constants/config";
 import { CLUB, GLYPHS, SAVED, SHEET, SUBS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { teamSlug } from "@/lib/board/names";
+import { fitsFormat } from "@/lib/board/queries";
 import { lineupPicture, sharePicture } from "@/lib/board/picture";
-import { sheetText } from "@/lib/board/sheet";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
+import { useCopySheet } from "./useCopySheet";
 
 export function SubsPanel() {
   const { state } = useBoard();
@@ -37,6 +38,8 @@ export function SubsPanel() {
 export function SavedPanel() {
   const { state, act } = useBoard();
   const { lineups, formation } = state.data;
+  // Plans made for another format stay saved, and come back if the format does.
+  const mine = lineups.map((l, i) => ({ l, i })).filter(({ l }) => fitsFormat(l, state.data));
   const nameId = useId();
 
   function save(e: FormEvent<HTMLFormElement>) {
@@ -50,8 +53,8 @@ export function SavedPanel() {
   return (
     <Panel heading={SAVED.heading}>
       <div className="is-flex is-flex-column has-gap-2">
-        {lineups.length ? (
-          lineups.map((l, i) => (
+        {mine.length ? (
+          mine.map(({ l, i }) => (
             <div key={`${l.name}-${i}`} className="is-flex is-align-center has-gap-2">
               <span className="is-flex-1 is-min-w-0 is-truncate">{l.name}</span>
               <span className="has-font-headline text-sm is-dimmer">{l.formation}</span>
@@ -78,30 +81,10 @@ export function SavedPanel() {
   );
 }
 
-/** Puts text on the clipboard, with the old textarea route where the API is missing. */
-async function copyText(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.className = "sr-only";
-    document.body.append(ta);
-    ta.select();
-    const ok = document.execCommand("copy");
-    ta.remove();
-    return ok;
-  }
-}
-
 export function SheetPanel() {
   const { state, act } = useBoard();
   const [making, setMaking] = useState(false);
-  async function copy() {
-    const ok = await copyText(sheetText(state.data));
-    act({ type: "notify", text: ok ? GAFFER[state.data.voice].copied : GAFFER[state.data.voice].copyFailed });
-  }
+  const copy = useCopySheet();
   async function share() {
     setMaking(true);
     try {
@@ -122,6 +105,10 @@ export function SheetPanel() {
       <Button variant="primary" className="has-mt-3" onClick={copy}>
         {SHEET.copy}
       </Button>
+      <label className="is-flex is-align-center has-gap-2 text-sm is-dim has-mt-3">
+        <input type="checkbox" checked={state.data.sheetCredit} onChange={() => act({ type: "toggleSheetCredit" })} />
+        {SHEET.creditLabel}
+      </label>
       <p className="text-sm is-dimmer has-mt-4">{SHEET.pictureHint}</p>
       <Button className="has-mt-3" onClick={share} disabled={making} aria-busy={making}>
         {SHEET.sharePicture}

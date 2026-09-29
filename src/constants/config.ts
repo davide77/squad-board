@@ -16,6 +16,8 @@ export const BOARD_CONFIG = {
   edgeScrollStepPx: 12,
   edgeScrollIntervalMs: 16,
   clockTickMs: 1000,
+  /** Minutes played are shown in whole minutes, so they need checking far less often. */
+  minutesTickMs: 15000,
   /** Saved line-ups kept, newest first. */
   maxSavedLineups: 8,
   /** Cover names shown under a shirt and on the team sheet. */

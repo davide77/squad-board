@@ -2,17 +2,18 @@ import { BOARD_CONFIG } from "@/constants/config";
 import { EXAMPLE } from "@/constants/content/board";
 import { DEMO_BENCH, DEMO_SHAPES, DEMO_XI } from "@/constants/content/landing";
 import {
-  DEFAULT_FORMATION,
+  AGE_GROUPS,
+  FORMATS,
   POSITION_CODES,
   POSITION_SIDES,
   POSITION_WORDS,
-  XI_SIZE,
+  type AgeKey,
   type PositionKey,
   type Side,
 } from "@/constants/football";
-import { canonical, captureLineup, fitLevel, sideRank, slotOf, slots } from "./queries";
+import { canonical, captureLineup, fitLevel, sideRank, slotOf, slots, teamSize } from "./queries";
 import { emptyData } from "./storage";
-import type { BoardData } from "./types";
+import type { BoardData, Player } from "./types";
 
 /** One player read from a pasted squad list. */
 export interface SquadEntry {
@@ -89,43 +90,20 @@ export function parseSquad(text: string): SquadEntry[] {
     .slice(0, BOARD_CONFIG.pasteMaxPlayers);
 }
 
-/** How many of a squad of this size start. */
-export function startingCount(squad: number): number {
-  return Math.min(squad, XI_SIZE);
+/** How many of a squad of this size start, for a side of this size. */
+export function startingCount(squad: number, size: number): number {
+  return Math.min(squad, size);
 }
 
 /**
- * A ready board for a new squad: everyone called up, the first eleven listed on the
- * pitch and the rest on the bench. Among the eleven, players go where their positions
- * suit first, on their own flank before the other one, then fill the gaps in list order,
- * so a plain list starts with the keeper.
+ * Fills the empty positions from these players, in this order of preference: someone
+ * who plays there on their own flank, then someone who plays either side, then the other
+ * flank; then someone who could fill in, the same way; then whoever is left, in list
+ * order, so a plain list starts with the keeper. Returns the players left over.
  */
-export function buildBoard(
-  team: string,
-  squad: readonly SquadEntry[],
-  newId: () => string,
-  formation: string = DEFAULT_FORMATION,
-): BoardData {
-  const d = emptyData();
-  d.team = team.trim();
-  d.formation = formation;
-  d.players = squad.map((e) => ({
-    id: newId(),
-    num: e.num,
-    name: e.name,
-    init: "",
-    pos: [...e.pos],
-    side: e.side ?? null,
-    out: false,
-    inj: false,
-    una: false,
-  }));
-
-  const starters = d.players.slice(0, XI_SIZE);
-  const unplaced = () => starters.filter((p) => !slotOf(d, p.id));
+export function placeStarters(d: BoardData, candidates: readonly Player[]): Player[] {
   const order = canonical(slots(d));
-  // For each fit level: first players on the role's own flank, then those who play
-  // either side, and only then someone from the other flank. An RB lands at RB.
+  const unplaced = () => candidates.filter((p) => !slotOf(d, p.id));
   for (const level of [2, 1] as const) {
     for (const worstSide of [0, 1, 2] as const) {
       for (const s of order) {
@@ -141,7 +119,42 @@ export function buildBoard(
     if (!p) break;
     d.xi[s.id] = p.id;
   }
-  d.bench = d.players.slice(XI_SIZE).map((p) => p.id);
+  return unplaced();
+}
+
+/**
+ * A ready board for a new squad: everyone called up, the first players listed on the
+ * pitch (as many as the age group's format plays) and the rest on the bench. Among
+ * them, players go where their positions suit, on their own flank first.
+ */
+export function buildBoard(
+  team: string,
+  squad: readonly SquadEntry[],
+  newId: () => string,
+  age: AgeKey | null,
+  formation?: string,
+): BoardData {
+  const d = emptyData();
+  d.team = team.trim();
+  d.age = age;
+  d.format = AGE_GROUPS.find((a) => a.key === age)?.format ?? d.format;
+  d.formation = formation && FORMATS[d.format].shapes.includes(formation) ? formation : FORMATS[d.format].shapes[0];
+  d.players = squad.map((e) => ({
+    id: newId(),
+    num: e.num,
+    name: e.name,
+    init: "",
+    pos: [...e.pos],
+    side: e.side ?? null,
+    out: false,
+    inj: false,
+    una: false,
+    trn: false,
+  }));
+
+  const size = teamSize(d);
+  placeStarters(d, d.players.slice(0, size));
+  d.bench = d.players.slice(size).map((p) => p.id);
 
   d.preset = captureLineup(d);
   d.saved = captureLineup(d);
@@ -151,7 +164,7 @@ export function buildBoard(
 /** The made-up team from the landing page, in the shape it shows there. */
 export function exampleBoard(newId: () => string): BoardData {
   const squad = [...DEMO_XI, ...DEMO_BENCH].map((p) => ({ num: String(p.num), name: p.name, pos: p.pos }));
-  const d = buildBoard(EXAMPLE.team, squad, newId, DEMO_SHAPES[0]);
+  const d = buildBoard(EXAMPLE.team, squad, newId, EXAMPLE.age, DEMO_SHAPES[0]);
   d.fixture = EXAMPLE.fixture;
   d.example = true;
   return d;

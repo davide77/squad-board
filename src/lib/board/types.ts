@@ -1,6 +1,6 @@
 import type { NameStyle } from "@/constants/content/board";
 import type { VoiceKey } from "@/constants/content/landing";
-import type { PositionKey, Role, Side } from "@/constants/football";
+import type { AgeKey, FormatKey, PositionKey, Role, Side } from "@/constants/football";
 
 export interface Player {
   readonly id: string;
@@ -15,6 +15,8 @@ export interface Player {
   out: boolean;
   inj: boolean;
   una: boolean;
+  /** Missed training this week. A competitive side's reason to leave someone out. */
+  trn: boolean;
 }
 
 export interface Point {
@@ -58,6 +60,14 @@ export interface Clock {
   since: number;
 }
 
+/** Match time per player, in milliseconds of the match clock. */
+export interface Minutes {
+  /** Players on the pitch now, and the clock time they came on. */
+  on: Record<string, number>;
+  /** Time banked from earlier spells on the pitch. */
+  played: Record<string, number>;
+}
+
 export interface BoardData {
   team: string;
   season: string;
@@ -86,6 +96,13 @@ export interface BoardData {
   backedUpAt: number;
   /** Which gaffer talks on this board. */
   voice: VoiceKey;
+  /** The age group, which sets the format and the phase. Null on boards made before it existed. */
+  age: AgeKey | null;
+  /** 3v3 to 11v11. Set by the age group, and the coach can change it. */
+  format: FormatKey;
+  minutes: Minutes;
+  /** A small "Made with gafferboard.com" line at the foot of the copied team sheet. */
+  sheetCredit: boolean;
 }
 
 export type Zone = "bench" | "pool";

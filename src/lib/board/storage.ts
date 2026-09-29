@@ -3,24 +3,27 @@ import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import {
+  AGE_GROUPS,
   CUSTOM_FORMATION,
-  DEFAULT_FORMATION,
+  DEFAULT_FORMAT,
   FORMATIONS,
+  FORMATS,
   LEGACY_POSITIONS,
   POSITION_KEYS,
-  XI_SIZE,
+  type AgeKey,
+  type FormatKey,
   type PositionKey,
 } from "@/constants/football";
 import { isVoice } from "@/lib/voice";
 import { captureLineup, elapsed } from "./queries";
-import type { BoardData, Lineup, NamedLineup, Player, Point, Sub, XI } from "./types";
+import type { BoardData, Lineup, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyData(): BoardData {
   const d: BoardData = {
     team: "",
     season: "",
     fixture: "",
-    formation: DEFAULT_FORMATION,
+    formation: FORMATS[DEFAULT_FORMAT].shapes[0],
     players: [],
     xi: {},
     bench: [],
@@ -38,6 +41,10 @@ export function emptyData(): BoardData {
     createdAt: 0,
     backedUpAt: 0,
     voice: DEFAULT_VOICE,
+    age: null,
+    format: DEFAULT_FORMAT,
+    minutes: { on: {}, played: {} },
+    sheetCredit: true,
   };
   d.preset = captureLineup(d);
   d.saved = captureLineup(d);
@@ -69,6 +76,7 @@ function readPlayer(v: unknown): Player | null {
     out: !!v.out,
     inj: !!v.inj,
     una: !!v.una,
+    trn: !!v.trn,
   };
 }
 
@@ -84,16 +92,37 @@ function readPoints(v: unknown): Point[] {
     .map((p) => ({ x: num(p.x), y: num(p.y) }));
 }
 
-function readFormation(v: unknown, custom: readonly Point[], fallback: string): string {
+/** A shape that fits the format, or the format's first shape. */
+function readFormation(v: unknown, custom: readonly Point[], format: FormatKey): string {
   const f = str(v);
-  if (f === CUSTOM_FORMATION) return custom.length === XI_SIZE ? f : fallback;
-  return f in FORMATIONS ? f : fallback;
+  const { size, shapes } = FORMATS[format];
+  if (f === CUSTOM_FORMATION) return custom.length === size ? f : shapes[0];
+  return shapes.includes(f) ? f : shapes[0];
+}
+
+/** A saved plan keeps its own shape. Whether it fits the board is checked when it is loaded. */
+function readPlanFormation(v: unknown, custom: readonly Point[]): string {
+  const f = str(v);
+  if (f === CUSTOM_FORMATION) return custom.length ? f : "";
+  return f in FORMATIONS ? f : "";
+}
+
+const isFormat = (v: unknown): v is FormatKey => typeof v === "string" && v in FORMATS;
+const isAge = (v: unknown): v is AgeKey => AGE_GROUPS.some((a) => a.key === v);
+
+function readMinutes(v: unknown): Minutes {
+  const times = (r: unknown) => {
+    const out: Record<string, number> = {};
+    if (isRec(r)) for (const [k, t] of Object.entries(r)) if (typeof t === "number" && t >= 0) out[k] = t;
+    return out;
+  };
+  return isRec(v) ? { on: times(v.on), played: times(v.played) } : { on: {}, played: {} };
 }
 
 function readLineup(v: unknown): Lineup | null {
   if (!isRec(v) || !isRec(v.xi)) return null;
   const custom = readPoints(v.custom);
-  return { formation: readFormation(v.formation, custom, DEFAULT_FORMATION), xi: readXI(v.xi), bench: ids(v.bench), custom };
+  return { formation: readPlanFormation(v.formation, custom), xi: readXI(v.xi), bench: ids(v.bench), custom };
 }
 
 function readNamedLineup(v: unknown): NamedLineup | null {
@@ -113,11 +142,13 @@ export function readBoard(raw: unknown): BoardData | null {
   const custom = readPoints(raw.custom);
   const style = str(raw.nameStyle);
   const colour = num(raw.colour);
+  // Boards from before formats existed were all 11-a-side.
+  const format = isFormat(raw.format) ? raw.format : DEFAULT_FORMAT;
   return {
     team: str(raw.team),
     season: str(raw.season),
     fixture: str(raw.fixture),
-    formation: readFormation(raw.formation, custom, DEFAULT_FORMATION),
+    formation: readFormation(raw.formation, custom, format),
     players: raw.players.map(readPlayer).filter(notNull),
     xi: readXI(raw.xi),
     bench: ids(raw.bench),
@@ -136,6 +167,10 @@ export function readBoard(raw: unknown): BoardData | null {
     createdAt: num(raw.createdAt),
     backedUpAt: num(raw.backedUpAt),
     voice: isVoice(raw.voice) ? raw.voice : DEFAULT_VOICE,
+    age: isAge(raw.age) ? raw.age : null,
+    format,
+    minutes: readMinutes(raw.minutes),
+    sheetCredit: raw.sheetCredit !== false,
   };
 }
 

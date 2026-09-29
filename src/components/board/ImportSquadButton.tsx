@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { CLUB, CONFIRM } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
+import { DEFAULT_VOICE } from "@/constants/content/landing";
 import { readBoard } from "@/lib/board/storage";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
@@ -18,7 +19,7 @@ export function ImportSquadButton({ size = "tiny" }: ImportSquadButtonProps) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   // On the start screen there is no board yet, so the gaffer is the one picked last.
-  const say = GAFFER[state.data.players.length ? state.data.voice : readVoicePref()];
+  const say = GAFFER[state.data.players.length ? state.data.voice : (readVoicePref() ?? DEFAULT_VOICE)];
 
   async function importFile(file: File) {
     let raw: unknown;

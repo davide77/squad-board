@@ -3,12 +3,13 @@
 import { useId } from "react";
 import { CONFIRM, NAME_STYLES, SHAPE } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
-import { CUSTOM_FORMATION, FORMATION_NAMES } from "@/constants/football";
-import { matchUnderway, unsaved } from "@/lib/board/queries";
+import { CUSTOM_FORMATION, FORMATS } from "@/constants/football";
+import { matchUnderway, planName, teamSize, unsaved } from "@/lib/board/queries";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ControlRow, Panel } from "./Panel";
 import { Pitch } from "./Pitch";
+import { useCopySheet } from "./useCopySheet";
 
 export function ShapePanel() {
   const { state, act } = useBoard();
@@ -17,9 +18,12 @@ export function ShapePanel() {
   const isCustom = data.formation === CUSTOM_FORMATION;
   const dirty = unsaved(data);
   const styleLabel = (NAME_STYLES.find((o) => o.key === data.nameStyle) ?? NAME_STYLES[0]).label;
+  const plan = planName(data);
+  const shapes = [...FORMATS[data.format].shapes, CUSTOM_FORMATION];
+  const copySheet = useCopySheet();
 
   function backToStrongest() {
-    if (data.preset && matchUnderway(data) && !window.confirm(GAFFER[data.voice].matchUnderway)) return;
+    if (data.preset && matchUnderway(data) && !window.confirm(GAFFER[data.voice].matchUnderway(plan))) return;
     act({ type: "backToStrongest" });
   }
 
@@ -28,7 +32,7 @@ export function ShapePanel() {
   }
 
   return (
-    <Panel heading={SHAPE.heading} count={SHAPE.xiCount(Object.keys(data.xi).length)}>
+    <Panel heading={SHAPE.heading} count={SHAPE.xiCount(Object.keys(data.xi).length, teamSize(data))}>
       <div className="is-flex is-flex-wrap is-align-center has-gap-2 has-mb-3">
         <label htmlFor={selectId} className="sr-only">
           {SHAPE.formationLabel}
@@ -39,7 +43,7 @@ export function ShapePanel() {
           value={data.formation}
           onChange={(e) => act({ type: "setFormation", name: e.target.value })}
         >
-          {FORMATION_NAMES.map((n) => (
+          {shapes.map((n) => (
             <option key={n} value={n}>
               {n}
             </option>
@@ -64,11 +68,14 @@ export function ShapePanel() {
         <Button size="tiny" variant={dirty ? "primary" : "quiet"} onClick={() => act({ type: "saveLineup" })}>
           {dirty ? SHAPE.saveLineup : SHAPE.lineupSaved}
         </Button>
+        <Button size="tiny" variant="primary" onClick={copySheet}>
+          {SHAPE.copySheet}
+        </Button>
         <Button size="tiny" onClick={() => act({ type: "setStrongest" })}>
-          {SHAPE.setStrongest}
+          {SHAPE.setPlan(plan)}
         </Button>
         <Button size="tiny" onClick={backToStrongest}>
-          {SHAPE.backToStrongest}
+          {SHAPE.backToPlan(plan)}
         </Button>
         <Button size="tiny" onClick={newMatchday}>
           {SHAPE.newMatchday}

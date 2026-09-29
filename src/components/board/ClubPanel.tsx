@@ -1,10 +1,11 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useId, type CSSProperties } from "react";
 import { KIT_COLOURS } from "@/constants/brand";
 import { CLUB, CONFIRM } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { VOICES, type VoiceKey } from "@/constants/content/landing";
+import { AGE_GROUPS, FORMAT_KEYS, FORMATS, type AgeKey, type FormatKey } from "@/constants/football";
 import { exportSquadFile } from "@/lib/board/files";
 import { clearStored, emptyData } from "@/lib/board/storage";
 import { writeVoicePref } from "@/lib/voice";
@@ -16,6 +17,8 @@ import { ControlRow, Panel } from "./Panel";
 export function ClubPanel() {
   const { state, act } = useBoard();
   const { data } = state;
+  const ageId = useId();
+  const formatId = useId();
 
   function exportFile() {
     exportSquadFile(data, Date.now());
@@ -37,6 +40,43 @@ export function ClubPanel() {
 
   return (
     <Panel heading={CLUB.heading} className="has-mt-6">
+      <ControlRow label={CLUB.ageLabel}>
+        <label htmlFor={ageId} className="sr-only">
+          {CLUB.ageLabel}
+        </label>
+        <select
+          id={ageId}
+          className="formation-select has-radius-field has-py-1 text-base"
+          value={data.age ?? ""}
+          onChange={(e) => act({ type: "setAge", age: e.target.value as AgeKey })}
+        >
+          {!data.age && (
+            <option value="" disabled>
+              {CLUB.ageNotSet}
+            </option>
+          )}
+          {AGE_GROUPS.map((a) => (
+            <option key={a.key} value={a.key}>
+              {a.label}
+            </option>
+          ))}
+        </select>
+        <label htmlFor={formatId} className="sr-only">
+          {CLUB.formatLabel}
+        </label>
+        <select
+          id={formatId}
+          className="formation-select has-radius-field has-py-1 text-base"
+          value={data.format}
+          onChange={(e) => act({ type: "setFormat", format: e.target.value as FormatKey })}
+        >
+          {FORMAT_KEYS.map((k) => (
+            <option key={k} value={k}>
+              {FORMATS[k].label}
+            </option>
+          ))}
+        </select>
+      </ControlRow>
       <ControlRow label={CLUB.gaffer}>
         {VOICES.map((v) => (
           <Button key={v.key} size="tiny" on={v.key === data.voice} aria-pressed={v.key === data.voice} onClick={() => pickVoice(v.key)}>

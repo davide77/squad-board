@@ -1,7 +1,7 @@
 import { NO_NUMBER, SHEET, SUBS } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { firstName } from "./names";
-import { blocked, byId, canonical, coverFor, slots } from "./queries";
+import { byId, canonical, coverFor, slots } from "./queries";
 import type { BoardData, Player } from "./types";
 
 const pad = (s: string, n: number) => s.padEnd(n, " ");
@@ -35,12 +35,14 @@ export function sheetText(d: BoardData): string {
       if (p) out.push(INDENT + pad(p.num, 3) + p.name);
     }
   }
-  section(out, SHEET.notCalledUp, d.players.filter((p) => p.out && !blocked(p)));
+  // Missed training stays between coach and player: on the sheet it is just not called up.
+  section(out, SHEET.notCalledUp, d.players.filter((p) => p.out && !p.inj && !p.una));
   section(out, SHEET.injured, d.players.filter((p) => p.inj));
   section(out, SHEET.unavailable, d.players.filter((p) => p.una));
 
   if (d.subs.length) {
     out.push("", SHEET.subs, ...d.subs.map((s) => `  ${s.min}' ${s.onName} ${SUBS.for} ${s.offName}`));
   }
+  if (d.sheetCredit) out.push("", SHEET.credit);
   return out.join("\n");
 }

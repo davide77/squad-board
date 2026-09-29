@@ -129,7 +129,7 @@ export const HERO = {
 export const DEMO = {
   crest: "AJ",
   fixture: "Ashford Juniors v Northgate",
-  detail: "Under 11s · home",
+  detail: "Under 14s · home",
   shapesLabel: "Shape",
   minute: (m: string) => `${m}'`,
   minuteLabel: "Match minute",
@@ -158,7 +158,7 @@ export const SHEET_SECTION = {
   copy: "Copy",
   copied: "Copied",
   initials: "Initials only, for groups with people outside the club",
-  chat: "Under 11s parents",
+  chat: "Under 14s parents",
   mailSubject: "Team sheet: Ashford Juniors v Northgate",
   /** Lines of the plain text sheet. It goes out in the coach's name, so it never takes a voice. */
   title: "Ashford Juniors v Northgate (H)",
