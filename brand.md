@@ -154,7 +154,8 @@ All HEX values are canonical. Mirror them exactly in [src/styles/abstracts/_colo
 The kit colour is picked on the board and replaces the default at runtime. Each option carries its own ink so a shirt number stays readable on it. The list lives in `src/constants/brand.ts`.
 
 - **Yellow (default)** `#F2D106`, ink `#0A0A0A`, edge `#C7AB08`.
-- Red `#D93A2B`, Blue `#2E6BD9`, Green `#1FA463`, Sky `#59B6E8`, Claret `#8A2B4A`, Orange `#E8811F`, White `#ECECE8`.
+- Red `#D93A2B`, Blue `#2E6BD9`, Green `#1FA463`, Sky `#59B6E8`, Claret `#8A2B4A`, Orange `#E8811F`, White `#ECECE8`, Pink `#EC4F9B` (ink `#1A0610`, 5.8:1).
+- **The example team plays in Pink.** It opens in a sheet over the start screen, and the colour tells the coach at a glance that this board is not theirs.
 
 ### Accents (subtle, never on logo)
 

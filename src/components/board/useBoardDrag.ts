@@ -47,8 +47,10 @@ export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
     const zone = BOARD_CONFIG.edgeScrollZonePx;
     const step = y < zone ? -1 : y > window.innerHeight - zone ? 1 : 0;
     if (!step) return;
+    // Inside the example sheet the sheet scrolls, not the page.
+    const scroller = rootRef.current?.closest<HTMLElement>("[data-scroller]") ?? window;
     edgeTimer.current = setInterval(
-      () => window.scrollBy(0, step * BOARD_CONFIG.edgeScrollStepPx),
+      () => scroller.scrollBy(0, step * BOARD_CONFIG.edgeScrollStepPx),
       BOARD_CONFIG.edgeScrollIntervalMs,
     );
   }

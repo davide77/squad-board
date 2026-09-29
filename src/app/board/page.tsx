@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SiteHeader } from "@/components/SiteHeader";
 import { BoardClient } from "@/components/board/BoardClient";
 import { LANDING_META } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
@@ -14,8 +15,11 @@ export const metadata: Metadata = {
 
 export default function BoardPage() {
   return (
-    <main id="main">
-      <BoardClient />
-    </main>
+    <>
+      <SiteHeader sticky={false} />
+      <main id="main">
+        <BoardClient />
+      </main>
+    </>
   );
 }

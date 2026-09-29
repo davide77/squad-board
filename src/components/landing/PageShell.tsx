@@ -1,10 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { VISOR_MARK } from "@/constants/brand";
 import { PAGE_SHELL } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
-import { SITE } from "@/constants/site";
+import { SiteHeader } from "../SiteHeader";
 import { LandingFooter } from "./Sections";
 
 interface PageShellProps {
@@ -15,24 +13,16 @@ interface PageShellProps {
 export function PageShell({ children }: PageShellProps) {
   return (
     <>
-      <header className="landing-header">
-        <div className="container is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-py-3">
-          <Link
-            href={ROUTES.home}
-            aria-label={PAGE_SHELL.home}
-            className="hit-area is-inline-flex is-align-center has-gap-3 is-chalk has-font-headline has-font-bold text-3xl leading-tight tracking-number"
-          >
-            <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.headerSize} height={VISOR_MARK.headerSize} priority />
-            <span>{SITE.name}</span>
-          </Link>
+      <SiteHeader
+        action={
           <Link
             href={ROUTES.board}
             className="button button--primary is-inline-flex is-align-center has-font-bold has-radius-field has-py-2 has-px-4 text-md"
           >
             {PAGE_SHELL.cta}
           </Link>
-        </div>
-      </header>
+        }
+      />
       <main id="main" className="container has-py-10">
         <div className="measure-62ch">{children}</div>
       </main>

@@ -1,6 +1,7 @@
 @use '../abstracts' as *;
 
-$display-values: (block, inline, inline-block, grid, inline-grid, hidden);
+// flex is here as well as in _flex.scss so `is-hidden is-md-flex` works: this file loads after _flex.scss.
+$display-values: (block, inline, inline-block, flex, grid, inline-grid, hidden);
 
 @mixin display-utility($name) {
   @if $name == hidden {

@@ -15,7 +15,7 @@ import { ImportSquadButton } from "./ImportSquadButton";
 import { ControlRow, Panel } from "./Panel";
 
 export function ClubPanel() {
-  const { state, act } = useBoard();
+  const { state, act, sandbox } = useBoard();
   const { data } = state;
   const ageId = useId();
   const formatId = useId();
@@ -34,7 +34,8 @@ export function ClubPanel() {
   }
 
   function pickVoice(voice: VoiceKey) {
-    writeVoicePref(voice);
+    // Trying a gaffer on the example team is not choosing one.
+    if (!sandbox) writeVoicePref(voice);
     act({ type: "setVoice", voice });
   }
 
@@ -100,16 +101,21 @@ export function ClubPanel() {
           ))}
         </div>
       </ControlRow>
-      <ControlRow label={CLUB.backupLabel}>
-        <Button size="tiny" onClick={exportFile}>
-          {CLUB.export}
-        </Button>
-        <ImportSquadButton />
-        <Button size="tiny" variant="quiet" onClick={wipe}>
-          {CLUB.wipe}
-        </Button>
-      </ControlRow>
-      <p className="text-sm is-dimmer has-mt-3">{CLUB.hint}</p>
+      {/* A made-up team has nothing worth keeping, and wiping it would reach the coach's own board. */}
+      {!sandbox && (
+        <>
+          <ControlRow label={CLUB.backupLabel}>
+            <Button size="tiny" onClick={exportFile}>
+              {CLUB.export}
+            </Button>
+            <ImportSquadButton />
+            <Button size="tiny" variant="quiet" onClick={wipe}>
+              {CLUB.wipe}
+            </Button>
+          </ControlRow>
+          <p className="text-sm is-dimmer has-mt-3">{CLUB.hint}</p>
+        </>
+      )}
     </Panel>
   );
 }

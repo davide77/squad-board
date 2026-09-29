@@ -18,6 +18,8 @@ export const KIT_COLOURS: readonly KitColour[] = [
   { name: "Claret", kit: "#8A2B4A", ink: "#FFFFFF", edge: "#6B2039" },
   { name: "Orange", kit: "#E8811F", ink: "#1A0D02", edge: "#B96517" },
   { name: "White", kit: "#ECECE8", ink: "#0A0A0A", edge: "#B9B9B3" },
+  // Added last so a colour saved on a board keeps its place. The example team plays in it.
+  { name: "Pink", kit: "#EC4F9B", ink: "#1A0610", edge: "#BD3F7C" },
 ];
 
 /**
@@ -57,8 +59,8 @@ export const LOGO = {
 export const VISOR_MARK = {
   src: "/brand/gafferboard-visor.svg",
   size: 240,
-  /** Shown at this size in the landing header. */
-  headerSize: 40,
+  /** Drawn at this size in the site header from bp(md), spacer(11). .site-logo in _landing.scss takes it to 64px on a phone. */
+  headerSize: 80,
 } as const;
 
 /**
