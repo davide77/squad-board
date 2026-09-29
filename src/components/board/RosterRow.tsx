@@ -4,7 +4,8 @@ import type { KeyboardEvent } from "react";
 import { GLYPHS, NO_NUMBER, SQUAD } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { POSITIONS } from "@/constants/football";
-import { blocked, positionCodes, reasonOf, where } from "@/lib/board/queries";
+import { blocked, phaseOf, playedMinutes, positionCodes, reasonOf, started, where } from "@/lib/board/queries";
+import { useNow } from "@/lib/hooks";
 import type { Player } from "@/lib/board/types";
 import { Button } from "../Button";
 import { cx } from "../cx";
@@ -21,6 +22,8 @@ export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
   const { data, ui } = state;
   const status = reasonOf(p) ?? where(data, p.id);
   const isBlocked = blocked(p);
+  const now = useNow(data.clock.running, BOARD_CONFIG.minutesTickMs);
+  const minutes = started(data) && !p.out ? SQUAD.minutes(playedMinutes(data, p.id, now)) : "";
 
   function onGripKey(e: KeyboardEvent) {
     const step = e.key === "ArrowUp" ? -1 : e.key === "ArrowDown" ? 1 : 0;
@@ -75,7 +78,7 @@ export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
         <span className="is-flex-1 is-min-w-0">
           <b className="roster-row__name is-block has-font-medium is-truncate">{p.name}</b>
           <span className="has-font-headline text-xs tracking-tag is-dimmer">
-            {p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition}
+            {[p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition, minutes].filter(Boolean).join(" · ")}
           </span>
         </span>
         <span
@@ -106,7 +109,9 @@ interface PlayerEditorProps {
 }
 
 function PlayerEditor({ player: p }: PlayerEditorProps) {
-  const { act } = useBoard();
+  const { state, act } = useBoard();
+  // Leaving someone out for missing training is a rule of competitive football.
+  const competitive = phaseOf(state.data) === "competitive";
   return (
     <li className="roster-editor has-pt-1 has-pb-4">
       <p className="text-sm is-dim has-mb-2">{SQUAD.positionsLabel}</p>
@@ -154,6 +159,11 @@ function PlayerEditor({ player: p }: PlayerEditorProps) {
         <Button size="tiny" onClick={() => act({ type: "toggleUnavailable", id: p.id })}>
           {p.una ? SQUAD.markAvailable : SQUAD.markUnavailable}
         </Button>
+        {(competitive || p.trn) && (
+          <Button size="tiny" onClick={() => act({ type: "toggleTraining", id: p.id })}>
+            {p.trn ? SQUAD.clearTraining : SQUAD.markTraining}
+          </Button>
+        )}
         <Button size="tiny" variant="quiet" onClick={() => act({ type: "removePlayer", id: p.id })}>
           {SQUAD.remove}
         </Button>

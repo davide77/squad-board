@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { HEADER } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { fmtClock, started } from "@/lib/board/queries";
+import { useNow } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
@@ -11,13 +11,7 @@ import { useBoard } from "./BoardProvider";
 export function MatchClock() {
   const { state, act } = useBoard();
   const { clock } = state.data;
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    if (!clock.running) return;
-    const timer = setInterval(() => setNow(Date.now()), BOARD_CONFIG.clockTickMs);
-    return () => clearInterval(timer);
-  }, [clock.running]);
+  const now = useNow(clock.running, BOARD_CONFIG.clockTickMs);
 
   const ms = clock.running ? clock.base + Math.max(0, now - clock.since) : clock.base;
   const isOn = started(state.data);

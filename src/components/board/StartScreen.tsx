@@ -6,7 +6,9 @@ import Link from "next/link";
 import { VISOR_MARK } from "@/constants/brand";
 import { BOARD_CONFIG } from "@/constants/config";
 import { START } from "@/constants/content/board";
-import { GAFFER } from "@/constants/content/gaffer";
+import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
+import { GAFFER, PHASE_GAFFER } from "@/constants/content/gaffer";
+import { DEFAULT_VOICE } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
 import { SITE } from "@/constants/site";
 import { buildBoard, exampleBoard, parseSquad, startingCount } from "@/lib/board/start";
@@ -24,21 +26,28 @@ export function StartScreen() {
   const squadId = useId();
   const countId = useId();
   const [squadText, setSquadText] = useState("");
-  // The gaffer picked on the landing page comes along to the new board.
-  const [voice] = useState(readVoicePref);
+  const ageId = useId();
+  const [age, setAge] = useState<AgeKey | "">("");
+  const group = AGE_GROUPS.find((a) => a.key === age) ?? null;
+  // The gaffer picked on the landing page comes along. Without one, the age group decides.
+  const [picked] = useState(readVoicePref);
+  const voice = picked ?? (group ? PHASE_GAFFER[group.phase] : DEFAULT_VOICE);
   const say = GAFFER[voice];
+  const size = group ? FORMATS[group.format].size : 0;
 
   const squad = parseSquad(squadText);
   const capped = squadText.split(/\r?\n/).filter((l) => l.trim()).length > BOARD_CONFIG.pasteMaxPlayers;
-  const count = squad.length
-    ? START.count(squad.length, startingCount(squad.length)) + (capped ? ` ${START.countCapped(BOARD_CONFIG.pasteMaxPlayers)}` : "")
-    : START.countNone;
+  const count = !squad.length
+    ? START.countNone
+    : !group
+      ? START.countNeedsAge
+      : START.count(squad.length, startingCount(squad.length, size)) + (capped ? ` ${START.countCapped(BOARD_CONFIG.pasteMaxPlayers)}` : "");
 
   function pickTeam(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!squad.length) return;
+    if (!squad.length || !group) return;
     const team = String(new FormData(e.currentTarget).get("team") ?? "");
-    act({ type: "load", data: { ...buildBoard(team, squad, newId), voice }, notice: say.teamPicked });
+    act({ type: "load", data: { ...buildBoard(team, squad, newId, group.key), voice }, notice: say.teamPicked });
     window.scrollTo({ top: 0 });
   }
 
@@ -76,6 +85,28 @@ export function StartScreen() {
           autoComplete="off"
         />
 
+        <label htmlFor={ageId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
+          {START.ageLabel}
+        </label>
+        <select
+          id={ageId}
+          name="age"
+          className="formation-select is-w-full has-radius-field has-py-2 text-md"
+          value={age}
+          required
+          onChange={(e) => setAge(e.target.value as AgeKey)}
+        >
+          <option value="" disabled>
+            {START.agePrompt}
+          </option>
+          {AGE_GROUPS.map((a) => (
+            <option key={a.key} value={a.key}>
+              {START.ageOption(a.label, FORMATS[a.format].label)}
+            </option>
+          ))}
+        </select>
+        <p className="text-sm is-dimmer has-mt-1 has-mb-4">{START.ageHint}</p>
+
         <label htmlFor={squadId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
           {START.squadLabel}
         </label>
@@ -96,7 +127,7 @@ export function StartScreen() {
           {count}
         </p>
 
-        <Button type="submit" variant="primary" disabled={!squad.length}>
+        <Button type="submit" variant="primary" disabled={!squad.length || !group}>
           {START.submit}
         </Button>
       </form>

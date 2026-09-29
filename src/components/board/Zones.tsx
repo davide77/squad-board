@@ -3,7 +3,10 @@
 import type { ReactNode } from "react";
 import { CONFIRM, GLYPHS, NO_NUMBER, ZONES } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
-import { byId, where } from "@/lib/board/queries";
+import { BOARD_CONFIG } from "@/constants/config";
+import { byId, phaseOf, started, where, yetToPlay } from "@/lib/board/queries";
+import { firstName } from "@/lib/board/names";
+import { useNow } from "@/lib/hooks";
 import type { Player, Zone } from "@/lib/board/types";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
@@ -33,9 +36,11 @@ function DropZone({ zone, children }: DropZoneProps) {
 
 export function BenchPanel() {
   const { state } = useBoard();
-  const bench = state.data.bench.map((id) => byId(state.data, id)).filter((p): p is Player => !!p);
+  const { data } = state;
+  const bench = data.bench.map((id) => byId(data, id)).filter((p): p is Player => !!p);
   return (
     <Panel heading={ZONES.bench} count={bench.length}>
+      {phaseOf(data) === "development" && started(data) && <FairTime />}
       <DropZone zone="bench">
         {bench.length ? (
           bench.map((p) => <PlayerChip key={p.id} player={p} onBench />)
@@ -73,6 +78,24 @@ function RemovedChip({ player }: RemovedChipProps) {
         {GLYPHS.close}
       </button>
     </span>
+  );
+}
+
+/**
+ * Development football is about everyone getting a go, so once the clock is running
+ * the Gaffer keeps an eye on who is still waiting, and says so when nobody is.
+ */
+function FairTime() {
+  const { state } = useBoard();
+  const { data } = state;
+  const now = useNow(data.clock.running, BOARD_CONFIG.minutesTickMs);
+  const say = GAFFER[data.voice];
+  const waiting = yetToPlay(data, now);
+  const line = waiting.length ? say.waiting(firstName(waiting[0].name), waiting.length - 1) : say.everyonePlayed;
+  return (
+    <p className={cx("text-base has-font-semibold has-mb-2", waiting.length ? "is-chalk" : "is-kit")} role="status">
+      {line}
+    </p>
   );
 }
 

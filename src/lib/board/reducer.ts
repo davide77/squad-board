@@ -2,7 +2,15 @@ import { NAME_STYLES } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import type { VoiceKey } from "@/constants/content/landing";
 import { BOARD_CONFIG } from "@/constants/config";
-import { CUSTOM_FORMATION, DEFAULT_FORMATION, type PositionKey, type Side } from "@/constants/football";
+import {
+  AGE_GROUPS,
+  CUSTOM_FORMATION,
+  FORMATS,
+  type AgeKey,
+  type FormatKey,
+  type PositionKey,
+  type Side,
+} from "@/constants/football";
 import { firstName } from "./names";
 import {
   bestFree,
@@ -11,13 +19,18 @@ import {
   canonical,
   captureLineup,
   elapsed,
+  fitsFormat,
   isShape,
   onBench,
+  phaseOf,
+  planName,
   slotOf,
   slots,
   slotsFor,
   started,
+  teamSize,
 } from "./queries";
+import { placeStarters } from "./start";
 import { emptyData, loadStored } from "./storage";
 import type { BoardData, BoardState, DropTarget, Lineup, Player, Point, UiState } from "./types";
 
@@ -46,6 +59,10 @@ export type Action =
   | { type: "togglePos"; pos: PositionKey }
   | { type: "setSide"; side: Side | null }
   | { type: "setVoice"; voice: VoiceKey }
+  | { type: "setAge"; age: AgeKey }
+  | { type: "setFormat"; format: FormatKey }
+  | { type: "toggleTraining"; id: string }
+  | { type: "toggleSheetCredit" }
   | { type: "toggleInjured"; id: string }
   | { type: "toggleUnavailable"; id: string }
   | { type: "setCalledUp"; id: string; called: boolean }
@@ -88,10 +105,13 @@ const INITIAL_UI: UiState = {
 
 /* ---------- opening the board ---------- */
 
+/** Puts a saved line-up on the board. Returns how many gaps were filled, or -1 when it belongs to another format. */
 function applyLineup(d: BoardData, l: Lineup, fillGaps = true): number {
+  // An 11-a-side plan never lands on a 7-a-side board.
+  if (!fitsFormat(l, d)) return -1;
   d.custom = structuredClone(l.custom);
   d.formation =
-    l.formation === CUSTOM_FORMATION ? (d.custom.length ? CUSTOM_FORMATION : d.formation) : isShape(l.formation) ? l.formation : d.formation;
+    l.formation === CUSTOM_FORMATION ? (d.custom.length ? CUSTOM_FORMATION : d.formation) : isShape(l.formation, d.format) ? l.formation : d.formation;
   d.xi = {};
   for (const [k, pid] of Object.entries(l.xi)) {
     const p = byId(d, pid);
@@ -158,6 +178,7 @@ function refusal(d: BoardData, p: Player | null): string | null {
   const say = GAFFER[d.voice];
   if (p.inj) return say.cantPickInjured(n);
   if (p.una) return say.cantPickUnavailable(n);
+  if (p.trn) return say.cantPickTraining(n);
   if (p.out) return say.cantPickNotCalledUp(n);
   return null;
 }
@@ -217,7 +238,7 @@ function drop(d: BoardData, pid: string, target: DropTarget, now: number, note: 
 }
 
 function setFormation(d: BoardData, ui: UiState, name: string) {
-  if (!isShape(name) || name === d.formation) return;
+  if (!isShape(name, d.format) || name === d.formation) return;
   if (name === CUSTOM_FORMATION) {
     // start the custom shape as a copy of whatever is on the board now
     d.custom = slots(d).map(({ x, y }) => ({ x, y }));
@@ -236,6 +257,48 @@ function setFormation(d: BoardData, ui: UiState, name: string) {
   });
 }
 
+/**
+ * Moves the board to another format. The players on the pitch stay on if there is room,
+ * placed where they suit; anyone who no longer fits goes to the bench, and empty
+ * places are filled from the bench. The strongest side is kept per format, so the old
+ * one is replaced by what is on the board now.
+ */
+function setFormat(d: BoardData, ui: UiState, format: FormatKey) {
+  if (format === d.format) return;
+  const seated = canonical(slots(d))
+    .map((s) => byId(d, d.xi[s.id]))
+    .filter((p): p is Player => !!p);
+  const bench = d.bench.map((id) => byId(d, id)).filter((p): p is Player => !!p);
+  d.format = format;
+  d.formation = FORMATS[format].shapes[0];
+  d.custom = [];
+  d.xi = {};
+  ui.posMode = false;
+  const left = placeStarters(d, [...seated, ...bench].slice(0, teamSize(d)));
+  const rest = [...seated, ...bench].slice(teamSize(d));
+  d.bench = [...left, ...rest].map((p) => p.id);
+  d.preset = captureLineup(d);
+  d.saved = captureLineup(d);
+}
+
+/* ---------- match time ---------- */
+
+/**
+ * Keeps each player's match time in step with who is on the pitch. Runs after every
+ * change: anyone new on the pitch starts a spell at the current clock time, anyone
+ * who came off banks theirs. Before kick-off the clock reads 0, so nothing is banked.
+ */
+function syncMinutes(d: BoardData, now: number) {
+  const t = elapsed(d, now);
+  const onPitch = new Set(Object.values(d.xi));
+  for (const [pid, since] of Object.entries(d.minutes.on)) {
+    if (onPitch.has(pid)) continue;
+    d.minutes.played[pid] = (d.minutes.played[pid] ?? 0) + Math.max(0, t - since);
+    delete d.minutes.on[pid];
+  }
+  for (const pid of onPitch) if (!(pid in d.minutes.on)) d.minutes.on[pid] = t;
+}
+
 function numberOrder(a: Player, b: Player): number {
   const an = parseInt(a.num, 10);
   const bn = parseInt(b.num, 10);
@@ -248,6 +311,12 @@ function numberOrder(a: Player, b: Player): number {
 /* ---------- reducer ---------- */
 
 export function boardReducer(state: BoardState, action: StampedAction): BoardState {
+  const next = reduce(state, action);
+  if (next !== state && next.data !== state.data) syncMinutes(next.data, action.now);
+  return next;
+}
+
+function reduce(state: BoardState, action: StampedAction): BoardState {
   // Pointer tracking fires on every move, so it skips the full copy below.
   if (action.type === "dragOver") {
     const same = JSON.stringify(state.ui.dropTarget) === JSON.stringify(action.target);
@@ -305,6 +374,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
 
     case "clockReset":
       d.clock = { running: false, base: 0, since: 0 };
+      d.minutes = { on: {}, played: {} };
       return next;
 
     case "setFormation":
@@ -320,7 +390,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       return next;
 
     case "resetCustom":
-      d.custom = slotsFor(DEFAULT_FORMATION, []).map(({ x, y }) => ({ x, y }));
+      d.custom = slotsFor(FORMATS[d.format].shapes[0], []).map(({ x, y }) => ({ x, y }));
       note(say.shapeReset);
       return next;
 
@@ -417,6 +487,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       // one reason at a time
       if (p.inj) {
         p.una = false;
+        p.trn = false;
         p.out = true;
         detach(d, p.id);
       }
@@ -430,10 +501,25 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       p.una = !p.una;
       if (p.una) {
         p.inj = false;
+        p.trn = false;
         p.out = true;
         detach(d, p.id);
       }
       note(p.una ? say.markedUnavailable(firstName(p.name)) : say.availableAgain(firstName(p.name)));
+      return next;
+    }
+
+    case "toggleTraining": {
+      const p = player(action.id);
+      if (!p) return state;
+      p.trn = !p.trn;
+      if (p.trn) {
+        p.inj = false;
+        p.una = false;
+        p.out = true;
+        detach(d, p.id);
+      }
+      note(p.trn ? say.markedTraining(firstName(p.name)) : say.trainingCleared(firstName(p.name)));
       return next;
     }
 
@@ -502,6 +588,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
         out: false,
         inj: false,
         una: false,
+        trn: false,
       });
       ui.editing = action.id;
       return next;
@@ -544,13 +631,37 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
     case "newMatchday":
       for (const p of d.players) {
         p.out = true;
+        // training is a weekly thing, so it starts clean too
+        p.trn = false;
         detach(d, p.id);
       }
       d.subs = [];
       d.clock = { running: false, base: 0, since: 0 };
+      d.minutes = { on: {}, played: {} };
       ui.selected = null;
       closePicker();
       note(say.newMatchday);
+      return next;
+
+    case "setAge": {
+      const group = AGE_GROUPS.find((a) => a.key === action.age);
+      if (!group) return state;
+      d.age = group.key;
+      setFormat(d, ui, group.format);
+      closePicker();
+      note(GAFFER[d.voice].ageSet(group.label, FORMATS[d.format].label, group.phase === "development"));
+      return next;
+    }
+
+    case "setFormat":
+      if (action.format === d.format) return state;
+      setFormat(d, ui, action.format);
+      closePicker();
+      note(GAFFER[d.voice].formatSet(FORMATS[d.format].label));
+      return next;
+
+    case "toggleSheetCredit":
+      d.sheetCredit = !d.sheetCredit;
       return next;
 
     case "setVoice":
@@ -570,18 +681,18 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
     case "setStrongest":
       d.preset = captureLineup(d);
       d.saved = captureLineup(d);
-      note(say.strongestSaved);
+      note(say.planSaved(planName(d), phaseOf(d) === "competitive"));
       return next;
 
     case "backToStrongest": {
-      if (!d.preset) {
-        note(say.noStrongest);
+      if (!d.preset || !fitsFormat(d.preset, d)) {
+        note(say.noPlan(planName(d)));
         return next;
       }
       const changes = applyLineup(d, d.preset);
       ui.selected = null;
       closePicker();
-      note(changes ? say.strongestWithChanges(changes) : say.backToStrongest);
+      note(changes > 0 ? say.planWithChanges(planName(d), changes) : say.backToPlan(planName(d)));
       return next;
     }
 
@@ -595,7 +706,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
       const l = d.lineups[action.index];
       if (!l) return state;
       // A named plan loads as it was saved. Gaps are left for the coach to fill.
-      applyLineup(d, l, false);
+      if (applyLineup(d, l, false) < 0) return state;
       ui.selected = null;
       closePicker();
       note(say.loaded(l.name));

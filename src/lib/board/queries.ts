@@ -1,17 +1,52 @@
 import {
+  AGE_GROUPS,
   CUSTOM_BANDS,
   CUSTOM_FORMATION,
   DEFAULT_FORMATION,
   FORMATIONS,
+  FORMATS,
   ROLE_FIT,
   SIDED_CODES,
+  type AgeGroup,
+  type FormatKey,
+  type Phase,
   type Role,
   type Side,
 } from "@/constants/football";
 import type { BoardData, Lineup, Player, Point, Slot } from "./types";
 
-export function isShape(name: string): boolean {
-  return name === CUSTOM_FORMATION || name in FORMATIONS;
+/** A shape this format can use: one of its own, or the custom shape. */
+export function isShape(name: string, format: FormatKey): boolean {
+  return name === CUSTOM_FORMATION || FORMATS[format].shapes.includes(name);
+}
+
+/** How many play at once on this board. */
+export function teamSize(d: BoardData): number {
+  return FORMATS[d.format].size;
+}
+
+export function ageGroup(d: BoardData): AgeGroup | null {
+  return AGE_GROUPS.find((a) => a.key === d.age) ?? null;
+}
+
+/** Boards made before age groups existed were 11-a-side league boards, so competitive. */
+export function phaseOf(d: BoardData): Phase {
+  return ageGroup(d)?.phase ?? "competitive";
+}
+
+/**
+ * What the coach's first-choice side is called. Development football has a starting
+ * line-up, not a strongest side. XI only when there really are eleven.
+ */
+export function planName(d: BoardData): "starting line-up" | "strongest XI" | "strongest team" {
+  if (phaseOf(d) === "development") return "starting line-up";
+  return d.format === "11v11" ? "strongest XI" : "strongest team";
+}
+
+/** Whether a saved line-up belongs to this board's format. */
+export function fitsFormat(l: Lineup, d: BoardData): boolean {
+  if (l.formation === CUSTOM_FORMATION) return l.custom.length === teamSize(d);
+  return FORMATS[d.format].shapes.includes(l.formation);
 }
 
 function bandOf(y: number): number {
@@ -96,14 +131,15 @@ export function positionCodes(p: Player): string[] {
   return p.pos.map((k) => (p.side && SIDED_CODES[k]?.[p.side]) || k);
 }
 
-// Injured and unavailable both put a player beyond selection. "out" alone is the coach's choice.
+// Injured, unavailable and missed training all put a player beyond selection this week.
+// "out" alone is the coach's choice.
 export function blocked(p: Player): boolean {
-  return p.inj || p.una;
+  return p.inj || p.una || p.trn;
 }
 
-export type Reason = "inj" | "una" | "out";
+export type Reason = "inj" | "una" | "trn" | "out";
 export function reasonOf(p: Player): Reason | null {
-  return p.inj ? "inj" : p.una ? "una" : p.out ? "out" : null;
+  return p.inj ? "inj" : p.una ? "una" : p.trn ? "trn" : p.out ? "out" : null;
 }
 
 function benchFirst(d: BoardData) {
@@ -170,6 +206,24 @@ export function matchUnderway(d: BoardData): boolean {
 
 export function elapsed(d: BoardData, now: number): number {
   return d.clock.base + (d.clock.running ? now - d.clock.since : 0);
+}
+
+/** Match time a player has had so far, in milliseconds. */
+export function playedMs(d: BoardData, pid: string, now: number): number {
+  const since = d.minutes.on[pid];
+  return (d.minutes.played[pid] ?? 0) + (since === undefined ? 0 : Math.max(0, elapsed(d, now) - since));
+}
+
+/** Whole minutes played, as the coach reads them. */
+export function playedMinutes(d: BoardData, pid: string, now: number): number {
+  return Math.floor(playedMs(d, pid, now) / 60000);
+}
+
+/** Called-up players who have not been on at all yet, bench first. */
+export function yetToPlay(d: BoardData, now: number): Player[] {
+  return d.players
+    .filter((p) => !p.out && !blocked(p) && playedMs(d, p.id, now) === 0 && !(p.id in d.minutes.on))
+    .sort(benchFirst(d));
 }
 
 export function fmtClock(ms: number): string {

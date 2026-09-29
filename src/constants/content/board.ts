@@ -32,7 +32,7 @@ export const HEADER = {
 
 export const SHAPE = {
   heading: "Shape",
-  xiCount: (n: number) => `${n} of 11 on`,
+  xiCount: (n: number, size: number) => `${n} of ${size} on`,
   formationLabel: "Formation",
   movePositions: "Move positions",
   doneMoving: "Done moving",
@@ -42,13 +42,14 @@ export const SHAPE = {
   teamLabel: "Team",
   saveLineup: "Save line-up",
   lineupSaved: "Line-up saved",
-  setStrongest: "Set as strongest XI",
-  backToStrongest: "Back to strongest XI",
+  setPlan: (plan: string) => `Set as ${plan}`,
+  backToPlan: (plan: string) => `Back to ${plan}`,
+  copySheet: "Copy team sheet",
   newMatchday: "New matchday",
   clearPitch: "Clear the pitch",
   shirtsLabel: "Shirts",
-  hideCover: "Hide cover names",
-  showCover: "Show cover names",
+  hideCover: "Hide bench cover",
+  showCover: "Show bench cover",
   slotEmpty: (role: string) => `${role}, empty`,
   /** Starts with what the slot shows, number then name, so voice control matches it. */
   slotFilled: (num: number | string, name: string, role: string) => `${num} ${name}, ${role}`,
@@ -90,6 +91,7 @@ export const SQUAD = {
     out: "Not called up",
     inj: "Injured",
     una: "Unavailable",
+    trn: "Missed training",
   },
   reorder: (name: string) => `Reorder ${name}. Drag, or use the up and down arrow keys.`,
   calledUp: (name: string) => `${name} called up`,
@@ -109,6 +111,10 @@ export const SQUAD = {
   markFit: "Mark fit again",
   markUnavailable: "Mark unavailable",
   markAvailable: "Mark available",
+  markTraining: "Missed training",
+  /** Match time so far, after the positions, once the clock has started. */
+  minutes: (m: number) => `${m} min`,
+  clearTraining: "Was at training",
   remove: "Remove from squad",
   done: "Done",
   addNumberLabel: "Shirt number",
@@ -121,7 +127,7 @@ export const SQUAD = {
   warnNoPosition: (names: readonly string[]) =>
     `${names.join(", ")} ${names.length > 1 ? "have" : "has"} no position set.`,
   /** Replaces the list of names when most of a fresh squad has no positions yet. */
-  noPositionCount: (n: number) => `${n} players have no position yet. Add them under Edit and the cover names fill in.`,
+  noPositionCount: (n: number) => `${n} players have no position yet. Add them under Edit and the bench cover fills in.`,
 } as const;
 
 /** The first screen on an empty board. */
@@ -130,6 +136,11 @@ export const START = {
   heading: "Create your team",
   intro: "Paste or type your squad, one player per line. Shirt numbers and positions are optional. You can change anything later.",
   teamLabel: "Team name",
+  ageLabel: "Age group",
+  agePrompt: "Choose an age group",
+  ageOption: (label: string, format: string) => `${label} \u00b7 ${format}`,
+  ageHint: "Sets the format, and whether everyone gets equal time. You can change both later.",
+  countNeedsAge: "Choose an age group first.",
   teamPlaceholder: "e.g. Riverside Under 10s",
   squadLabel: "Your squad",
   squadPlaceholder: "1 Alex GK\n2 Charlie\n3 Sam\n4 Jamie\n5 Riley\n...",
@@ -163,6 +174,8 @@ export const KEEP = {
 /** The made-up team a coach can try the board with. The players come from the landing demo. */
 export const EXAMPLE = {
   team: "Ashford Juniors",
+  /** Eleven players in the example, so an 11-a-side age group. */
+  age: "U14",
   fixture: "v Northgate, home, 10:30",
   note: "This is an example team. Play with it as much as you like.",
   ownTeam: "Start my own team",
@@ -177,7 +190,7 @@ export const SAVED = {
   heading: "Saved line-ups",
   nameLabel: "Name this line-up",
   namePlaceholder: "e.g. Plan A, press high",
-  save: "Save XI",
+  save: "Save plan",
   load: "Load",
   delete: (name: string) => `Delete ${name}`,
   defaultName: (formation: string) => `${formation} line-up`,
@@ -185,7 +198,10 @@ export const SAVED = {
 
 export const SHEET = {
   heading: "Team sheet",
-  hint: "Copies the XI with cover names, the bench and any substitutions, ready to paste into a message.",
+  hint: "Copies the team with bench cover, the bench and any substitutions, ready to paste into a message.",
+  /** The last line of the copied sheet, when the coach leaves it on. How other coaches find Gafferboard. */
+  credit: "Made with gafferboard.com",
+  creditLabel: "End with \u201cMade with gafferboard.com\u201d",
   copy: "Copy team sheet",
   sharePicture: "Share line-up picture",
   pictureHint: "A picture of the pitch for the parents' group. Names show the way your shirts are labelled.",
@@ -201,6 +217,9 @@ export const SHEET = {
 export const CLUB = {
   heading: "Your club",
   gaffer: "Gaffer",
+  ageLabel: "Age group",
+  formatLabel: "Format",
+  ageNotSet: "Not set",
   colourLabel: "Colour",
   backupLabel: "Backup",
   export: "Export squad file",
@@ -221,6 +240,8 @@ export const PICKER = {
   suited: (role: string) => `Suited to ${role}`,
   canCover: (role: string) => `Could fill in at ${role}`,
   outOfPosition: "Out of position",
+  noPosition: "No position set",
+  missedTraining: "Missed training",
   elsewhere: "Already on the pitch, swap positions",
   notCalledUp: "Not called up",
   injured: "Injured",

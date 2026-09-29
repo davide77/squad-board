@@ -1,3 +1,4 @@
+import type { Phase } from "@/constants/football";
 import type { VoiceKey } from "./landing";
 
 // What the Gaffer says on the board, in the way the coach picked (brand.md, "The
@@ -33,10 +34,16 @@ export interface GafferLines {
   readonly everyoneCalledUp: string;
   readonly callUpsCleared: string;
   readonly lineupSaved: string;
-  readonly strongestSaved: string;
-  readonly noStrongest: string;
-  readonly backToStrongest: string;
-  readonly strongestWithChanges: (changes: number) => string;
+  /** `plan` is "starting line-up", "strongest team" or "strongest XI", from the age group and format. */
+  readonly planSaved: (plan: string, competitive: boolean) => string;
+  readonly noPlan: (plan: string) => string;
+  readonly backToPlan: (plan: string) => string;
+  readonly planWithChanges: (plan: string, changes: number) => string;
+  readonly ageSet: (age: string, format: string, development: boolean) => string;
+  readonly formatSet: (format: string) => string;
+  readonly markedTraining: (n: string) => string;
+  readonly trainingCleared: (n: string) => string;
+  readonly cantPickTraining: (n: string) => string;
   readonly loaded: (name: string) => string;
   readonly shapeReset: string;
   readonly copied: string;
@@ -48,6 +55,10 @@ export interface GafferLines {
   readonly unreadable: string;
   readonly notASquad: string;
 
+  // Fair time, under 11s and younger, once the clock has started
+  readonly waiting: (first: string, more: number) => string;
+  readonly everyonePlayed: string;
+
   // Empty states
   readonly benchEmpty: string;
   readonly poolEmpty: string;
@@ -56,10 +67,14 @@ export interface GafferLines {
   readonly nobody: string;
 
   // Confirmations
-  readonly matchUnderway: string;
+  readonly matchUnderway: (plan: string) => string;
 }
 
+/** Who talks on a new board when the coach has not picked: a kind word for the young ones, the hairdryer once results count. */
+export const PHASE_GAFFER: Readonly<Record<Phase, VoiceKey>> = { development: "arm", competitive: "hairdryer" };
+
 const changesWord = (n: number) => `${n} change${n === 1 ? "" : "s"}`;
+const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
   hairdryer: {
@@ -85,10 +100,15 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     everyoneCalledUp: "Everyone's in.",
     callUpsCleared: "Call-ups cleared. Who's in?",
     lineupSaved: "Saved. Good.",
-    strongestSaved: "Strongest XI saved.",
-    noStrongest: "No strongest XI yet. Save one.",
-    backToStrongest: "Strongest XI. Good.",
-    strongestWithChanges: (n) => `Strongest XI. ${changesWord(n)}.`,
+    planSaved: (plan) => `${capital(plan)} saved.`,
+    noPlan: (plan) => `No ${plan} yet. Save one.`,
+    backToPlan: (plan) => `${capital(plan)}. Good.`,
+    planWithChanges: (plan, n) => `${capital(plan)}. ${changesWord(n)}.`,
+    ageSet: (age, format, development) => (development ? `${age}. ${format}. Everyone plays.` : `${age}. ${format}. Play to win.`),
+    formatSet: (format) => `${format}. Sorted.`,
+    markedTraining: (n) => `${n} missed training. Not in the squad.`,
+    trainingCleared: (n) => `${n}'s cleared. Tick the box.`,
+    cantPickTraining: (n) => `${n} missed training. Not this week.`,
     loaded: (name) => `${name} loaded.`,
     shapeReset: "Shape reset.",
     copied: "Copied. Send it.",
@@ -100,13 +120,16 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     unreadable: "Can't read that file. Try another.",
     notASquad: "Wrong file. You want the one ending in -board.json.",
 
+    waiting: (first, more) => (more ? `${first} and ${more} more haven't been on.` : `${first} hasn't been on yet.`),
+    everyonePlayed: "Everyone's played. Good.",
+
     benchEmpty: "Bench is empty. Drop players here.",
     poolEmpty: "Everyone's got a job.",
     subsEmpty: "No changes. Clock first.",
     savedEmpty: "Nothing saved. Have a plan B.",
     nobody: "That's your lot. Make it work.",
 
-    matchUnderway: "Match is on. Back to the strongest XI anyway?",
+    matchUnderway: (plan) => `Match is on. Back to the ${plan} anyway?`,
   },
   arm: {
     welcome: "Welcome, Coach. Let's get your squad in.",
@@ -131,10 +154,17 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     everyoneCalledUp: "Everyone who's fit is called up.",
     callUpsCleared: "Call-ups cleared. Tick who's in this week.",
     lineupSaved: "Line-up saved. Lovely stuff.",
-    strongestSaved: "Saved as your strongest XI. That's the one to beat.",
-    noStrongest: "No strongest XI saved yet. Pick your best side and save it.",
-    backToStrongest: "Back to your strongest XI.",
-    strongestWithChanges: (n) => `Back to your strongest XI, with ${changesWord(n)} for who's missing.`,
+    planSaved: (plan, competitive) =>
+      competitive ? `Saved as your ${plan}. That's the one to beat.` : `Saved as your ${plan}. Everyone knows where they start.`,
+    noPlan: (plan) => `No ${plan} saved yet. Set one up and save it.`,
+    backToPlan: (plan) => `Back to your ${plan}.`,
+    planWithChanges: (plan, n) => `Back to your ${plan}, with ${changesWord(n)} for who's missing.`,
+    ageSet: (age, format, development) =>
+      development ? `${age}, ${format}. Everyone gets a go.` : `${age}, ${format}. Let's go and win it.`,
+    formatSet: (format) => `${format} it is. The team's been moved across.`,
+    markedTraining: (n) => `${n} missed training, so not this week. Back at it next session.`,
+    trainingCleared: (n) => `${n}'s back in contention. Tick the box to call them up.`,
+    cantPickTraining: (n) => `${n} missed training this week. Pick someone else.`,
     loaded: (name) => `${name} loaded. Let's have a look.`,
     shapeReset: "Shape reset to 4-3-3 spacing.",
     copied: "Team sheet copied. Go on, send it.",
@@ -146,12 +176,16 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     unreadable: "That file wouldn't open. Try another one.",
     notASquad: "That's not a squad file. Happens to the best of us. Look for the one ending in -board.json.",
 
+    waiting: (first, more) =>
+      more ? `${first} and ${more} more are still waiting for a go.` : `${first}'s still waiting for a go.`,
+    everyonePlayed: "Everyone's had a go. Proud of that.",
+
     benchEmpty: "Nobody on the bench yet. Drop players here to name your subs.",
     poolEmpty: "Everyone called up has a job. Nobody left out.",
     subsEmpty: "No changes yet. Start the clock, and we'll note the minute of every one.",
     savedEmpty: "Nothing saved yet. A plan B never hurt anybody.",
     nobody: "That's everyone who's fit. You'll make it work.",
 
-    matchUnderway: "There's a match on, Coach. Back to the strongest XI anyway?",
+    matchUnderway: (plan) => `There's a match on, Coach. Back to the ${plan} anyway?`,
   },
 };

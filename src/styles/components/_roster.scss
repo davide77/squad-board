@@ -184,7 +184,9 @@
     font-weight: font-weight(semibold);
   }
 
-  &--una {
+  // Unavailable and missed training read the same: out this week, nobody's fault.
+  &--una,
+  &--trn {
     color: color(board);
     background-color: color(dim);
     border-color: color(dim);

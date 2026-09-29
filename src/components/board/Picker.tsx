@@ -71,13 +71,16 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
   const groups = [
     { title: PICKER.suited(slot.role), players: freeAt(data, slot.role, 2, except) },
     { title: PICKER.canCover(slot.role), players: freeAt(data, slot.role, 1, except) },
-    { title: PICKER.outOfPosition, players: freeAt(data, slot.role, 0, except) },
+    // Someone with no positions set is not out of position: nobody has said yet.
+    { title: PICKER.outOfPosition, players: freeAt(data, slot.role, 0, except).filter((p) => p.pos.length) },
+    { title: PICKER.noPosition, players: freeAt(data, slot.role, 0, except).filter((p) => !p.pos.length) },
     { title: PICKER.elsewhere, players: data.players.filter((p) => p.id !== except && slotOf(data, p.id)) },
   ];
   const greyed = [
     { title: PICKER.notCalledUp, players: data.players.filter((p) => p.out && !blocked(p)) },
     { title: PICKER.injured, players: data.players.filter((p) => p.inj) },
     { title: PICKER.unavailable, players: data.players.filter((p) => p.una) },
+    { title: PICKER.missedTraining, players: data.players.filter((p) => p.trn) },
   ];
   const nobody = [...groups, ...greyed].every((g) => !g.players.length);
 

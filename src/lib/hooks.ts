@@ -1,4 +1,16 @@
-import { useEffect, useSyncExternalStore, type RefObject } from "react";
+import { useEffect, useState, useSyncExternalStore, type RefObject } from "react";
+
+/** The current time, refreshed every `everyMs` while `active`, for anything that counts with the match clock. */
+export function useNow(active: boolean, everyMs: number): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!active) return;
+    const timer = setInterval(() => setNow(Date.now()), everyMs);
+    return () => clearInterval(timer);
+  }, [active, everyMs]);
+  // While paused the match clock reads its banked time, so a stale value is harmless.
+  return now;
+}
 
 /** Calls `onEscape` on Escape while `active`. */
 export function useEscapeKey(active: boolean, onEscape: () => void) {
