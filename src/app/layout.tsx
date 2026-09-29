@@ -14,7 +14,8 @@ const body = Barlow({
 
 const headline = Saira_Condensed({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  // No 500: medium is only ever set on Barlow. Each weight is one more preloaded file.
+  weight: ["600", "700"],
   variable: "--font-headline",
 });
 

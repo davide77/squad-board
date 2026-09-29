@@ -19,8 +19,8 @@ From the audit on 2026-09-29. See [FULL-AUDIT-REPORT.md](FULL-AUDIT-REPORT.md) f
 ## Medium (this month)
 
 9. **Manifest icons.** Done 2026-09-29. Add 192, 512 and maskable 512 PNGs to `manifest.ts` so the board installs as an app.
-10. **Font preloads.** Cut the six preloaded font files down to the weights used above the fold.
-11. **Landing bundle.** Check why the mostly static homepage ships ~220 KB of gzipped JS. Make sure board-only code and framer-motion are not in its client graph.
+10. **Font preloads.** Partly done 2026-09-29: the unused Saira Condensed 500 is gone, 5 preloads instead of 6. Cut the six preloaded font files down to the weights used above the fold.
+11. **Landing bundle.** Done 2026-09-29: the demo pulled in the board provider through PitchMarkings; splitting it out saved about 9 KB gzipped. The rest is the React and Next runtime. Check why the mostly static homepage ships ~220 KB of gzipped JS. Make sure board-only code and framer-motion are not in its client graph.
 12. **Search vocabulary in the copy.** Work "line-up", "team sheet", "formation", "substitutions" and the formats (5, 7, 9, 11-a-side) into the landing sections, in the Gaffer's voice.
 13. **One definitional sentence plus a short FAQ** on the homepage, for AI answers and for coaches skimming.
 14. **Submit to Google Search Console and Bing Webmaster Tools** once the domain resolves. Submit the sitemap and run PageSpeed Insights for real CWV.
@@ -33,3 +33,5 @@ From the audit on 2026-09-29. See [FULL-AUDIT-REPORT.md](FULL-AUDIT-REPORT.md) f
 18. Add `/llms.txt` with a plain summary and links. Done 2026-09-29.
 19. Strengthen E-E-A-T on `/credits`: who built it and their connection to grassroots football.
 20. Plan format landing pages ("7-a-side formations", "9-a-side formations") that open the board preset to that format. This is where search demand is for a tool like this.
+21. **Contrast of Dimmer.** Lighthouse: `#67675F` on Board is 3.47:1, under the 4.5:1 small text needs. A brand.md decision.
+22. **Player button names.** Done 2026-09-29: demo and board pitch buttons now start their accessible name with the visible number and name.

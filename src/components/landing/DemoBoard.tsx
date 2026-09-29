@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import { DEMO, DEMO_SHAPES } from "@/constants/content/landing";
 import { FORMATIONS } from "@/constants/football";
 import { Button } from "../Button";
-import { PitchMarkings } from "../board/Pitch";
+import { PitchMarkings } from "../board/PitchMarkings";
 import { cx } from "../cx";
 import { useLanding } from "./LandingProvider";
 
@@ -84,12 +84,12 @@ export function DemoBoard({ line }: DemoBoardProps) {
                   })}
                   style={position}
                   aria-pressed={demo.sel === i}
-                  aria-label={DEMO.playerLabel(p.num, p.name)}
                   onClick={() => act({ type: "tap", index: i })}
                 >
                   <span className="pitch-slot__disc is-flex is-align-center is-justify-center has-radius-pill has-font-headline has-font-bold text-xl leading-tight is-tabular">
                     {p.num}
                   </span>
+                  {/* Not drawn inside the flex column, but it makes the accessible name "9 Taylor", not "9Taylor". */}{" "}
                   <span className="pitch-slot__name text-2xs leading-snug text-center has-radius-sm">{p.name}</span>
                 </button>
               );
