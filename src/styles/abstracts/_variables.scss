@@ -1,6 +1,9 @@
 @use 'sass:map';
 @use 'colors' as *;
 
+// The smallest touch target, from the project rules and Apple's guidance.
+$hit-size: 44px;
+
 // Z-index stack
 $z-index: (
   raised: 5,
