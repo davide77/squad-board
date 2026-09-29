@@ -47,14 +47,16 @@ export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
         >
           {GLYPHS.grip}
         </button>
-        <input
-          type="checkbox"
-          className="roster-row__pick is-flex is-align-center is-justify-center is-shrink-0 has-radius-sm"
-          checked={!p.out}
-          disabled={isBlocked}
-          aria-label={SQUAD.calledUp(p.name)}
-          onChange={(e) => act({ type: "setCalledUp", id: p.id, called: e.target.checked })}
-        />
+        <label className="roster-row__pick-hit is-shrink-0">
+          <input
+            type="checkbox"
+            className="roster-row__pick is-flex is-align-center is-justify-center has-radius-sm"
+            checked={!p.out}
+            disabled={isBlocked}
+            aria-label={SQUAD.calledUp(p.name)}
+            onChange={(e) => act({ type: "setCalledUp", id: p.id, called: e.target.checked })}
+          />
+        </label>
         <input
           className={cx(
             "roster-row__num has-font-headline has-font-bold text-lg text-center is-tabular has-radius-sm is-shrink-0",
