@@ -1,0 +1,7 @@
+@use '../abstracts' as *;
+
+// A text link or small control that is easy to tap: 44px of hit area around it,
+// without spacing the layout apart. For links in the header, footer and nav.
+.hit-area {
+  @include hit-overlay;
+}

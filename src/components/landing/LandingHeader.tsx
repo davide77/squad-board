@@ -13,14 +13,14 @@ export function LandingHeader() {
         <Link
           href={ROUTES.home}
           aria-label={NAV.home}
-          className="is-inline-flex is-align-center has-gap-2 is-chalk has-font-headline has-font-bold text-2xl tracking-number"
+          className="hit-area is-inline-flex is-align-center has-gap-3 is-chalk has-font-headline has-font-bold text-3xl leading-tight tracking-number"
         >
           <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.headerSize} height={VISOR_MARK.headerSize} priority />
           <span>{SITE.name}</span>
         </Link>
         <nav aria-label={NAV.label} className="is-flex is-flex-wrap is-align-center has-gap-5 text-md">
           {NAV.links.map((l) => (
-            <a key={l.href} href={l.href} className="is-dim">
+            <a key={l.href} href={l.href} className="hit-area is-dim">
               {l.label}
             </a>
           ))}

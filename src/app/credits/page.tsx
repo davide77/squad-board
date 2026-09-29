@@ -18,7 +18,7 @@ export default function CreditsPage() {
         <p className="text-sm uppercase tracking-caps is-dimmer has-mb-2">{CREDITS.makerLabel}</p>
         <p className="has-font-headline has-font-bold text-4xl is-chalk has-mb-2">{MAKER.name}</p>
         <p className="text-lg leading-relaxed is-dim has-mb-3">{MAKER.bio}</p>
-        <a href={MAKER.url} className="is-kit has-font-semibold text-lg">
+        <a href={MAKER.url} className="hit-area is-kit has-font-semibold text-lg">
           {CREDITS.makerLink}
         </a>
       </section>
