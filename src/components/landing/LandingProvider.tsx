@@ -2,7 +2,7 @@
 
 import { createContext, use, useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { LANDING_CONFIG } from "@/constants/config";
-import { COPY, LANDING_VOICE, type VoiceCopy, type VoiceKey } from "@/constants/content/landing";
+import { LANDING_COPY, LANDING_VOICE, type VoiceCopy, type VoiceKey } from "@/constants/content/landing";
 import { DEMO_START, demoReducer, demoSheet, type DemoAction, type DemoState } from "@/lib/landing/demo";
 import { TONE_FOR_PHASE, type Tone } from "@/constants/content/onboarding";
 import { AGE_GROUPS, type AgeKey } from "@/constants/football";
@@ -68,7 +68,7 @@ export function LandingProvider({ children }: LandingProviderProps) {
   const toggleInitials = useCallback(() => setInitials((v) => !v), []);
 
   const value = useMemo(
-    () => ({ age, setAge, tone, voice: LANDING_VOICE, copy: COPY[LANDING_VOICE], demo, act, initials, toggleInitials, sheet, copied, copySheet }),
+    () => ({ age, setAge, tone, voice: LANDING_VOICE, copy: LANDING_COPY, demo, act, initials, toggleInitials, sheet, copied, copySheet }),
     [age, setAge, tone, demo, initials, toggleInitials, sheet, copied, copySheet],
   );
 

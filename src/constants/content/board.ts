@@ -264,7 +264,7 @@ export const CLUB = {
   badgeChange: "Change",
   badgeRemove: "Remove",
   badgeInput: "Club badge image",
-  badgeUnreadable: "That image didn't load. Try a PNG or JPG.",
+  badgeUnreadable: "That image didn't load. Try a PNG, JPG or SVG.",
   backupLabel: "Backup",
   export: "Export squad file",
   import: "Import squad file",

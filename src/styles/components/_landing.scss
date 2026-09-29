@@ -325,16 +325,6 @@
   }
 
   // Stands in for a clip until it is rendered: the shot, on the pitch surface.
-  &__board {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(175deg, color(pitch-top), color(pitch-bottom) 66%);
-  }
-
-  &__pill {
-    border: 1px dashed tint(chalk, 40%);
-  }
-
   &__ages {
     max-width: 480px;
     grid-template-columns: repeat(auto-fill, minmax(spacer(10) + spacer(4), 1fr));
