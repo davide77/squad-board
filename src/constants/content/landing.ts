@@ -93,7 +93,7 @@ export interface VoiceCopy {
 export const LANDING_COPY: VoiceCopy = {
   sub: "Squad. Call-ups. Shape. Bench. Subs. One screen, on your phone.",
   cta: "Get picking",
-  note: "No account. Nothing to install.",
+  note: "Free. No account. Nothing to install.",
   weekH: "Four taps. Every Saturday.",
   steps: ["Squad in", "Who's here?", "Pick a shape", "Make changes"],
   filmH: "Chalk. Magnets. Chaos.",
@@ -177,9 +177,10 @@ export const STORY: readonly StoryChapter[] = [
   {
     key: "gaffer",
     tab: "The Gaffer",
-    kicker: "Gafferboard",
-    title: "Right. You're the coach. I'm the Gaffer.",
-    body: "A matchday board for grassroots football. Squad, shape, bench, subs, team sheet. One screen, on your phone. I tell you what's next.",
+    kicker: "The Gaffer",
+    // Says what it is first. On a phone this is all a coach sees before deciding to scroll.
+    title: "Pick the team on the touchline.",
+    body: "A matchday board for grassroots coaches. Squad, shape, bench, subs and the team sheet, on your phone. I tell you what's next.",
     media: { webm: "/film/gafferboard-teaser.webm", mp4: "/film/gafferboard-teaser.mp4", poster: "/film/gafferboard-film-poster.jpg" },
   },
   {
