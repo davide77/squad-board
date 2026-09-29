@@ -117,6 +117,11 @@
   &--grow {
     flex: 1 1 130px;
   }
+
+  // The pasted squad list on the start screen: taller, never wider than its column.
+  &--area {
+    resize: vertical;
+  }
 }
 
 // A native select, restyled, with a chevron drawn in two gradients.

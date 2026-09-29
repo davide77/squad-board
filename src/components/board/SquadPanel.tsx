@@ -18,9 +18,12 @@ export function SquadPanel() {
 
   const dupes = dupeNumbers(state.data);
   const noPosition = players.filter((p) => !p.pos.length).map((p) => p.name);
+  // A freshly pasted squad often has no positions at all. That is a next step, not a
+  // fault, so past a few names it becomes a quiet hint rather than a list in red.
+  const manyNoPosition = noPosition.length > BOARD_CONFIG.noPositionNamesMax;
   const warnings = [
     dupes.size ? SQUAD.warnDupes([...dupes].sort((a, b) => Number(a) - Number(b))) : "",
-    noPosition.length ? SQUAD.warnNoPosition(noPosition) : "",
+    noPosition.length && !manyNoPosition ? SQUAD.warnNoPosition(noPosition) : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -69,6 +72,7 @@ export function SquadPanel() {
         </Button>
       </ControlRow>
       <p className="text-sm is-dimmer has-mb-3">{SQUAD.hint}</p>
+      {manyNoPosition && <p className="text-sm is-dim has-mb-3">{SQUAD.noPositionCount(noPosition.length)}</p>}
       {warnings && <p className="warning text-sm is-out has-radius-field has-py-2 has-px-3 has-mb-3">{warnings}</p>}
 
       <ul className="roster" data-roster>

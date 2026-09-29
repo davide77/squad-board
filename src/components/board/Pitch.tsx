@@ -10,7 +10,7 @@ import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 
 /** Pitch lines, drawn in a 300 x 400 box and stretched to the pitch. */
-function PitchMarkings() {
+export function PitchMarkings() {
   return (
     <svg className="pitch__lines" viewBox="0 0 300 400" preserveAspectRatio="none" aria-hidden="true">
       <rect x="10" y="10" width="280" height="380" />
@@ -49,7 +49,8 @@ function PitchSlot({ slot }: PitchSlotProps) {
       className={cx("pitch-slot is-flex is-flex-column is-align-center has-gap-1", {
         "pitch-slot--filled": !!p,
         "pitch-slot--keeper": !!p && slot.role === "GK",
-        "pitch-slot--misfit": !!p && fitLevel(p, slot.role) === 0,
+        // No positions set yet is unknown, not wrong, so only a known misfit is marked.
+        "pitch-slot--misfit": !!p && p.pos.length > 0 && fitLevel(p, slot.role) === 0,
         "pitch-slot--selected": !!p && ui.selected === p.id,
         "pitch-slot--wide": data.nameStyle === "full",
         "pitch-slot--movable": ui.posMode,

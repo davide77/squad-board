@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { cx } from "./cx";
 
-type Variant = "default" | "primary" | "quiet";
+type Variant = "default" | "primary" | "quiet" | "out" | "outline";
 type Size = "regular" | "tiny";
 
 const SIZES: Record<Size, string> = {

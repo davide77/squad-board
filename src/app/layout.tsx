@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Barlow, Saira_Condensed } from "next/font/google";
 import { THEME_COLOUR } from "@/constants/brand";
-import { SITE_URL } from "@/constants/seo";
+import { OPEN_GRAPH_BASE, SITE_URL, TITLE_TEMPLATE, TWITTER_CARD } from "@/constants/seo";
 import { SITE } from "@/constants/site";
 import "../styles/main.scss";
 
@@ -20,10 +20,10 @@ const headline = Saira_Condensed({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: SITE.name,
+  title: { default: SITE.name, template: TITLE_TEMPLATE },
   description: SITE.description,
-  alternates: { canonical: "/" },
-  openGraph: { title: SITE.name, description: SITE.description, url: "/", siteName: SITE.name, type: "website" },
+  openGraph: { ...OPEN_GRAPH_BASE, title: SITE.name, description: SITE.description },
+  twitter: { card: TWITTER_CARD },
 };
 
 export const viewport: Viewport = {
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
         <a href="#main" className="skip-link">
           {SITE.skipLink}
         </a>
-        <main id="main">{children}</main>
+        {children}
       </body>
     </html>
   );

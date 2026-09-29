@@ -18,6 +18,44 @@ export const POSITION_KEYS: readonly PositionKey[] = POSITIONS.map((p) => p.key)
 // Older saves used "DM" before the holding role was renamed.
 export const LEGACY_POSITIONS: Readonly<Record<string, PositionKey>> = { DM: "CDM" };
 
+// Positions a coach might type after a name in a pasted squad list ("1 Alex GK").
+// Codes only count in capitals, so an initial like "Sam W" or "Tom St" stays part of
+// the name. Words count in any case. A lone "W" is left out for the same reason.
+export const POSITION_CODES: Readonly<Record<string, PositionKey>> = {
+  GK: "GK",
+  FB: "FB",
+  LB: "FB",
+  RB: "FB",
+  LWB: "FB",
+  RWB: "FB",
+  CB: "CB",
+  CDM: "CDM",
+  DM: "CDM",
+  CM: "CM",
+  CAM: "CAM",
+  AM: "CAM",
+  LW: "W",
+  RW: "W",
+  LM: "W",
+  RM: "W",
+  ST: "ST",
+  CF: "ST",
+};
+export const POSITION_WORDS: Readonly<Record<string, PositionKey>> = {
+  goalkeeper: "GK",
+  keeper: "GK",
+  goalie: "GK",
+  gk: "GK",
+  defender: "CB",
+  fullback: "FB",
+  "full-back": "FB",
+  midfielder: "CM",
+  midfield: "CM",
+  winger: "W",
+  striker: "ST",
+  forward: "ST",
+};
+
 interface RoleFit {
   /** Plays there. */
   readonly primary: readonly PositionKey[];

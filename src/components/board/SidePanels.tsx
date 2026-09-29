@@ -1,7 +1,10 @@
 "use client";
 
-import { useId, type FormEvent } from "react";
-import { GLYPHS, SAVED, SHEET, SUBS, TOASTS } from "@/constants/content/board";
+import { useId, useState, type FormEvent } from "react";
+import { PICTURE_CONFIG } from "@/constants/config";
+import { CLUB, GLYPHS, SAVED, SHEET, SUBS, TOASTS } from "@/constants/content/board";
+import { teamSlug } from "@/lib/board/names";
+import { lineupPicture, sharePicture } from "@/lib/board/picture";
 import { sheetText } from "@/lib/board/sheet";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
@@ -93,15 +96,34 @@ async function copyText(text: string): Promise<boolean> {
 
 export function SheetPanel() {
   const { state, act } = useBoard();
+  const [making, setMaking] = useState(false);
   async function copy() {
     const ok = await copyText(sheetText(state.data));
     act({ type: "notify", text: ok ? TOASTS.copied : TOASTS.copyFailed });
+  }
+  async function share() {
+    setMaking(true);
+    try {
+      const { data } = state;
+      const blob = await lineupPicture(data);
+      const name = teamSlug(data.team, CLUB.fileFallback) + PICTURE_CONFIG.fileSuffix;
+      const result = await sharePicture(blob, name, data.team || SHEET.fallbackTitle);
+      if (result === "downloaded") act({ type: "notify", text: TOASTS.pictureSaved });
+    } catch {
+      act({ type: "notify", text: TOASTS.pictureFailed });
+    } finally {
+      setMaking(false);
+    }
   }
   return (
     <Panel heading={SHEET.heading}>
       <p className="text-sm is-dimmer">{SHEET.hint}</p>
       <Button variant="primary" className="has-mt-3" onClick={copy}>
         {SHEET.copy}
+      </Button>
+      <p className="text-sm is-dimmer has-mt-4">{SHEET.pictureHint}</p>
+      <Button className="has-mt-3" onClick={share} disabled={making} aria-busy={making}>
+        {SHEET.sharePicture}
       </Button>
     </Panel>
   );

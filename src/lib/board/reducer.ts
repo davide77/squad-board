@@ -65,7 +65,8 @@ export type Action =
   | { type: "deleteNamed"; index: number }
   | { type: "cycleNameStyle" }
   | { type: "toggleCover" }
-  | { type: "clearPitch" };
+  | { type: "clearPitch" }
+  | { type: "backedUp" };
 
 /** Every action is stamped with the time it happened, so the reducer stays pure. */
 export type StampedAction = Action & { readonly now: number };
@@ -261,6 +262,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
   switch (action.type) {
     case "load":
       next.data = opened(structuredClone(action.data));
+      if (!next.data.createdAt && next.data.players.length) next.data.createdAt = now;
       next.ui = { ...INITIAL_UI, storageOK: ui.storageOK, notice: ui.notice };
       if (action.notice) {
         next.ui.notice = { id: (state.ui.notice?.id ?? 0) + 1, text: action.notice };
@@ -269,6 +271,10 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
 
     case "notify":
       note(action.text);
+      return next;
+
+    case "backedUp":
+      d.backedUpAt = now;
       return next;
 
     case "storageFailed":

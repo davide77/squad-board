@@ -40,3 +40,20 @@ export function shirtName(player: Player, style: NameStyle, players: readonly Pl
   if (style === "full") return plainName(player.name);
   return lastName(player.name);
 }
+
+/** Up to two initials from the team name, for the crest. */
+export function monogram(team: string): string {
+  return team
+    .trim()
+    .split(/\s+/)
+    .filter((w) => /[A-Za-z0-9]/.test(w))
+    .slice(0, 2)
+    .map((w) => w.charAt(0).toUpperCase())
+    .join("");
+}
+
+/** The team name as a file name, or the fallback when there is none. */
+export function teamSlug(team: string, fallback: string): string {
+  const slug = team.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase();
+  return slug || fallback;
+}

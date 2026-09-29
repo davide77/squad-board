@@ -10,10 +10,13 @@ import { BenchPanel, PoolPanel } from "./Zones";
 import { BoardHeader } from "./BoardHeader";
 import { BoardProvider, useBoard } from "./BoardProvider";
 import { ClubPanel } from "./ClubPanel";
+import { ExampleBanner } from "./ExampleBanner";
+import { KeepSafe } from "./KeepSafe";
 import { Picker } from "./Picker";
 import { ShapePanel } from "./ShapePanel";
 import { SheetPanel, SavedPanel, SubsPanel } from "./SidePanels";
 import { SquadPanel } from "./SquadPanel";
+import { StartScreen } from "./StartScreen";
 import { Toast } from "./Toast";
 import { useBoardDrag } from "./useBoardDrag";
 
@@ -25,6 +28,16 @@ function Board() {
   // The club colour the coach picked, read by every kit token in the SCSS.
   const colours = { "--kit": kit.kit, "--kit-ink": kit.ink, "--kit-edge": kit.edge } as CSSProperties;
 
+  // An empty board opens on the start screen: name the team, paste the squad, done.
+  if (!state.data.players.length) {
+    return (
+      <div className="board container has-pt-4 has-pb-11" style={colours}>
+        <StartScreen />
+        <Toast />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={rootRef}
@@ -33,6 +46,7 @@ function Board() {
       onPointerDown={onPointerDown}
       onClickCapture={onClickCapture}
     >
+      {state.data.example ? <ExampleBanner /> : <KeepSafe />}
       <BoardHeader />
       <div className="board__cols is-grid has-gap-5">
         <div>

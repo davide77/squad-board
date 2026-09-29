@@ -1,0 +1,184 @@
+@use '../abstracts' as *;
+
+// The landing page at /. Layout, spacing and type sit in the JSX; this file holds
+// what a utility cannot say: the sticky blurred header, fluid display type,
+// auto-fit grids, hairlines and the voice picker's pressed state.
+
+.landing-header {
+  position: sticky;
+  top: 0;
+  z-index: z(overlay);
+  background-color: tint(board, 90%);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid color(board-3);
+}
+
+.landing-section {
+  border-top: 1px solid color(board-3);
+
+  &__pad {
+    padding-block: spacer(10);
+
+    @include min(bp(md)) {
+      padding-block: spacer(11) + spacer(2);
+    }
+  }
+
+  &__pad--end {
+    @include min(bp(md)) {
+      padding-block: spacer(11) * 1.4;
+    }
+  }
+
+  // The default kit focus ring vanishes on the kit coloured band.
+  &.bg-kit :focus-visible {
+    outline-color: color(board);
+  }
+}
+
+// Two columns side by side that fall into one when either would get too narrow.
+.landing-split {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+
+  &--hero {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+  }
+}
+
+.landing-display {
+  margin: 0;
+  font-family: $font-family-headline;
+  font-weight: font-weight(bold);
+  line-height: line-height(display);
+  text-transform: uppercase;
+  text-wrap: balance;
+  // Global headings take the kit colour; landing headlines follow their section.
+  color: inherit;
+
+  &--hero {
+    font-size: clamp(#{font-size(5xl)}, 7.4vw, #{font-size(display)});
+  }
+
+  &--section {
+    font-size: clamp(#{font-size(4xl)}, 5vw, #{font-size(6xl)});
+  }
+
+  &--end {
+    font-size: clamp(#{font-size(5xl)}, 9vw, #{font-size(giant)});
+  }
+}
+
+// The hero line changes length with every tap. Holding two lines stops the page jumping.
+.landing-hero__line {
+  min-height: 1.8em;
+}
+
+.landing-pretty {
+  text-wrap: pretty;
+}
+
+.voice-picker {
+  max-width: 420px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.voice-option {
+  min-height: 64px;
+  background-color: color(board-2);
+  border: 2px solid color(board-3);
+  color: color(chalk);
+  cursor: pointer;
+  transition: background-color $transition-fast, border-color $transition-fast, color $transition-fast;
+
+  &__desc {
+    opacity: 0.8;
+  }
+
+  &:hover {
+    border-color: color(dimmer);
+  }
+
+  &[aria-pressed='true'] {
+    background-color: color(kit);
+    border-color: color(kit);
+    color: color(kit-ink);
+  }
+}
+
+.landing-demo {
+  max-width: 460px;
+  justify-self: center;
+  // Pitch lines take a faint wash of the kit colour, as on the board.
+  --line: #{tint(kit, 24%)};
+
+  &__card {
+    overflow: hidden;
+    border: 1px solid color(board-3);
+  }
+
+  &__rule {
+    border-bottom: 1px solid color(board-3);
+  }
+
+  &__rule-top {
+    border-top: 1px solid color(board-3);
+  }
+
+  &__actions {
+    min-height: 92px;
+  }
+
+  // Players glide to their new spot when the shape changes.
+  @media (prefers-reduced-motion: no-preference) {
+    .pitch-slot {
+      transition: left 350ms ease, top 350ms ease;
+    }
+  }
+}
+
+.landing-link-button {
+  padding: 0;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: color(chalk);
+  }
+}
+
+.landing-steps {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  border-top: 2px solid color(chalk);
+}
+
+.landing-check {
+  min-height: 44px;
+  cursor: pointer;
+
+  input {
+    width: 20px;
+    height: 20px;
+    accent-color: color(board);
+  }
+}
+
+.landing-chat {
+  max-width: 420px;
+  justify-self: center;
+
+  &__bubble {
+    max-width: 92%;
+    border-radius: $radius-panel 2px $radius-panel $radius-panel;
+    white-space: pre-wrap;
+  }
+}
+
+.landing-rows > li {
+  border-top: 1px solid color(board-3);
+
+  &:last-child {
+    border-bottom: 1px solid color(board-3);
+  }
+}
