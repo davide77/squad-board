@@ -4,9 +4,9 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   // A jump link lands below the floating header, not under it. Just over the
-  // header's height: 94px on a phone, 122px from md (.landing-header in
+  // header's height: 78px on a phone, 122px from md (.landing-header in
   // components/_landing.scss). Change both together.
-  scroll-padding-top: spacer(11) + spacer(4);
+  scroll-padding-top: spacer(11);
   background-color: color(board);
 
   @include min(bp(md)) {

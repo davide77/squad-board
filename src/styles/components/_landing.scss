@@ -119,7 +119,7 @@
   font-size: font-size(2xl);
 
   &__mark {
-    width: spacer(10);
+    width: spacer(9);
     height: auto;
   }
 
@@ -176,6 +176,11 @@
 
   &--hero {
     font-size: clamp(#{font-size(5xl)}, 7.4vw, #{font-size(display)});
+
+    // A phone gets the words, the button and the start of the clip on its first screen.
+    @include max(bp(md)) {
+      font-size: clamp(#{font-size(4xl)}, 12vw, #{font-size(5xl)});
+    }
   }
 
   &--section {
@@ -238,7 +243,7 @@
 
   // On a phone a full 9:16 frame would push the chapter tabs a screen away. The clip crops instead.
   @include max(bp(md)) {
-    max-height: 64svh;
+    max-height: 56svh;
   }
 
   // Each chapter's clip is a layer, so the next can fade in over the last.

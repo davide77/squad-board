@@ -6,7 +6,7 @@ import { STORY_DURATION_MS } from "@/constants/config";
 import { FILM, FILM_MEDIA, STORY, STORY_UI, type StoryChapter } from "@/constants/content/landing";
 import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
 import { MOTION } from "@/constants/motion";
-import { useFilmPlayer, usePrefersReducedMotion } from "@/lib/hooks";
+import { useFilmPlayer, useIsTouch, usePrefersReducedMotion } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useLanding } from "./LandingProvider";
@@ -43,6 +43,8 @@ const LINE: Variants = {
 export function HeroCarousel() {
   const { copy } = useLanding();
   const reduced = usePrefersReducedMotion();
+  // On a phone nothing pauses it while the coach reads, so it only moves when they tap.
+  const touch = useIsTouch();
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState(1);
   // Bumped on every change, so the progress bar starts again from empty.
@@ -58,7 +60,7 @@ export function HeroCarousel() {
 
   const chapter = STORY[index];
   const last = index === STORY.length - 1;
-  const paused = reduced || held || reading || focused || film || !inView;
+  const paused = reduced || touch || held || reading || focused || film || !inView;
   const tabId = (i: number) => `${id}-tab-${i}`;
   const panelId = `${id}-panel`;
 
@@ -165,7 +167,8 @@ export function HeroCarousel() {
             {/* The buttons stay put between chapters, and glide when the words above them change length. */}
             <motion.div layout="position" transition={MOTION.story} className="is-flex is-flex-wrap is-align-center has-gap-4">
               <VoiceCta />
-              <Button className="has-py-4 has-px-6 has-font-bold text-lg" onClick={() => go(index + 1)}>
+              {/* A quiet way on, so the call to action is the only strong button in the hero. */}
+              <Button variant="quiet" className="has-py-4 has-px-4 has-font-bold text-lg" onClick={() => go(index + 1)}>
                 {last ? STORY_UI.restart : STORY_UI.next(STORY[index + 1].tab)}
               </Button>
               <span className="text-base is-dimmer">{copy.note}</span>
@@ -216,9 +219,9 @@ export function HeroCarousel() {
           </div>
 
           <div className="is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 text-sm is-dimmer">
-            <span>{STORY_UI.keysHint}</span>
-            {/* Under reduced motion it never moves on by itself, so there is nothing to pause. */}
-            {!reduced && (
+            {!touch && <span>{STORY_UI.keysHint}</span>}
+            {/* Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause. */}
+            {!reduced && !touch && (
               <Button variant="quiet" size="tiny" className="has-gap-2" onClick={() => setHeld((h) => !h)}>
                 <svg className="landing-story__glyph" viewBox="0 0 12 12" aria-hidden="true">
                   {held ? <path d="M3 1.5v9l7.5-4.5z" /> : <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" />}

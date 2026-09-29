@@ -59,7 +59,7 @@ export const LOGO = {
 export const VISOR_MARK = {
   src: "/brand/gafferboard-visor.svg",
   size: 240,
-  /** Drawn at this size in the site header from bp(md), spacer(11). .site-logo in _landing.scss takes it to 64px on a phone. */
+  /** Drawn at this size in the site header from bp(md), spacer(11). .site-logo in _landing.scss takes it to 48px on a phone. */
   headerSize: 80,
 } as const;
 
