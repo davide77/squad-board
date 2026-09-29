@@ -21,7 +21,9 @@ $font-sizes: (
   4xl: 2.625rem,   // 42px  team name ceiling
   5xl: 4rem,
   6xl: 5rem,
+  display: 6.75rem, // 108px  landing hero ceiling
   hero: 7.5rem,
+  giant: 9.25rem,   // 148px  landing closing line ceiling
 );
 
 @function font-size($name) {
@@ -49,6 +51,7 @@ $font-weights: (
 }
 
 $line-heights: (
+  display: 0.9,   // landing headlines, set solid in caps
   tight: 1,
   compact: 1.1,   // picker title
   snug: 1.2,      // names under a shirt

@@ -32,6 +32,9 @@ export function emptyData(): BoardData {
     removed: [],
     colour: 0,
     clock: { running: false, base: 0, since: 0 },
+    example: false,
+    createdAt: 0,
+    backedUpAt: 0,
   };
   d.preset = captureLineup(d);
   d.saved = captureLineup(d);
@@ -125,6 +128,9 @@ export function readBoard(raw: unknown): BoardData | null {
     colour: KIT_COLOURS[colour] ? colour : 0,
     // A board always reopens with the clock paused where it was left.
     clock: { running: false, base: isRec(raw.clock) ? num(raw.clock.base) : 0, since: 0 },
+    example: raw.example === true,
+    createdAt: num(raw.createdAt),
+    backedUpAt: num(raw.backedUpAt),
   };
 }
 
@@ -153,6 +159,15 @@ export function writeStored(d: BoardData, now: number): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+/** Asks the browser not to clear the board when space runs low. Browsers may say no. */
+export async function keepStored(): Promise<void> {
+  try {
+    if (navigator.storage?.persist && !(await navigator.storage.persisted())) await navigator.storage.persist();
+  } catch {
+    // not supported here, the board still saves as normal
   }
 }
 

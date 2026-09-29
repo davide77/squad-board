@@ -75,6 +75,12 @@ export interface BoardData {
   removed: Player[];
   colour: number;
   clock: Clock;
+  /** The made-up team from "Try the example team", not the coach's own. */
+  example: boolean;
+  /** When this squad was first loaded on this device. 0 when not known. */
+  createdAt: number;
+  /** When a squad file was last exported or imported. 0 when never. */
+  backedUpAt: number;
 }
 
 export type Zone = "bench" | "pool";

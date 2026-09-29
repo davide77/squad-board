@@ -13,6 +13,8 @@ $kit-defaults: (
   kit-edge: #C7AB08,
 );
 
+// The neutrals are mirrored in BOARD_PALETTE in src/constants/brand.ts, which draws
+// the line-up picture on a canvas. Keep the two in sync.
 $theme-colors: (
   // Primary (dominant)
   board:        #0A0A0A,

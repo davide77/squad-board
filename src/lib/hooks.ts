@@ -92,3 +92,96 @@ export function useFocusTrap(active: boolean, containerRef: RefObject<HTMLElemen
     };
   }, [active, containerRef]);
 }
+
+const STANDALONE = "(display-mode: standalone)";
+
+function subscribeToStandalone(onChange: () => void) {
+  const query = window.matchMedia(STANDALONE);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/** Whether the site is running from the home screen. iOS reports it on navigator. */
+export function useIsInstalled(): boolean {
+  return useSyncExternalStore(
+    subscribeToStandalone,
+    () => window.matchMedia(STANDALONE).matches || ("standalone" in navigator && navigator.standalone === true),
+    () => false,
+  );
+}
+
+const COARSE_POINTER = "(pointer: coarse)";
+
+function subscribeToPointer(onChange: () => void) {
+  const query = window.matchMedia(COARSE_POINTER);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/** Whether the main pointer is a finger, as on a phone or tablet. */
+export function useIsTouch(): boolean {
+  return useSyncExternalStore(subscribeToPointer, () => window.matchMedia(COARSE_POINTER).matches, () => false);
+}
+
+/** The install event Chrome and Edge fire when a site can go on the home screen. Not in the DOM types yet. */
+export interface InstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+}
+
+// The event can fire before the board has loaded, so it is caught as soon as this module runs.
+let installPrompt: InstallPromptEvent | null = null;
+const installListeners = new Set<() => void>();
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    installPrompt = e as InstallPromptEvent;
+    installListeners.forEach((l) => l());
+  });
+  window.addEventListener("appinstalled", () => {
+    installPrompt = null;
+    installListeners.forEach((l) => l());
+  });
+}
+
+function subscribeToInstall(onChange: () => void) {
+  installListeners.add(onChange);
+  return () => installListeners.delete(onChange);
+}
+
+/** The browser's own install prompt, when it offers one. */
+export function useInstallPrompt(): InstallPromptEvent | null {
+  return useSyncExternalStore(subscribeToInstall, () => installPrompt, () => null);
+}
+
+const FLAG_EVENT = "gafferboard:flag";
+
+function subscribeToFlags(onChange: () => void) {
+  window.addEventListener(FLAG_EVENT, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(FLAG_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+function readFlag(key: string): boolean {
+  try {
+    return localStorage.getItem(key) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** A yes or no remembered on this device, such as a card the coach closed. */
+export function useStoredFlag(key: string): readonly [boolean, () => void] {
+  const value = useSyncExternalStore(subscribeToFlags, () => readFlag(key), () => false);
+  const set = () => {
+    try {
+      localStorage.setItem(key, "1");
+    } catch {
+      // storage blocked, the card simply comes back next time
+    }
+    window.dispatchEvent(new Event(FLAG_EVENT));
+  };
+  return [value, set] as const;
+}

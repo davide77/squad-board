@@ -1,0 +1,55 @@
+"use client";
+
+import { useRef } from "react";
+import { CLUB, CONFIRM, TOASTS } from "@/constants/content/board";
+import { readBoard } from "@/lib/board/storage";
+import { Button } from "../Button";
+import { useBoard } from "./BoardProvider";
+
+interface ImportSquadButtonProps {
+  readonly size?: "regular" | "tiny";
+}
+
+/** Loads an exported squad file, asking first when it would replace a squad. */
+export function ImportSquadButton({ size = "tiny" }: ImportSquadButtonProps) {
+  const { state, act } = useBoard();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  async function importFile(file: File) {
+    let raw: unknown;
+    try {
+      raw = JSON.parse(await file.text());
+    } catch {
+      act({ type: "notify", text: TOASTS.unreadable });
+      return;
+    }
+    const board = readBoard(raw);
+    if (!board) {
+      act({ type: "notify", text: TOASTS.notASquad });
+      return;
+    }
+    if (state.data.players.length && !state.data.example && !window.confirm(CONFIRM.replaceSquad)) return;
+    // The file is itself a copy, so the board counts as backed up.
+    act({ type: "load", data: { ...board, backedUpAt: Date.now() }, notice: TOASTS.imported });
+  }
+
+  return (
+    <>
+      <Button size={size} variant="quiet" onClick={() => fileRef.current?.click()}>
+        {CLUB.import}
+      </Button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="application/json,.json"
+        className="is-hidden"
+        aria-label={CLUB.importLabel}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (file) void importFile(file);
+        }}
+      />
+    </>
+  );
+}

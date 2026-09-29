@@ -115,6 +115,52 @@ export const SQUAD = {
     `Shirt ${nums.join(" and ")} ${nums.length > 1 ? "are each on two players." : "is on two players."}`,
   warnNoPosition: (names: readonly string[]) =>
     `${names.join(", ")} ${names.length > 1 ? "have" : "has"} no position set.`,
+  /** Replaces the list of names when most of a fresh squad has no positions yet. */
+  noPositionCount: (n: number) => `${n} players have no position yet. Add them under Edit and the cover names fill in.`,
+} as const;
+
+/** The first screen on an empty board. */
+export const START = {
+  homeLabel: "Gafferboard home",
+  heading: "Create your team",
+  intro: "Paste or type your squad, one player per line. Shirt numbers and positions are optional. You can change anything later.",
+  teamLabel: "Team name",
+  teamPlaceholder: "e.g. Riverside Under 10s",
+  squadLabel: "Your squad",
+  squadPlaceholder: "1 Alex GK\n2 Charlie\n3 Sam\n4 Jamie\n5 Riley\n...",
+  squadHint: "Copy it straight from WhatsApp, your notes or a spreadsheet.",
+  countNone: "Add at least one player.",
+  count: (n: number, starting: number) =>
+    n <= starting
+      ? `${n} ${n === 1 ? "player" : "players"}, all starting.`
+      : `${n} players. ${starting} start, ${n - starting} on the bench.`,
+  countCapped: (max: number) => `Only the first ${max} are used.`,
+  submit: "Pick my team",
+  lookHeading: "Just having a look?",
+  example: "Try the example team",
+  importHint: "Moving from another phone? Import the squad file you exported.",
+  privacy: "No account, no sign-up. Your squad stays on this device.",
+} as const;
+
+/** The cards at the top of the board that help keep it safe. */
+export const KEEP = {
+  homeTitle: "Keep your board safe",
+  homeBody: "Add Gafferboard to your home screen. It opens like an app, and your phone won't tidy the board away.",
+  homeIos: "Tap Share, then Add to Home Screen.",
+  homeOther: "Open your browser menu, then Add to Home screen.",
+  homeInstall: "Add to home screen",
+  backupTitle: "Keep a copy",
+  backupNever: "You haven't saved a squad file yet. Keep one somewhere safe in case this phone is lost or reset.",
+  backupOld: "Your last squad file is a few weeks old. Save a fresh one to keep it up to date.",
+  later: "Not now",
+} as const;
+
+/** The made-up team a coach can try the board with. The players come from the landing demo. */
+export const EXAMPLE = {
+  team: "Ashford Juniors",
+  fixture: "v Northgate, home, 10:30",
+  note: "This is an example team. Play with it as much as you like.",
+  ownTeam: "Start my own team",
 } as const;
 
 export const SUBS = {
@@ -138,6 +184,9 @@ export const SHEET = {
   heading: "Team sheet",
   hint: "Copies the XI with cover names, the bench and any substitutions, ready to paste into a message.",
   copy: "Copy team sheet",
+  sharePicture: "Share line-up picture",
+  pictureHint: "A picture of the pitch for the parents' group. Names show the way your shirts are labelled.",
+  pictureFooter: "gafferboard.com",
   fallbackTitle: "Team sheet",
   bench: "Bench",
   notCalledUp: "Not called up",
@@ -217,4 +266,8 @@ export const TOASTS = {
   unreadable: "That file could not be read",
   notASquad: "That does not look like a squad file",
   imported: "Squad file loaded",
+  teamPicked: "Team picked. Tap any position to change it.",
+  pictureSaved: "Line-up picture downloaded",
+  pictureFailed: "The picture could not be made here",
+  exampleLoaded: "Example team loaded. Tap any position to try it.",
 } as const;

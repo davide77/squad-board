@@ -3,19 +3,9 @@
 import { useId } from "react";
 import { HEADER } from "@/constants/content/board";
 import { cx } from "../cx";
+import { monogram } from "@/lib/board/names";
 import { useBoard } from "./BoardProvider";
 import { MatchClock } from "./MatchClock";
-
-/** Up to two initials from the team name, for the crest. */
-function monogram(team: string): string {
-  return team
-    .trim()
-    .split(/\s+/)
-    .filter((w) => /[A-Za-z0-9]/.test(w))
-    .slice(0, 2)
-    .map((w) => w.charAt(0).toUpperCase())
-    .join("");
-}
 
 export function BoardHeader() {
   const { state, act } = useBoard();
