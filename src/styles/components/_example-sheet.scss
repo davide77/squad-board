@@ -1,0 +1,42 @@
+@use '../abstracts' as *;
+
+// The example team, in a sheet over the start screen. Full height on a phone,
+// a floating panel above bp(sheet). The board inside scrolls, the page does not.
+.example-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: z(modal);
+  align-items: flex-end;
+  background-color: tint(board, 80%);
+  backdrop-filter: blur(4px);
+
+  @include min(bp(sheet)) {
+    align-items: center;
+    padding: spacer(5);
+  }
+
+  &__card {
+    max-width: 1280px;
+    height: 94dvh;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 1px solid $edge;
+    border-bottom: 0;
+    border-radius: $radius-sheet $radius-sheet 0 0;
+
+    @include min(bp(sheet)) {
+      height: 100%;
+      border-bottom: 1px solid $edge;
+      border-radius: $radius-sheet;
+    }
+  }
+
+  // Stays in view while the example scrolls, so the way out is never lost.
+  &__bar {
+    position: sticky;
+    top: 0;
+    z-index: z(raised);
+    background-color: color(board);
+    border-bottom: 1px solid $edge;
+  }
+}

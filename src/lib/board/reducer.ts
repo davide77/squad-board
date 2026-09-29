@@ -152,6 +152,11 @@ export function initBoard(): BoardState {
   return { data: stored ? opened(stored) : emptyData(), ui: INITIAL_UI };
 }
 
+/** A board that lives in memory only, such as the example team, opening with a word from the Gaffer. */
+export function initSandbox(data: BoardData, notice: string): BoardState {
+  return { data: opened(structuredClone(data)), ui: { ...INITIAL_UI, notice: { id: 1, text: notice } } };
+}
+
 /* ---------- moves ---------- */
 
 function detach(d: BoardData, pid: string) {

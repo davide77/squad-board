@@ -27,14 +27,20 @@ export function useEscapeKey(active: boolean, onEscape: () => void) {
 }
 
 const SCROLL_LOCK_CLASS = "is-scroll-locked";
+// Layers can stack (the picker over the example sheet), so the page is let go by the last one to close.
+let scrollLocks = 0;
 
 /** Holds the page still while a layer is open over it. */
 export function useScrollLock(active: boolean) {
   useEffect(() => {
     if (!active) return;
 
+    scrollLocks += 1;
     document.body.classList.add(SCROLL_LOCK_CLASS);
-    return () => document.body.classList.remove(SCROLL_LOCK_CLASS);
+    return () => {
+      scrollLocks -= 1;
+      if (!scrollLocks) document.body.classList.remove(SCROLL_LOCK_CLASS);
+    };
   }, [active]);
 }
 

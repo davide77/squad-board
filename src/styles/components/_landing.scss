@@ -4,13 +4,54 @@
 // what a utility cannot say: the sticky blurred header, fluid display type,
 // auto-fit grids, hairlines and the voice picker's pressed state.
 
+// The header floats clear of the page edges, so the page shows round it as it scrolls.
 .landing-header {
   position: sticky;
   top: 0;
   z-index: z(overlay);
-  background-color: tint(board, 90%);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid color(board-3);
+  padding-top: spacer(3);
+  // The gap round the bar is page, not header: clicks pass through it.
+  pointer-events: none;
+
+  @include min(bp(md)) {
+    padding-top: spacer(4);
+  }
+
+  // On the board it scrolls away with the page, so the pitch gets the whole screen.
+  &--static {
+    position: relative;
+  }
+
+  &__bar {
+    pointer-events: auto;
+    padding: spacer(2) spacer(3);
+    background-color: tint(board-2, 86%);
+    backdrop-filter: blur(12px);
+    border: 1px solid color(board-3);
+    box-shadow: 0 spacer(3) spacer(8) tint(black, 45%);
+
+    @include min(bp(md)) {
+      padding: spacer(3) spacer(5);
+    }
+  }
+}
+
+// The visor mark and the name. VISOR_MARK.headerSize in brand.ts is the desktop size.
+.site-logo {
+  font-size: font-size(2xl);
+
+  &__mark {
+    width: spacer(10);
+    height: auto;
+  }
+
+  @include min(bp(md)) {
+    font-size: font-size(4xl);
+
+    &__mark {
+      width: spacer(11);
+    }
+  }
 }
 
 .landing-section {

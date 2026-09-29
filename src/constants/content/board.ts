@@ -134,7 +134,6 @@ export const SQUAD = {
 
 /** The first screen on an empty board. */
 export const START = {
-  homeLabel: "Gafferboard home",
   heading: "Create your team",
   intro: "Paste or type your squad, one player per line. Shirt numbers and positions are optional. You can change anything later.",
   teamLabel: "Team name",
@@ -181,6 +180,12 @@ export const EXAMPLE = {
   fixture: "v Northgate, home, 10:30",
   note: "This is an example team. Play with it as much as you like.",
   ownTeam: "Start my own team",
+  /** The example plays in its own colour, so it never looks like the coach's board. A name from KIT_COLOURS. */
+  kit: "Pink",
+  /** The sheet the example opens in, over the start screen. */
+  sheetTag: "Example team",
+  sheetNote: "Made up, so tap, drag and sub as much as you like. Close it and your own team is right where you left it.",
+  close: "Close example",
 } as const;
 
 export const SUBS = {

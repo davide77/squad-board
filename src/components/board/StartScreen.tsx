@@ -1,20 +1,16 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { VISOR_MARK } from "@/constants/brand";
 import { BOARD_CONFIG } from "@/constants/config";
 import { START } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
 import { GAFFER, PHASE_GAFFER } from "@/constants/content/gaffer";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
-import { ROUTES } from "@/constants/routes";
-import { SITE } from "@/constants/site";
-import { buildBoard, exampleBoard, parseSquad, startingCount } from "@/lib/board/start";
+import { buildBoard, parseSquad, startingCount } from "@/lib/board/start";
 import { readVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
+import { ExampleSheet } from "./ExampleSheet";
 import { ImportSquadButton } from "./ImportSquadButton";
 
 const newId = () => crypto.randomUUID();
@@ -28,6 +24,7 @@ export function StartScreen() {
   const [squadText, setSquadText] = useState("");
   const ageId = useId();
   const [age, setAge] = useState<AgeKey | "">("");
+  const [showExample, setShowExample] = useState(false);
   const group = AGE_GROUPS.find((a) => a.key === age) ?? null;
   // The gaffer picked on the landing page comes along. Without one, the age group decides.
   const [picked] = useState(readVoicePref);
@@ -51,22 +48,8 @@ export function StartScreen() {
     window.scrollTo({ top: 0 });
   }
 
-  function tryExample() {
-    act({ type: "load", data: { ...exampleBoard(newId), voice }, notice: say.exampleLoaded });
-    window.scrollTo({ top: 0 });
-  }
-
   return (
     <section className="measure-62ch has-py-5" aria-labelledby={`${teamId}-heading`}>
-      <Link
-        href={ROUTES.home}
-        aria-label={START.homeLabel}
-        className="is-inline-flex is-align-center has-gap-2 is-chalk has-font-headline has-font-bold text-2xl tracking-number has-mb-6"
-      >
-        <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.headerSize} height={VISOR_MARK.headerSize} priority />
-        <span>{SITE.name}</span>
-      </Link>
-
       <h1 id={`${teamId}-heading`} className="text-4xl leading-tight tracking-heading has-mb-2">
         {START.heading}
       </h1>
@@ -135,13 +118,16 @@ export function StartScreen() {
       <div className="has-mt-7">
         <h2 className="text-lg tracking-tag has-mb-2">{START.lookHeading}</h2>
         <div className="is-flex is-flex-wrap is-align-center has-gap-2">
-          <Button onClick={tryExample}>{START.example}</Button>
+          <Button aria-haspopup="dialog" onClick={() => setShowExample(true)}>
+            {START.example}
+          </Button>
         </div>
         <p className="text-sm is-dim has-mt-5 has-mb-2">{START.importHint}</p>
         <ImportSquadButton size="regular" />
       </div>
 
       <p className="text-sm is-dimmer has-mt-7">{START.privacy}</p>
+      <ExampleSheet open={showExample} onClose={() => setShowExample(false)} voice={voice} />
     </section>
   );
 }
