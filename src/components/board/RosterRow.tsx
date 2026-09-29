@@ -1,6 +1,6 @@
 "use client";
 
-import type { KeyboardEvent } from "react";
+import { useId, type FocusEvent, type KeyboardEvent } from "react";
 import { GLYPHS, NO_NUMBER, SQUAD } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { POSITIONS } from "@/constants/football";
@@ -112,8 +112,53 @@ function PlayerEditor({ player: p }: PlayerEditorProps) {
   const { state, act } = useBoard();
   // Leaving someone out for missing training is a rule of competitive football.
   const competitive = phaseOf(state.data) === "competitive";
+  const nameId = useId();
+  const numId = useId();
+
+  // Saved on blur, so a half typed or empty name never reaches the board.
+  function commitName(e: FocusEvent<HTMLInputElement>) {
+    if (e.currentTarget.value.trim()) act({ type: "setName", id: p.id, value: e.currentTarget.value });
+    else e.currentTarget.value = p.name;
+  }
+
   return (
     <li className="roster-editor has-pt-1 has-pb-4">
+      <div className="is-flex has-gap-2 has-mb-3">
+        <span className="is-shrink-0">
+          <label htmlFor={numId} className="is-block text-sm is-dim has-mb-2">
+            {SQUAD.numberLabel}
+          </label>
+          <input
+            id={numId}
+            className="field roster-editor__num has-font-headline has-font-bold text-lg text-center is-tabular has-radius-field has-py-2 has-px-1"
+            value={p.num}
+            placeholder={NO_NUMBER}
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={BOARD_CONFIG.shirtNumberMaxLength}
+            onChange={(e) => act({ type: "setNumber", id: p.id, value: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.currentTarget.blur();
+            }}
+          />
+        </span>
+        <span className="is-flex-1 is-min-w-0">
+          <label htmlFor={nameId} className="is-block text-sm is-dim has-mb-2">
+            {SQUAD.nameLabel}
+          </label>
+          <input
+            key={p.name}
+            id={nameId}
+            className="field is-block is-w-full has-radius-field has-py-2 has-px-3"
+            defaultValue={p.name}
+            autoComplete="off"
+            onBlur={commitName}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.currentTarget.blur();
+            }}
+          />
+        </span>
+      </div>
       <p className="text-sm is-dim has-mb-2">{SQUAD.positionsLabel}</p>
       <div className="is-flex is-flex-wrap has-gap-2 has-mb-3">
         {POSITIONS.map((o) => (

@@ -71,6 +71,7 @@ export type Action =
   | { type: "deletePlayer"; id: string }
   | { type: "setNumber"; id: string; value: string }
   | { type: "setShirtLabel"; id: string; value: string }
+  | { type: "setName"; id: string; value: string }
   | { type: "addPlayer"; id: string; num: string; name: string }
   | { type: "reorder"; id: string; to: number }
   | { type: "rowDrag"; id: string | null }
@@ -572,6 +573,14 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       const p = player(action.id);
       if (!p) return state;
       p.init = action.value.trim().toUpperCase().slice(0, BOARD_CONFIG.shirtLabelMaxLength);
+      return next;
+    }
+
+    case "setName": {
+      const p = player(action.id);
+      const name = action.value.trim();
+      if (!p || !name || name === p.name) return state;
+      p.name = name;
       return next;
     }
 

@@ -200,6 +200,12 @@
   &__label {
     width: 120px;
   }
+
+  // Two digits at the board's number size, same box as the row's number.
+  &__num {
+    width: 56px;
+    appearance: textfield;
+  }
 }
 
 .position-toggle {

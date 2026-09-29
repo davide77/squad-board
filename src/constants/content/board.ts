@@ -98,6 +98,8 @@ export const SQUAD = {
   shirtFor: (name: string) => `Shirt number for ${name}`,
   edit: "Edit",
   editLabel: (name: string) => `Edit ${name}`,
+  numberLabel: "No.",
+  nameLabel: "Name",
   positionsLabel: "Positions this player can cover",
   sideLabel: "Which side",
   sides: [
