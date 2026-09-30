@@ -236,7 +236,7 @@ export function HeroCarousel() {
                 variant="quiet"
                 aria-pressed={held}
                 aria-label={STORY_UI.pauseLabel}
-                className={cx("landing-story__pause has-py-3 has-gap-2 text-sm", !held && "is-chalk")}
+                className={cx("landing-story__pause has-py-3 has-gap-2 text-sm", held ? "landing-story__pause--held" : "is-chalk")}
                 onClick={() => setHeld((h) => !h)}
               >
                 <svg className="landing-story__glyph" viewBox="0 0 12 12" aria-hidden="true">

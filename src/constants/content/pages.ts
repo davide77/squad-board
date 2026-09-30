@@ -32,7 +32,7 @@ export const MAKER = {
 
 /** The board's events, in words, for the privacy page. Keep in step with ANALYTICS_EVENTS in config.ts. */
 const EVENTS_COUNTED =
-  "On the board we count four moments: a new board started, with its age group; the match clock started; a team sheet sent, and whether it went by WhatsApp, a copy or a picture; and a saved board opened again, with roughly how long since the last visit (the same day, within a week, or a week or more). To tell that gap, the board keeps the date of your last visit in this browser. It never leaves your device.";
+  "On the board we also count a few moments: a board started or opened again, the match clock started, and a team sheet sent. With them go the age group, how the sheet went out (WhatsApp, a copy or a picture) and roughly how long since the last visit, such as \"7 to 13 days\". To tell that gap, the time of your last visit is kept in this browser and never leaves it. No names, no team details and nothing else from your board are sent.";
 
 export const PRIVACY = {
   title: "Privacy and safety",
