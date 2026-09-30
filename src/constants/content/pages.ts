@@ -84,7 +84,7 @@ export const PRIVACY = {
     {
       heading: "The club waitlist",
       body: [
-        "If you run a club and leave your email address in the footer, we keep that address, when you left it and the page you were on. It is stored in a database run by Supabase, and only we can read it.",
+        "If you run a club and leave your email address in the footer, we keep that address and when you left it. It is stored with Brevo, the service we send email with, and only we can see it.",
         "We use it for one thing: to tell you when Gafferboard for clubs is ready. It is never shared or sold. To be taken off the list, get in touch and we delete it.",
       ],
     },

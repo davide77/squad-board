@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useId } from "react";
-import { usePathname } from "next/navigation";
 import { WAITLIST_CONFIG } from "@/constants/config";
 import { WAITLIST } from "@/constants/content/pages";
 import { joinWaitlist, type WaitlistState } from "@/lib/server/waitlist";
@@ -11,7 +10,6 @@ const START: WaitlistState = { status: "idle" };
 /** One line in the footer for clubs: an email and a button, then a word from the Gaffer. No account. */
 export function ClubWaitlist() {
   const [state, action, pending] = useActionState(joinWaitlist, START);
-  const pathname = usePathname();
   const id = useId();
 
   if (state.status === "joined") {
@@ -42,7 +40,6 @@ export function ClubWaitlist() {
           aria-describedby={`${id}-status`}
           className="field waitlist__email has-radius-field has-py-2 has-px-3 text-base"
         />
-        <input type="hidden" name="source" value={pathname} />
         {/* Out of sight and out of the tab order: only a bot fills it in. */}
         <input name={WAITLIST_CONFIG.trapField} tabIndex={-1} autoComplete="off" aria-hidden="true" className="sr-only" />
         <button type="submit" disabled={pending} aria-busy={pending} className="button button--chalk has-py-3 has-px-4 has-radius-field has-font-bold text-base">
