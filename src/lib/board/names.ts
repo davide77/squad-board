@@ -41,6 +41,15 @@ export function shirtName(player: Player, style: NameStyle, players: readonly Pl
   return lastName(player.name);
 }
 
+/**
+ * A player's name as it goes to the parents, in the style the coach picked under Send: first names,
+ * initials, full names or surnames. `name` may be a name from the subs log, matched back to its player.
+ */
+export function sentName(d: { readonly nameStyle: NameStyle; readonly players: readonly Player[] }, name: string): string {
+  const p = d.players.find((x) => x.name === name);
+  return p ? shirtName(p, d.nameStyle, d.players) : name;
+}
+
 /** Up to two initials from the team name, for the crest. */
 export function monogram(team: string): string {
   return team

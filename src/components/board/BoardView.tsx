@@ -16,8 +16,9 @@ import { ExampleBanner } from "./ExampleBanner";
 import { KeepSafe } from "./KeepSafe";
 import { Picker } from "./Picker";
 import { ShapePanel } from "./ShapePanel";
-import { MessagePanel } from "./MessagePanel";
-import { SheetPanel, SavedPanel } from "./SidePanels";
+import { MatchDetailsPanel } from "./MatchDetailsPanel";
+import { SavedPanel } from "./SavedPanel";
+import { SendActions, SendKinds, SendPreview } from "./Send";
 import { ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
 import { Pitch } from "./Pitch";
 import { SquadPanel } from "./SquadPanel";
@@ -53,7 +54,7 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
     ),
     right: (
       <>
-        <MessagePanel />
+        <MatchDetailsPanel />
         <SavedPanel />
         <StepActions />
         <ClubPanel />
@@ -72,8 +73,9 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
     right: <MatchLog />,
   },
   send: {
-    centre: <SheetPanel />,
-    right: <MessagePanel />,
+    left: <SendKinds />,
+    centre: <SendPreview />,
+    right: <SendActions />,
   },
 };
 
@@ -108,7 +110,7 @@ export function BoardView({ top }: BoardViewProps) {
         id={STEP_PANEL_ID}
         role="tabpanel"
         aria-labelledby={stepTabId(step)}
-        className={cx("board-step", !columns.left && "board-step--no-left")}
+        className={cx("board-step", `board-step--${step}`, !columns.left && "board-step--no-left")}
       >
         {columns.left && <div className="board-step__left">{columns.left}</div>}
         <div className="board-step__centre">{columns.centre}</div>

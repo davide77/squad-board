@@ -27,7 +27,7 @@ export function StepActions() {
       >
         {underway ? STEPS.backToMatch : STEPS.startMatch}
       </Button>
-      <Button className="has-py-3" onClick={() => act({ type: "setStep", step: "send" })}>
+      <Button className="has-py-3" onClick={() => act({ type: "setStep", step: "send", kind: "callup" })}>
         {STEPS.sendCallUp}
       </Button>
     </div>

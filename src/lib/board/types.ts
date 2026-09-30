@@ -136,12 +136,17 @@ export interface Notice {
 /** The three matchday steps the board is laid out in. */
 export type BoardStep = "pick" | "match" | "send";
 
+/** What goes out from the Send step: the call-up before the match, the team sheet, or the picture. */
+export type SendKind = "callup" | "sheet" | "picture";
+
 export interface UiState {
   /** Which step is showing: picking the team, the match itself, or sending to the parents. */
   step: BoardStep;
   /** On Matchday, the pitch position whose player is coming off, and whether it is for an injury. */
   offSlot: string | null;
   offInjured: boolean;
+  /** What the Send step is set to send. */
+  sendKind: SendKind;
   selected: string | null;
   editing: string | null;
   pickerSlot: string | null;

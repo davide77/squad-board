@@ -48,6 +48,14 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     grid-template-areas: 'left centre right';
   }
 
+  // Send on a phone: choose what to send, then the buttons, with the preview underneath to check.
+  // The buttons are what the coach came for, so they are not left below a long preview.
+  &--send {
+    @include max(bp(md)) {
+      grid-template-areas: 'left' 'right' 'centre';
+    }
+  }
+
   // A step with nothing on the left gives the pitch the room.
   &--no-left {
     @include min(bp(md)) {
@@ -340,4 +348,75 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
       background-color: color(kit);
     }
   }
+}
+
+// ---------- Send ----------
+
+// One of the three things to send. The radio inside is hidden; the card shows the choice and the focus.
+.send-kind {
+  background-color: color(board-2);
+  border: 1px solid $edge;
+  cursor: pointer;
+  transition: border-color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    border-color: tint(kit, 50%);
+  }
+
+  &:focus-within {
+    @include focus-ring;
+  }
+
+  &--on {
+    background-color: tint(kit, 8%);
+    border-color: color(kit);
+  }
+}
+
+// What the parents will get, at about the width of a phone's chat.
+.send-preview {
+  padding-block: spacer(2);
+}
+
+.send-chat {
+  max-width: 460px;
+  border: 1px solid $edge;
+
+  &__head {
+    border-bottom: 1px solid $edge;
+  }
+
+  &__avatar {
+    width: spacer(9);
+    height: spacer(9);
+    background-color: color(board-3);
+  }
+
+  // A sent message: right-aligned, the corner nearest the sender squared off, the lines kept as typed.
+  &__bubble {
+    margin-inline-start: auto;
+    max-width: 94%;
+    white-space: pre-wrap;
+    background-color: color(board-3);
+    border-radius: spacer(3) spacer(1) spacer(3) spacer(3);
+  }
+}
+
+.send-preview__picture {
+  max-width: 420px;
+  aspect-ratio: 4 / 5;
+  border: 1px solid $edge;
+
+  &--making {
+    background-color: color(board-2);
+  }
+}
+
+// Two name styles to a row, so four fit without crowding the column.
+.send-names {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.send-actions {
+  border-top: 1px solid $edge;
 }
