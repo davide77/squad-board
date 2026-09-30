@@ -3,6 +3,9 @@
 // Viewport breakpoints. Mirror in brand.md if responsive thresholds are
 // brand-dependent. Mobile-first: write `@include min(bp(md)) { ... }`.
 
+// Height, not width: a phone tall enough to hold the match clock, the pitch and the bench tray at once.
+$tall-phone: 600px;
+
 $breakpoints: (
   na: 0,
   xs: 320px,

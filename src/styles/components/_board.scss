@@ -654,10 +654,22 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 
 // ---------- The bench tray, on a phone ----------
 
-// Matchday on a phone: the bench list gives way to the tray, held under the pitch.
-.board-step--match .board-step__left {
+// Matchday on a phone: the clock first, then the Gaffer and the pitch, and the bench list gives way
+// to the tray under the pitch.
+.board-step--match {
   @include max(bp(md)) {
-    display: none;
+    .board-step__left {
+      display: none;
+    }
+
+    .board-step__centre {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .match-card {
+      order: -1;
+    }
   }
 }
 
@@ -669,6 +681,14 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   border-top: 1px solid $edge;
 
   &--pinned {
+    position: sticky;
+    bottom: calc(var(--dock-height, 0px) + env(safe-area-inset-bottom));
+    z-index: z(raised);
+  }
+
+  // A phone tall enough keeps the tray along the bottom all match: with the clock at the top, it
+  // covers only the foot of the pitch. A shorter one pins it only when a player is coming off.
+  @media (min-height: $tall-phone) {
     position: sticky;
     bottom: calc(var(--dock-height, 0px) + env(safe-area-inset-bottom));
     z-index: z(raised);
