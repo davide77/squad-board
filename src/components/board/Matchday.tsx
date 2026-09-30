@@ -12,6 +12,7 @@ import { useNow } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
+import { ConfirmBox } from "./ConfirmBox";
 import { useClockToggle } from "./MatchClock";
 import { Panel } from "./Panel";
 
@@ -87,17 +88,7 @@ export function MatchClockCard() {
         </div>
       </div>
       {confirming && (
-        <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field has-mt-3">
-          <p className="text-base leading-snug">{MATCH.resetText}</p>
-          <div className="is-flex has-gap-2">
-            <Button variant="out" className="is-flex-1 has-py-3" onClick={reset}>
-              {MATCH.resetConfirm}
-            </Button>
-            <Button className="is-flex-1 has-py-3" onClick={() => setConfirming(false)}>
-              {MATCH.keep}
-            </Button>
-          </div>
-        </div>
+        <ConfirmBox className="has-mt-3" text={MATCH.resetText} yes={MATCH.resetConfirm} keep={MATCH.keep} onYes={reset} onKeep={() => setConfirming(false)} />
       )}
     </div>
   );

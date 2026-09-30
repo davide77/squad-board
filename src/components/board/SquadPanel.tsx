@@ -7,6 +7,7 @@ import { blocked, dupeNumbers, freeAt, slotById } from "@/lib/board/queries";
 import { useMediaQuery } from "@/lib/hooks";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
+import { ConfirmBox } from "./ConfirmBox";
 import { ControlRow, Panel } from "./Panel";
 import { RosterRow } from "./RosterRow";
 
@@ -49,24 +50,17 @@ function RemovedList() {
         ))}
       </ul>
       {doomed && (
-        <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field has-mt-3">
-          <p className="text-base leading-snug">{CONFIRM.deleteForGood(doomed.name)}</p>
-          <div className="is-flex has-gap-2">
-            <Button
-              variant="out"
-              className="is-flex-1 has-py-3"
-              onClick={() => {
-                act({ type: "deletePlayer", id: doomed.id });
-                setAsking(null);
-              }}
-            >
-              {ZONES.deleteConfirm}
-            </Button>
-            <Button className="is-flex-1 has-py-3" onClick={() => setAsking(null)}>
-              {ZONES.keep}
-            </Button>
-          </div>
-        </div>
+        <ConfirmBox
+          className="has-mt-3"
+          text={CONFIRM.deleteForGood(doomed.name)}
+          yes={ZONES.deleteConfirm}
+          keep={ZONES.keep}
+          onYes={() => {
+            act({ type: "deletePlayer", id: doomed.id });
+            setAsking(null);
+          }}
+          onKeep={() => setAsking(null)}
+        />
       )}
     </div>
   );

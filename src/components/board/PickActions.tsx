@@ -6,6 +6,7 @@ import { GAFFER } from "@/constants/content/gaffer";
 import { changedFromStrongest, matchUnderway, planName, started } from "@/lib/board/queries";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
+import { ConfirmBox } from "./ConfirmBox";
 import { useClockToggle } from "./MatchClock";
 import { Panel } from "./Panel";
 
@@ -37,17 +38,7 @@ export function PickActions() {
 
   // The in-place check, the same for each of the three.
   const ask = (text: string, yes: string, variant: "out" | "default") => (
-    <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field has-mt-3">
-      <p className="text-base leading-snug">{text}</p>
-      <div className="is-flex has-gap-2">
-        <Button variant={variant} className="is-flex-1 has-py-3" onClick={confirm}>
-          {yes}
-        </Button>
-        <Button className="is-flex-1 has-py-3" onClick={() => setConfirming(null)}>
-          {PICK.keep}
-        </Button>
-      </div>
-    </div>
+    <ConfirmBox className="has-mt-3" text={text} yes={yes} keep={PICK.keep} variant={variant} onYes={confirm} onKeep={() => setConfirming(null)} />
   );
 
   return (

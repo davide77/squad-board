@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type CSSProperties } from "react";
+import { useId, useState, type CSSProperties } from "react";
 import { KIT_COLOURS } from "@/constants/brand";
 import { CLUB, CONFIRM } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
@@ -11,6 +11,7 @@ import { clearStored, emptyData } from "@/lib/board/storage";
 import { writeVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
 import { BadgePicker } from "./BadgePicker";
+import { ConfirmBox } from "./ConfirmBox";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
 import { ControlRow, Panel } from "./Panel";
@@ -27,8 +28,11 @@ export function ClubPanel() {
     act({ type: "notify", text: GAFFER[data.voice].exported });
   }
 
+  // Asked in place, under the button, before anything is deleted.
+  const [confirmingWipe, setConfirmingWipe] = useState(false);
+
   function wipe() {
-    if (!window.confirm(CONFIRM.wipe)) return;
+    setConfirmingWipe(false);
     clearStored();
     // Everything goes but the gaffer: that is the coach's choice, not the squad's.
     act({ type: "load", data: { ...emptyData(), voice: data.voice } });
@@ -129,10 +133,20 @@ export function ClubPanel() {
               {CLUB.export}
             </Button>
             <ImportSquadButton />
-            <Button size="tiny" variant="quiet" onClick={wipe}>
+            <Button size="tiny" variant="quiet" aria-expanded={confirmingWipe} onClick={() => setConfirmingWipe(true)}>
               {CLUB.wipe}
             </Button>
           </ControlRow>
+          {confirmingWipe && (
+            <ConfirmBox
+              className="has-mt-3"
+              text={CONFIRM.wipe}
+              yes={CLUB.wipe}
+              keep={CONFIRM.keep}
+              onYes={wipe}
+              onKeep={() => setConfirmingWipe(false)}
+            />
+          )}
           <p className="text-sm is-dimmer has-mt-3">{CLUB.hint}</p>
         </>
       )}
