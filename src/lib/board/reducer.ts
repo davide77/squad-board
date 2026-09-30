@@ -373,6 +373,8 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       // Send opens on the call-up before a match, and on the team sheet once one is under way.
       if (action.step === "send") ui.sendKind = action.kind ?? (started(d) ? "sheet" : "callup");
       ui.step = action.step;
+      // A new step starts on its own line from the Gaffer, not the last word of the one before.
+      ui.notice = null;
       ui.selected = null;
       ui.offSlot = null;
       ui.offInjured = false;

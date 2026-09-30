@@ -194,29 +194,3 @@
   }
 }
 
-.roster-editor {
-  border-bottom: 1px solid $rule;
-
-  &__label {
-    width: 120px;
-  }
-
-  // Two digits at the board's number size, same box as the row's number.
-  &__num {
-    width: 56px;
-    appearance: textfield;
-  }
-}
-
-.position-toggle {
-  color: color(dim);
-  background-color: color(board-2);
-  border: 1px solid $edge;
-  cursor: pointer;
-
-  &[aria-pressed='true'] {
-    color: color(kit-ink);
-    background-color: color(kit);
-    border-color: color(kit-edge);
-  }
-}
