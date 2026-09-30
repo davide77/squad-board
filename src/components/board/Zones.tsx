@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { CONFIRM, GLYPHS, NO_NUMBER, ZONES } from "@/constants/content/board";
+import { ZONES } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { BOARD_CONFIG } from "@/constants/config";
 import { byId, phaseOf, started, where, yetToPlay } from "@/lib/board/queries";
@@ -52,35 +52,6 @@ export function BenchPanel() {
   );
 }
 
-interface RemovedChipProps {
-  readonly player: Player;
-}
-
-function RemovedChip({ player }: RemovedChipProps) {
-  const { act } = useBoard();
-  const restore = () => act({ type: "restorePlayer", id: player.id });
-  return (
-    <span className="chip chip--gone is-flex is-align-center has-gap-2 has-radius-field" onClick={(e) => e.stopPropagation()}>
-      <button type="button" className="chip__num chip__bare has-font-headline has-font-bold text-lg is-tabular" onClick={restore} aria-label={ZONES.restore(player.name)}>
-        {player.num || NO_NUMBER}
-      </button>
-      <button type="button" className="chip__name chip__bare text-base text-left is-truncate" onClick={restore} title={ZONES.restore(player.name)}>
-        {player.name}
-      </button>
-      <button
-        type="button"
-        className="chip__delete"
-        aria-label={ZONES.deleteForGood(player.name)}
-        onClick={() => {
-          if (window.confirm(CONFIRM.deleteForGood(player.name))) act({ type: "deletePlayer", id: player.id });
-        }}
-      >
-        {GLYPHS.close}
-      </button>
-    </span>
-  );
-}
-
 /**
  * Development football is about everyone getting a go, so once the clock is running
  * the Gaffer keeps an eye on who is still waiting, and says so when nobody is.
@@ -105,22 +76,12 @@ export function PoolPanel() {
   const pool = data.players.filter((p) => !p.out && where(data, p.id) === "pool");
 
   return (
-    <Panel heading={ZONES.pool} count={ZONES.poolCount(pool.length, data.removed.length)}>
+    <Panel heading={ZONES.pool} count={pool.length}>
       <DropZone zone="pool">
         {pool.length ? (
           pool.map((p) => <PlayerChip key={p.id} player={p} />)
         ) : (
           <span className="text-base is-dimmer has-py-2">{GAFFER[data.voice].poolEmpty}</span>
-        )}
-        {data.removed.length > 0 && (
-          <>
-            <span className="chips__divider has-font-headline text-xs tracking-caps uppercase is-dimmer has-mt-2">
-              {ZONES.removed}
-            </span>
-            {data.removed.map((p) => (
-              <RemovedChip key={p.id} player={p} />
-            ))}
-          </>
         )}
       </DropZone>
     </Panel>

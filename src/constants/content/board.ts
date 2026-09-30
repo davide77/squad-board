@@ -71,8 +71,8 @@ export const SHAPE = {
 export const ZONES = {
   bench: "Bench",
   pool: "Rest of squad",
-  poolCount: (n: number, removed: number) => (removed ? `${n} + ${removed} removed` : String(n)),
   removed: "Removed from the squad",
+  bringBack: "Bring back",
   restore: (name: string) => `Bring ${name} back`,
   deleteForGood: (name: string) => `Delete ${name} for good`,
 } as const;
@@ -222,6 +222,31 @@ export const EXAMPLE = {
 export const SUBS = {
   heading: "Substitutions",
   for: "for",
+} as const;
+
+/** The drawer that edits one player, from the Edit button in the squad list. */
+export const DRAWER = {
+  label: "Edit player",
+  newPlayer: "New player",
+  close: "Close",
+  numberClash: (num: string, names: string) => `Shirt ${num} is also on ${names}.`,
+  positionsHeading: "Positions",
+  positionsHint: "Tap every position they can play. The first one you tap is their main position.",
+  main: "Main",
+  sideHint: "Which side for full-back and wing",
+  listedAs: "Listed as",
+  weekHeading: "This week",
+  statuses: [
+    { key: "available", label: "Available" },
+    { key: "inj", label: "Injured" },
+    { key: "una", label: "Unavailable" },
+    { key: "trn", label: "Missed training" },
+  ],
+  done: "Done",
+  remove: "Remove from squad",
+  removeText: (first: string) => `Takes ${first} out of the squad and off the pitch. You can bring them back from the list.`,
+  removeConfirm: "Remove",
+  keep: "Keep them",
 } as const;
 
 /** Matchday: the clock, the bench, the change in progress, and the log. */

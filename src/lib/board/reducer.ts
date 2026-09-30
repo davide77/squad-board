@@ -32,7 +32,7 @@ import {
 } from "./queries";
 import { placeStarters } from "./start";
 import { emptyData, emptyMatch, loadStored } from "./storage";
-import type { BoardData, BoardState, BoardStep, SendKind, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
+import type { Availability, BoardData, BoardState, BoardStep, SendKind, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
 
 export type Action =
   | { type: "load"; data: BoardData; notice?: string }
@@ -94,6 +94,7 @@ export type Action =
   | { type: "setStep"; step: BoardStep; kind?: SendKind }
   | { type: "setSendKind"; kind: SendKind }
   | { type: "setNameStyle"; style: NameStyle }
+  | { type: "setAvailability"; id: string; status: Availability }
   | { type: "selectOff"; slotId: string }
   | { type: "toggleOffInjured" }
   | { type: "bringOn"; pid: string }
@@ -613,6 +614,29 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
         detach(d, p.id);
       }
       note(p.trn ? say.markedTraining(firstName(p.name)) : say.trainingCleared(firstName(p.name)));
+      return next;
+    }
+
+    // One choice for the week, from the player drawer. Available calls them up as well.
+    case "setAvailability": {
+      const p = player(action.id);
+      if (!p) return state;
+      const n = firstName(p.name);
+      if (action.status === "available") {
+        if (!blocked(p) && !p.out) return state;
+        p.inj = false;
+        p.una = false;
+        p.trn = false;
+        p.out = false;
+        note(say.calledUp(n));
+        return next;
+      }
+      p.inj = action.status === "inj";
+      p.una = action.status === "una";
+      p.trn = action.status === "trn";
+      p.out = true;
+      detach(d, p.id);
+      note(p.inj ? say.markedInjured(n) : p.una ? say.markedUnavailable(n) : say.markedTraining(n));
       return next;
     }
 

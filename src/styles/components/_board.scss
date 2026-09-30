@@ -420,3 +420,129 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 .send-actions {
   border-top: 1px solid $edge;
 }
+
+// ---------- The player drawer ----------
+
+// Slides in from the right edge over a dimmed board. A phone gets the full width.
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: z(overlay);
+  background-color: tint(board, 66%);
+
+  &__panel {
+    max-width: 460px;
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
+    background-color: color(board-2);
+    border-left: 1px solid $edge;
+  }
+
+  &__close {
+    width: $hit-size;
+    height: $hit-size;
+    flex-shrink: 0;
+    color: color(chalk);
+    background-color: color(board-3);
+    border: 1px solid $edge;
+    cursor: pointer;
+  }
+
+  // The shirt number beside the name, as on a teamsheet.
+  &__ident {
+    grid-template-columns: spacer(11) + spacer(2) minmax(0, 1fr);
+  }
+
+  &__positions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &__shirt-label {
+    max-width: 12rem;
+  }
+
+  &__section {
+    border-top: 1px solid $edge;
+  }
+
+  // Done and remove sit at the foot, however short the drawer's content.
+  &__foot {
+    margin-top: auto;
+  }
+
+  &__confirm {
+    background-color: tint(out, 12%);
+    border: 1px solid tint(out, 35%);
+  }
+}
+
+// A choice in the drawer: a position, a side or this week. Filled in kit colour once chosen.
+.drawer-option {
+  min-height: $hit-size + spacer(1);
+  color: color(chalk);
+  background-color: color(board);
+  border: 1px solid $edge;
+  cursor: pointer;
+  transition: background-color $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    border-color: tint(kit, 50%);
+  }
+
+  &[aria-pressed='true'],
+  &[aria-checked='true'] {
+    color: color(kit-ink);
+    background-color: color(kit);
+    border-color: color(kit-edge);
+  }
+
+  // A position: its code, its name, and "Main" on the first one picked.
+  &--position {
+    grid-template-columns: spacer(9) minmax(0, 1fr) auto;
+    min-height: $hit-size + spacer(3);
+  }
+
+  // Injured is marked in the Out accent, chosen or not.
+  &--out {
+    color: color(out);
+    border-color: tint(out, 35%);
+
+    &[aria-checked='true'] {
+      color: color(board);
+      background-color: color(out);
+      border-color: color(out);
+    }
+  }
+}
+
+// A shirt number another player already wears.
+.field--clash {
+  border-color: color(out);
+}
+
+// A removed player: tap the name to bring them back, or the cross to delete them for good.
+.removed-chip {
+  border: 1px dashed $edge;
+
+  &__back,
+  &__delete {
+    min-height: $hit-size;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  &__back:hover .is-dim {
+    color: color(chalk);
+  }
+
+  &__delete {
+    width: $hit-size;
+    border-left: 1px dashed $edge;
+
+    &:hover {
+      color: color(out);
+    }
+  }
+}

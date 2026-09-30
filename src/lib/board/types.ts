@@ -136,6 +136,9 @@ export interface Notice {
 /** The three matchday steps the board is laid out in. */
 export type BoardStep = "pick" | "match" | "send";
 
+/** A player's week, as one choice in the player drawer. Anything but available leaves them out. */
+export type Availability = "available" | "inj" | "una" | "trn";
+
 /** What goes out from the Send step: the call-up before the match, the team sheet, or the picture. */
 export type SendKind = "callup" | "sheet" | "picture";
 

@@ -1,13 +1,53 @@
 "use client";
 
 import { useId, useRef, type FormEvent } from "react";
-import { SQUAD } from "@/constants/content/board";
+import { CONFIRM, GLYPHS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { blocked, dupeNumbers } from "@/lib/board/queries";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ControlRow, Panel } from "./Panel";
 import { RosterRow } from "./RosterRow";
+
+/**
+ * Players taken out of the squad, under the list: a tap brings each one back, and the cross deletes
+ * them for good, after a check, for a name that should not stay on this device.
+ */
+function RemovedList() {
+  const { state, act } = useBoard();
+  const { removed } = state.data;
+  if (!removed.length) return null;
+  return (
+    <div className="has-mt-5">
+      <h3 className="has-font-headline text-sm tracking-caps uppercase is-dimmer has-mb-2">{ZONES.removed}</h3>
+      <ul className="is-flex is-flex-wrap has-gap-2">
+        {removed.map((p) => (
+          <li key={p.id} className="removed-chip is-flex is-align-center has-radius-field">
+            <button
+              type="button"
+              className="removed-chip__back is-flex is-align-center has-gap-2 has-px-3 text-base"
+              aria-label={ZONES.restore(p.name)}
+              onClick={() => act({ type: "restorePlayer", id: p.id })}
+            >
+              <span className="is-dim">{p.name}</span>
+              <span className="has-font-semibold is-kit">{ZONES.bringBack}</span>
+            </button>
+            <button
+              type="button"
+              className="removed-chip__delete is-flex is-align-center is-justify-center is-dimmer"
+              aria-label={ZONES.deleteForGood(p.name)}
+              onClick={() => {
+                if (window.confirm(CONFIRM.deleteForGood(p.name))) act({ type: "deletePlayer", id: p.id });
+              }}
+            >
+              {GLYPHS.close}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export function SquadPanel() {
   const { state, act } = useBoard();
@@ -110,6 +150,7 @@ export function SquadPanel() {
           {SQUAD.add}
         </Button>
       </form>
+      <RemovedList />
     </Panel>
   );
 }

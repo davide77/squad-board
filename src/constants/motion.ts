@@ -8,6 +8,8 @@ export const MOTION = {
   /** The picker rising from the bottom edge on a phone. */
   sheet: { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const },
   sheetY: 32,
+  /** The player drawer sliding in from the right edge, on the same curve as the sheet. */
+  drawerX: 48,
   /** The toast. It holds for TOAST_MS in config.ts. */
   toast: { duration: 0.18 },
   toastY: 8,
