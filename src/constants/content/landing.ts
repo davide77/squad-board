@@ -235,9 +235,9 @@ export const STORY: readonly StoryChapter[] = [
     title: "Clock on. Make your changes.",
     body: "Tap a player, bring the bench on. Every sub logged to the minute. Injured players stay flagged for next week.",
     media: {
-      webm: "/story/gafferboard-story-match-2.webm",
-      mp4: "/story/gafferboard-story-match-2.mp4",
-      poster: "/story/gafferboard-story-match-2.jpg",
+      webm: "/story/gafferboard-story-match-3.webm",
+      mp4: "/story/gafferboard-story-match-3.mp4",
+      poster: "/story/gafferboard-story-match-3.jpg",
     },
   },
   {
