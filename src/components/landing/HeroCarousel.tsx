@@ -186,7 +186,8 @@ export function HeroCarousel() {
               On a big screen the story moves on by itself, so the next clip loads while this one plays
               and is ready when the chapter turns. A phone only moves when tapped, so it never loads ahead.
             */}
-            {moving && !touch && <NextClip chapter={STORY[(index + 1) % STORY.length]} />}
+            {/* Keyed, so each chapter gets a fresh element: a browser does not refetch when only the sources change. */}
+            {moving && !touch && <NextClip key={STORY[(index + 1) % STORY.length].key} chapter={STORY[(index + 1) % STORY.length]} />}
           </motion.div>
         </div>
 
