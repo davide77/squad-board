@@ -146,6 +146,11 @@ export const ANALYTICS_EVENTS = {
   clockStarted: "Clock started",
   /** A saved board opened again, with the days since it was last open. A coach coming back. */
   boardReopened: "Board reopened",
+  /**
+   * The first use of the board in a calendar week, Monday to Sunday, with the weeks since it was last
+   * used. "1 week" is a coach back for the next matchweek: the "a third come back" test, measured directly.
+   */
+  weekActive: "Week active",
 } as const;
 
 /**
@@ -164,6 +169,22 @@ export const REOPEN_GAPS = [
   { underDays: 14, label: "7 to 13 days" },
   { underDays: Infinity, label: "14 days or more" },
 ] as const;
+
+/**
+ * The last week the board was used, as a week number, kept on this device only. Only the band below
+ * is sent. Only written while events are on.
+ */
+export const LAST_ACTIVE_WEEK_KEY = "gafferboard:last-active-week";
+
+/** The weeks a "Week active" reports, first band that fits. `underWeeks` is exclusive. */
+export const WEEK_GAPS = [
+  { underWeeks: 2, label: "1 week" },
+  { underWeeks: 3, label: "2 weeks" },
+  { underWeeks: Infinity, label: "3 weeks or more" },
+] as const;
+
+/** A "Week active" from a board with no week stored yet: a coach's first week. */
+export const FIRST_WEEK = "first week";
 
 /** The age on a "Clock started" from a board made before age groups existed. */
 export const AGE_NOT_SET = "Not set";

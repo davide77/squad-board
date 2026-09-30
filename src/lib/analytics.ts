@@ -1,5 +1,14 @@
 import { track } from "@vercel/analytics";
-import { ANALYTICS_CONFIG, ANALYTICS_EVENTS, LAST_OPENED_KEY, REOPEN_GAPS, type AnalyticsEvent } from "@/constants/config";
+import {
+  ANALYTICS_CONFIG,
+  ANALYTICS_EVENTS,
+  FIRST_WEEK,
+  LAST_ACTIVE_WEEK_KEY,
+  LAST_OPENED_KEY,
+  REOPEN_GAPS,
+  WEEK_GAPS,
+  type AnalyticsEvent,
+} from "@/constants/config";
 
 /**
  * Counts one thing a coach did, for the usage numbers a sponsor asks for.
@@ -29,6 +38,35 @@ function queueUntilLoaded(): void {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const WEEK_DAYS = 7;
+// 5 January 1970 was a Monday, so weeks counted from it turn over on a Monday, as matchweeks do.
+const FIRST_MONDAY = new Date(1970, 0, 5);
+
+/** Whole weeks since that Monday, from the coach's own calendar, so a week turns over at their Monday midnight. */
+function weekNumber(now: Date): number {
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const monday = Date.UTC(FIRST_MONDAY.getFullYear(), FIRST_MONDAY.getMonth(), FIRST_MONDAY.getDate());
+  return Math.floor(Math.round((today - monday) / DAY_MS) / WEEK_DAYS);
+}
+
+/** The band a gap in weeks falls in, such as "1 week". */
+function weekGapLabel(weeks: number): string {
+  return (WEEK_GAPS.find((g) => weeks < g.underWeeks) ?? WEEK_GAPS[WEEK_GAPS.length - 1]).label;
+}
+
+/**
+ * Counts the first use of the board in a calendar week, with the weeks since it was last used, then
+ * notes this week. Later uses in the same week count nothing. Only the week number is kept, on this device.
+ */
+function trackWeekActive(): void {
+  const week = weekNumber(new Date());
+  const last = Number(localStorage.getItem(LAST_ACTIVE_WEEK_KEY) ?? NaN);
+  if (last === week) return;
+  const gap = week - last;
+  const weeks = Number.isFinite(last) && gap > 0 ? weekGapLabel(gap) : FIRST_WEEK;
+  trackEvent(ANALYTICS_EVENTS.weekActive, { weeks });
+  localStorage.setItem(LAST_ACTIVE_WEEK_KEY, String(week));
+}
 
 // Once per page load, whatever remounts the board (and React runs effects twice in development).
 let openCounted = false;
@@ -52,6 +90,8 @@ export function trackBoardOpened(): void {
     const last = Number(localStorage.getItem(LAST_OPENED_KEY));
     if (last > 0 && last <= now) trackEvent(ANALYTICS_EVENTS.boardReopened, { gap: gapLabel(now - last) });
     localStorage.setItem(LAST_OPENED_KEY, String(now));
+    // Opening or starting a board is using it, so this is where a week becomes active.
+    trackWeekActive();
   } catch {
     // Storage blocked, as in some private windows. Nothing is counted rather than a guess.
   }
