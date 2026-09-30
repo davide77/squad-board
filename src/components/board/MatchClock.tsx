@@ -1,7 +1,7 @@
 "use client";
 
 import { HEADER } from "@/constants/content/board";
-import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
+import { AGE_NOT_SET, ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
 import { trackEvent } from "@/lib/analytics";
 import { fmtClock, started } from "@/lib/board/queries";
 import { useNow, useWakeLock } from "@/lib/hooks";
@@ -32,8 +32,10 @@ export function MatchClock() {
       </span>
       <Button
         onClick={() => {
-          // Kick-off, not a restart after half-time: a real match on the example team does not count.
-          if (!isOn && !state.data.example) trackEvent(ANALYTICS_EVENTS.clockStarted);
+          // Kick-off only: stopped with nothing on the clock. A restart after half-time, or the example team, is not counted.
+          if (!isOn && !state.data.example) {
+            trackEvent(ANALYTICS_EVENTS.clockStarted, { age: state.data.age ?? AGE_NOT_SET });
+          }
           act({ type: "clockToggle" });
         }}
       >

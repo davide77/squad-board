@@ -338,10 +338,11 @@
     fill: currentColor;
   }
 
-  // Paused by the visitor: outlined and lettered in kit colour. Drawn inside, so nothing shifts.
-  &__pause[aria-pressed='true'] {
+  // Paused by the visitor: outlined, lettered and marked in kit colour. The outline is drawn
+  // inside, so nothing shifts; the glyph follows the label through currentColor.
+  &__pause--held {
     color: color(kit);
-    box-shadow: inset 0 0 0 2px color(kit);
+    box-shadow: inset 0 0 0 2px color(kit-edge);
   }
 
   &[data-paused='true'] &__fill--run {

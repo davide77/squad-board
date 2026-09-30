@@ -135,7 +135,7 @@ export const STORY_DURATION_MS = 9000;
 // Page views work on every Vercel plan. Custom events (a board started, a sheet sent) need Pro,
 // which the team is on. Set `events` to false to stop them, and the privacy page follows.
 export const ANALYTICS_CONFIG = {
-  events: true,
+  events: false,
 } as const;
 
 /** Every custom event the board sends, and the one property each may carry. Never a name from the board. */
@@ -149,15 +149,24 @@ export const ANALYTICS_EVENTS = {
 } as const;
 
 /**
- * The day the board was last open, kept on this device only, so a return can be counted
- * without knowing who anyone is. Only written while events are on.
+ * When the board was last opened, kept on this device only, so a return can be counted without
+ * knowing who anyone is. Only the band below is ever sent, never the time. Only written while events are on.
  */
-export const LAST_VISIT_KEY = "gafferboard:last-visit-day";
+export const LAST_OPENED_KEY = "gafferboard:last-opened";
 
-/** Days since the board was last open, in the three bands a "Board reopened" reports. 7+ is next matchweek. */
-export const DAYS_SINCE = { sameDay: "0", thisWeek: "1-6", nextWeek: "7+" } as const;
-/** The first day of the 7+ band. */
-export const NEXT_WEEK_DAYS = 7;
+/**
+ * The gap a "Board reopened" reports, first band that fits. `underDays` is exclusive.
+ * 7 to 13 days is the coach back for the next match; that is the number to run it by.
+ */
+export const REOPEN_GAPS = [
+  { underDays: 1, label: "same day" },
+  { underDays: 7, label: "1 to 6 days" },
+  { underDays: 14, label: "7 to 13 days" },
+  { underDays: Infinity, label: "14 days or more" },
+] as const;
+
+/** The age on a "Clock started" from a board made before age groups existed. */
+export const AGE_NOT_SET = "Not set";
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
 
