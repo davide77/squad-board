@@ -20,11 +20,12 @@ import { PlayerDrawer } from "./PlayerDrawer";
 import { ShapePanel } from "./ShapePanel";
 import { MatchDetailsPanel } from "./MatchDetailsPanel";
 import { SavedPanel } from "./SavedPanel";
-import { SendActions, SendKinds, SendPreview } from "./Send";
+import { FullActions, FullKinds, FullPreview } from "./Full";
+import { ParentsMessage } from "./ParentsMessage";
+import { PickActions } from "./PickActions";
 import { ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
 import { Pitch } from "./Pitch";
 import { SquadPanel } from "./SquadPanel";
-import { StepActions } from "./StepActions";
 import { STEP_PANEL_ID, stepTabId } from "./StepTabs";
 import { Toast } from "./Toast";
 import { useBoardDrag } from "./useBoardDrag";
@@ -57,8 +58,9 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
     right: (
       <>
         <MatchDetailsPanel />
+        <ParentsMessage />
+        <PickActions />
         <SavedPanel />
-        <StepActions />
         <ClubPanel />
       </>
     ),
@@ -74,10 +76,10 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
     ),
     right: <MatchLog />,
   },
-  send: {
-    left: <SendKinds />,
-    centre: <SendPreview />,
-    right: <SendActions />,
+  full: {
+    left: <FullKinds />,
+    centre: <FullPreview />,
+    right: <FullActions />,
   },
 };
 

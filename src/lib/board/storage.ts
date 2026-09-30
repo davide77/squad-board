@@ -1,4 +1,4 @@
-import { KIT_COLOURS } from "@/constants/brand";
+import { AWAY_KIT_DEFAULT, KIT_COLOURS } from "@/constants/brand";
 import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { BADGE_CONFIG, STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
@@ -19,7 +19,7 @@ import { captureLineup, elapsed } from "./queries";
 import type { BoardData, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyMatch(): MatchDetails {
-  return { date: "", kickoff: "", meet: "", kit: "", address: "" };
+  return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", us: 0, them: 0, potm: "", ended: false };
 }
 
 export function emptyData(): BoardData {
@@ -41,6 +41,7 @@ export function emptyData(): BoardData {
     saved: null,
     removed: [],
     colour: 0,
+    awayColour: AWAY_KIT_DEFAULT,
     badge: "",
     clock: { running: false, base: 0, since: 0 },
     example: false,
@@ -130,6 +131,11 @@ function readMatch(v: unknown): MatchDetails {
     meet: matching(v.meet, TIME),
     kit: str(v.kit),
     address: str(v.address),
+    venue: v.venue === "home" || v.venue === "away" ? v.venue : "",
+    us: Math.max(0, Math.floor(num(v.us))),
+    them: Math.max(0, Math.floor(num(v.them))),
+    potm: str(v.potm),
+    ended: v.ended === true,
   };
 }
 
@@ -188,6 +194,8 @@ export function readBoard(raw: unknown): BoardData | null {
     saved: readLineup(raw.saved),
     removed: list(raw.removed).map(readPlayer).filter(notNull),
     colour: KIT_COLOURS[colour] ? colour : 0,
+    // Boards from before the away kit get the default.
+    awayColour: typeof raw.awayColour === "number" && KIT_COLOURS[raw.awayColour] ? raw.awayColour : AWAY_KIT_DEFAULT,
     badge: isBadge(raw.badge) ? raw.badge : "",
     // A board always reopens with the clock paused where it was left.
     clock: { running: false, base: isRec(raw.clock) ? num(raw.clock.base) : 0, since: 0 },

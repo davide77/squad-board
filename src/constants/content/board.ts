@@ -29,7 +29,7 @@ export const STEPS = {
   items: [
     { key: "pick", n: "1", label: "Pick the team", short: "Pick" },
     { key: "match", n: "2", label: "Matchday", short: "Match" },
-    { key: "send", n: "3", label: "Send", short: "Send" },
+    { key: "full", n: "3", label: "Full time", short: "Full time" },
   ],
   /** The ways on from Pick the team. */
   startMatch: "Start the match",
@@ -71,6 +71,26 @@ export const SHAPE = {
   slotEmpty: (role: string) => `${role}, empty`,
   /** Starts with what the slot shows, number then name, so voice control matches it. */
   slotFilled: (num: number | string, name: string, role: string) => `${num} ${name}, ${role}`,
+} as const;
+
+/** The right-hand column of Pick the team: the strongest side, kick-off, and starting over. */
+export const PICK = {
+  /** "Strongest XI", from planName, which knows the age group. */
+  strongestHeading: (plan: string) => plan.charAt(0).toUpperCase() + plan.slice(1),
+  planSame: (plan: string, shape: string) => `This is your ${plan}, in ${shape}.`,
+  planChanged: (plan: string) => `Changed from your ${plan}.`,
+  planNone: (plan: string) => `No ${plan} saved yet. Pick it, then save it here.`,
+  saveStrongest: "Save as strongest",
+  backToStrongest: "Back to strongest",
+  startOver: "Start over",
+  newMatchday: "New matchday",
+  clearPitch: "Clear the pitch",
+  newMatchdayText:
+    "Clears the call-ups, the clock, the subs, the score and this week's match details. The squad, injuries and your strongest side stay.",
+  clearPitchText: "Takes everyone off the pitch. The squad stays.",
+  newMatchdayConfirm: "Start a new matchday",
+  clearPitchConfirm: "Clear the pitch",
+  keep: "Keep it",
 } as const;
 
 export const ZONES = {
@@ -295,47 +315,61 @@ export const SHEET = {
   pictureFooter: "gafferboard.com",
   /** Between the fixture, the day and the kick-off on the line-up picture. */
   pictureJoin: " \u00b7 ",
-  fallbackTitle: "Team sheet",
+  /** Heads a message or picture from a board with no team name yet. */
+  fallbackTitle: "Matchday",
   bench: "Bench",
   subs: "Substitutions",
 } as const;
 
-/** The Send step: what goes out, how it will look, and the ways to send it. */
-export const SEND = {
+/** The Full time step: the result for the parents, or the picture for the coaches. */
+export const FULL = {
   kindsHeading: "What to send",
   kinds: [
     {
-      key: "callup",
-      when: "Before the match",
-      title: "Call-up message",
-      body: "Who's in, when to meet and the kit. For the parents' group.",
-    },
-    {
-      key: "sheet",
-      when: "Match day",
-      title: "Team sheet",
-      body: "The line-up by shirt number, with bench cover, the bench and the subs.",
+      key: "result",
+      when: "For the parents",
+      title: "The result",
+      body: "The full-time score and the player of the match. Worth passing on.",
     },
     {
       key: "picture",
-      when: "Any time",
+      when: "For the coaches",
       title: "Line-up picture",
-      body: "The pitch as a picture. Shows up well in WhatsApp.",
+      body: "The shape and who started. Not for the parents' group.",
     },
   ],
-  previewLabel: "Preview",
-  /** The chat the preview pretends to be, so it reads the way the parents will see it. */
-  group: (team: string) => (team.trim() ? `${team.trim()} parents` : "Parents' group"),
-  groupInitial: (team: string) => (team.trim().charAt(0) || "P").toUpperCase(),
-  pictureAlt: "The line-up picture, as the parents will see it.",
-  pictureMaking: "Drawing the picture",
-  heading: "Send it",
+  resultHeading: "The result",
+  fullTime: "Full time",
+  us: (team: string) => team.trim() || "Us",
+  them: (opponent: string) => opponent || "Them",
+  minus: (side: string) => `One fewer for ${side}`,
+  plus: (side: string) => `One more for ${side}`,
+  potmLabel: "Player of the match",
+  potmNobody: "Nobody this week",
   namesLabel: "Names",
+  send: "Send the result",
+  copy: "Copy",
+  pictureHeading: "For the coaches",
+  pictureBody: "This picture shows the shape and who started. Send it to your assistant or the club's coaches' group, not the parents.",
+  coachesOnly: "Coaches only",
+  share: "Share the picture",
+  shareHint: "Opens your phone's share sheet. On a laptop it downloads a PNG.",
+  pictureAlt: "The line-up picture, for the coaches.",
+  pictureMaking: "Drawing the picture",
+  /** Lines of the result message. */
+  resultTitle: "Full time",
+  potmLine: (name: string) => `Player of the match: ${name}`,
+} as const;
+
+/** The call-up for the parents, under Pick the team: who's in, when, where and what to wear. */
+export const PARENTS = {
+  heading: "Message to the parents",
+  hint: "Who's in, when, where and what to wear. No shape, no bench, no injuries.",
+  previewLabel: "Preview",
+  group: (team: string) => (team.trim() ? `${team.trim()} parents` : "Parents' group"),
   namesHint: "Use initials for groups with people outside the club.",
   whatsapp: "Send on WhatsApp",
   copy: "Copy",
-  share: "Share the picture",
-  shareHint: "Opens your phone's share sheet. On a laptop it downloads a PNG.",
 } as const;
 
 /** The call-up for the parents' group. It goes out in the coach's name, so it stays straight. */
@@ -348,6 +382,17 @@ export const MESSAGE = {
   kickoffLabel: "Kick-off",
   meetLabel: "Meet",
   kitLabel: "Kit",
+  venueLabel: "Home or away",
+  venues: [
+    { key: "home", label: "Home" },
+    { key: "away", label: "Away" },
+  ],
+  /** "Home · yellow" on the button, with the kit's swatch beside it. */
+  venueOption: (label: string, colour: string) => `${label} · ${colour.toLowerCase()}`,
+  venueHint: "Kit colours come from Your club.",
+  /** After the fixture in the message, and the kit line under it. */
+  venueTag: (venue: "home" | "away") => ` (${venue})`,
+  kitLine: (venue: "home" | "away", colour: string) => `${venue === "home" ? "Home" : "Away"} kit (${colour.toLowerCase()}).`,
   kitPlaceholder: "e.g. Blue kit",
   addressLabel: "Address",
   addressPlaceholder: "Ground name, street, postcode",
@@ -369,7 +414,9 @@ export const CLUB = {
   ageLabel: "Age group",
   formatLabel: "Format",
   ageNotSet: "Not set",
-  colourLabel: "Colour",
+  colourLabel: "Home kit",
+  awayLabel: "Away kit",
+  swatchLabel: (which: string, colour: string) => `${which}: ${colour}`,
   badgeLabel: "Badge",
   badgeAdd: "Add badge",
   badgeChange: "Change",

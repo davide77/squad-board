@@ -95,9 +95,25 @@ export function ClubPanel() {
               className="swatch has-radius-pill"
               style={{ "--swatch": c.kit } as CSSProperties}
               title={c.name}
-              aria-label={c.name}
+              aria-label={CLUB.swatchLabel(CLUB.colourLabel, c.name)}
               aria-pressed={i === data.colour}
               onClick={() => act({ type: "setColour", index: i })}
+            />
+          ))}
+        </div>
+      </ControlRow>
+      <ControlRow label={CLUB.awayLabel}>
+        <div className="is-flex is-flex-wrap has-gap-2">
+          {KIT_COLOURS.map((c, i) => (
+            <button
+              key={c.name}
+              type="button"
+              className="swatch has-radius-pill"
+              style={{ "--swatch": c.kit } as CSSProperties}
+              title={c.name}
+              aria-label={CLUB.swatchLabel(CLUB.awayLabel, c.name)}
+              aria-pressed={i === data.awayColour}
+              onClick={() => act({ type: "setAwayColour", index: i })}
             />
           ))}
         </div>

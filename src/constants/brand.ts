@@ -22,6 +22,9 @@ export const KIT_COLOURS: readonly KitColour[] = [
   { name: "Pink", kit: "#EC4F9B", ink: "#1A0610", edge: "#BD3F7C" },
 ];
 
+/** A new board's away kit: white, the change strip most clubs have. The coach can pick another under Your club. */
+export const AWAY_KIT_DEFAULT = KIT_COLOURS.findIndex((c) => c.name === "White");
+
 /**
  * The board's neutrals, for drawing the line-up picture on a canvas, which cannot
  * read SCSS. Mirrors $theme-colors in src/styles/abstracts/_colors.scss: keep in sync.

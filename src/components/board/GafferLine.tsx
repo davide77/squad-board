@@ -15,7 +15,7 @@ import { useBoard } from "./BoardProvider";
 export function GafferLine() {
   const { state } = useBoard();
   const say = GAFFER[state.data.voice];
-  const fallback = { pick: say.stepPick, match: say.stepMatch, send: say.stepSend }[state.ui.step];
+  const fallback = { pick: say.stepPick, match: say.stepMatch, full: say.stepFull }[state.ui.step];
 
   return (
     <div className="gaffer-line is-hidden is-md-flex is-align-center has-gap-3 has-mb-4">

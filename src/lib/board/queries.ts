@@ -192,8 +192,9 @@ function lineupSig(l: Lineup | null): string {
   ]);
 }
 
-export function unsaved(d: BoardData): boolean {
-  return lineupSig(captureLineup(d)) !== lineupSig(d.saved);
+/** The team on the board is not the strongest side saved, or none is saved yet. */
+export function changedFromStrongest(d: BoardData): boolean {
+  return lineupSig(captureLineup(d)) !== lineupSig(d.preset);
 }
 
 export function started(d: BoardData): boolean {

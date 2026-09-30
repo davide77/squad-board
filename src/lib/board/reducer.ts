@@ -32,7 +32,20 @@ import {
 } from "./queries";
 import { placeStarters } from "./start";
 import { emptyData, emptyMatch, loadStored } from "./storage";
-import type { Availability, BoardData, BoardState, BoardStep, SendKind, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
+import type {
+  Availability,
+  BoardData,
+  BoardState,
+  BoardStep,
+  DropTarget,
+  Lineup,
+  MatchTextField,
+  Player,
+  Point,
+  SendKind,
+  UiState,
+  Venue,
+} from "./types";
 
 export type Action =
   | { type: "load"; data: BoardData; notice?: string }
@@ -41,7 +54,11 @@ export type Action =
   | { type: "setTeam"; value: string }
   | { type: "setBadge"; value: string }
   | { type: "setFixture"; value: string }
-  | { type: "setMatch"; field: keyof MatchDetails; value: string }
+  | { type: "setMatch"; field: MatchTextField; value: string }
+  | { type: "setVenue"; venue: Venue }
+  | { type: "setAwayColour"; index: number }
+  | { type: "changeScore"; side: "us" | "them"; by: 1 | -1 }
+  | { type: "setPotm"; pid: string }
   | { type: "clockToggle" }
   | { type: "clockReset" }
   | { type: "setFormation"; name: string }
@@ -91,7 +108,7 @@ export type Action =
   | { type: "toggleCover" }
   | { type: "clearPitch" }
   | { type: "backedUp" }
-  | { type: "setStep"; step: BoardStep; kind?: SendKind }
+  | { type: "setStep"; step: BoardStep }
   | { type: "setSendKind"; kind: SendKind }
   | { type: "setNameStyle"; style: NameStyle }
   | { type: "setAvailability"; id: string; status: Availability }
@@ -107,7 +124,7 @@ const INITIAL_UI: UiState = {
   step: "pick",
   offSlot: null,
   offInjured: false,
-  sendKind: "callup",
+  sendKind: "result",
   selected: null,
   editing: null,
   pickerSlot: null,
@@ -164,9 +181,10 @@ function opened(d: BoardData): BoardData {
 export function initBoard(): BoardState {
   const stored = loadStored();
   const data = stored ? opened(stored) : emptyData();
-  // A match under way when the page closed opens straight back on it. The clock itself reopens
-  // paused where it was (storage.ts), so it is the time on it that says so.
-  return { data, ui: { ...INITIAL_UI, step: started(data) ? "match" : "pick" } };
+  // A finished match reopens on its result, and one under way on the match. The clock itself
+  // reopens paused where it was (storage.ts), so it is the time on it that says so.
+  const step = data.match.ended ? "full" : started(data) ? "match" : "pick";
+  return { data, ui: { ...INITIAL_UI, step } };
 }
 
 /** A board that lives in memory only, such as the example team, opening with a word from the Gaffer. */
@@ -335,7 +353,12 @@ function numberOrder(a: Player, b: Player): number {
 
 export function boardReducer(state: BoardState, action: StampedAction): BoardState {
   const next = reduce(state, action);
-  if (next !== state && next.data !== state.data) syncMinutes(next.data, action.now);
+  if (next !== state && next.data !== state.data) {
+    syncMinutes(next.data, action.now);
+    // The line-up saves itself, so the board reopens on the team the coach left. A new matchday
+    // keeps last week's, which the board reopens on for whoever is called up.
+    if (action.type !== "newMatchday" && action.type !== "load") next.data.saved = captureLineup(next.data);
+  }
   return next;
 }
 
@@ -370,8 +393,6 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       return next;
 
     case "setStep":
-      // Send opens on the call-up before a match, and on the team sheet once one is under way.
-      if (action.step === "send") ui.sendKind = action.kind ?? (started(d) ? "sheet" : "callup");
       ui.step = action.step;
       // A new step starts on its own line from the Gaffer, not the last word of the one before.
       ui.notice = null;
@@ -426,9 +447,10 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     }
 
     case "fullTime":
+      d.match.ended = true;
       if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
-      ui.step = "send";
-      ui.sendKind = "sheet";
+      ui.step = "full";
+      ui.sendKind = "result";
       ui.offSlot = null;
       ui.offInjured = false;
       note(say.fullTime);
@@ -463,7 +485,24 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       d.match[action.field] = action.value;
       return next;
 
+    case "setVenue":
+      d.match.venue = d.match.venue === action.venue ? "" : action.venue;
+      return next;
+
+    case "changeScore":
+      d.match[action.side] = Math.max(0, d.match[action.side] + action.by);
+      return next;
+
+    case "setPotm": {
+      d.match.potm = action.pid;
+      const p = player(action.pid);
+      note(p ? say.potm(firstName(p.name)) : say.potmNone);
+      return next;
+    }
+
     case "clockToggle":
+      // Back on after full time: the match is not over after all.
+      d.match.ended = false;
       if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
       else d.clock = { ...d.clock, running: true, since: now };
       return next;
@@ -800,6 +839,10 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
 
     case "setColour":
       d.colour = action.index;
+      return next;
+
+    case "setAwayColour":
+      d.awayColour = action.index;
       return next;
 
     case "saveLineup":

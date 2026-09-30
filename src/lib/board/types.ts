@@ -71,15 +71,31 @@ export interface Minutes {
 }
 
 /** What the parents need to get their child there. All optional, all plain text. */
+/** Where the match is played. Empty until the coach says. */
+export type Venue = "" | "home" | "away";
+
+/** This week's match: the details the call-up goes out with, and the result it ends with. Cleared by New matchday. */
 export interface MatchDetails {
   /** yyyy-mm-dd, from a date input. */
   date: string;
   /** HH:MM, from a time input. */
   kickoff: string;
   meet: string;
+  /** Free text from before home or away was asked. Still read, so an old board keeps it. */
   kit: string;
   address: string;
+  venue: Venue;
+  /** Goals for and against, from the Full time step. */
+  us: number;
+  them: number;
+  /** Player of the match, by id. Empty for nobody. */
+  potm: string;
+  /** Full time has been called, so the board reopens on the result. */
+  ended: boolean;
 }
+
+/** The text fields of the match, which the details form edits. */
+export type MatchTextField = "date" | "kickoff" | "meet" | "kit" | "address";
 
 export interface BoardData {
   team: string;
@@ -101,6 +117,8 @@ export interface BoardData {
   saved: Lineup | null;
   removed: Player[];
   colour: number;
+  /** The away kit, as an index into KIT_COLOURS. The home kit is `colour`, which also colours the board. */
+  awayColour: number;
   /** The club badge as a small PNG data URL. Empty when the crest shows initials. */
   badge: string;
   clock: Clock;
@@ -134,13 +152,13 @@ export interface Notice {
 }
 
 /** The three matchday steps the board is laid out in. */
-export type BoardStep = "pick" | "match" | "send";
+export type BoardStep = "pick" | "match" | "full";
 
 /** A player's week, as one choice in the player drawer. Anything but available leaves them out. */
 export type Availability = "available" | "inj" | "una" | "trn";
 
-/** What goes out from the Send step: the call-up before the match, the team sheet, or the picture. */
-export type SendKind = "callup" | "sheet" | "picture";
+/** What goes out from Full time: the result for the parents, or the line-up picture for the coaches. */
+export type SendKind = "result" | "picture";
 
 export interface UiState {
   /** Which step is showing: picking the team, the match itself, or sending to the parents. */
@@ -148,7 +166,7 @@ export interface UiState {
   /** On Matchday, the pitch position whose player is coming off, and whether it is for an injury. */
   offSlot: string | null;
   offInjured: boolean;
-  /** What the Send step is set to send. */
+  /** What the Full time step is set to send. */
   sendKind: SendKind;
   selected: string | null;
   editing: string | null;
