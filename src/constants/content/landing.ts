@@ -116,11 +116,12 @@ export const NAV = {
     { href: "#sheet", label: "Team sheet" },
     { href: "#private", label: "Privacy" },
   ],
-  /** The coach's own team, pinned beside the logo once they have one. It stands in for the button above. */
+  /** The coach's own teams, in the rail at the top left or at the header's far end. They stand in for the button above. */
   team: {
     label: "Your team",
+    many: "Your teams",
     fallback: "your team",
-    aria: (team: string) => `Back to ${team} on the board`,
+    aria: (team: string) => `Open ${team} on the board`,
   },
 } as const;
 

@@ -11,8 +11,8 @@ $breakpoints: (
   sheet: 640px,
   md: 900px,
   lg: 1200px,
-  // Room for the team rail beside the 1200px container: a 52px crest and its margins each side.
-  rail: 1360px,
+  // Room for the team rail beside the 1200px container: 64px of crest and name, and its margins each side.
+  rail: 1400px,
   xl: 1800px,
 );
 

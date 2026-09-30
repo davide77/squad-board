@@ -38,15 +38,17 @@
 }
 
 // The coach's teams, each a crest in their kit like a magnet on the board. They
-// stand clear of the header in a fixed rail at the top left, one under another,
-// wherever the page leaves room beside the container. Narrower, they fold into
-// the header's far end as .team-dock, away from the logo.
+// stand clear of the header in a fixed rail at the top left, "Your team" over a
+// crest with its name under it, wherever the page leaves room beside the
+// container. Narrower, they fold into the header's far end as .team-dock, with
+// the words beside the crest, away from the logo.
 .team-rail {
   position: fixed;
   top: spacer(4);
   left: spacer(4);
   z-index: z(overlay);
   display: none;
+  width: spacer(10);
 
   @include min(bp(rail)) {
     display: flex;
@@ -61,41 +63,55 @@
   }
 }
 
-// The dock stands in for the header button on a phone, where there is no room for both.
+// Once the coach has a team, it is the way back to the board, so the header button would only repeat it.
 .landing-header__bar:has(.team-dock) .landing-header__cta {
   display: none;
-
-  @include min(bp(md)) {
-    display: inline-flex;
-  }
 }
 
-// 52px round a 44px crest in the rail, 48px round a 40px crest in the header.
 .team-magnet {
-  position: relative;
-  width: spacer(9) + spacer(1);
-  height: spacer(9) + spacer(1);
-  background-color: color(board-2);
-  border: 1px solid color(board-3);
-  transition: border-color $transition-fast, background-color $transition-fast;
+  max-width: 100%;
 
+  .team-dock & {
+    min-height: $hit-size;
+  }
+
+  // 52px round a 44px crest in the rail, 48px round a 40px crest in the header.
+  &__puck {
+    width: spacer(9) + spacer(1);
+    height: spacer(9) + spacer(1);
+    overflow: hidden;
+    background-color: color(board-2);
+    border: 1px solid color(board-3);
+    transition: border-color $transition-fast, background-color $transition-fast;
+
+    .team-dock & {
+      width: spacer(9);
+      height: spacer(9);
+    }
+  }
+
+  // An uploaded badge is often a square picture of a round crest, so it is cut to the circle.
   & .crest {
     width: $hit-size;
     height: $hit-size;
-  }
+    border-radius: 50%;
 
-  .team-dock & {
-    width: spacer(9);
-    height: spacer(9);
-
-    & .crest {
+    .team-dock & {
       width: spacer(8);
       height: spacer(8);
     }
   }
 
-  &:hover,
-  &:focus-visible {
+  &__name {
+    max-width: 100%;
+
+    .team-dock & {
+      max-width: 14ch;
+    }
+  }
+
+  &:hover &__puck,
+  &:focus-visible &__puck {
     background-color: color(board-3);
     border-color: color(kit-edge);
   }
