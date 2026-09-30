@@ -6,7 +6,11 @@ import { LANDING_COPY, LANDING_VOICE, type VoiceCopy, type VoiceKey } from "@/co
 import { DEMO_START, demoReducer, demoSheet, type DemoAction, type DemoState } from "@/lib/landing/demo";
 import { TONE_FOR_PHASE, type Tone } from "@/constants/content/onboarding";
 import { AGE_GROUPS, type AgeKey } from "@/constants/football";
+import { copyText } from "@/lib/clipboard";
 import { writeAgePref } from "@/lib/voice";
+
+/** How the last copy of the team sheet went, until it fades. */
+export type CopyState = "idle" | "copied" | "failed";
 
 interface LandingContextValue {
   /** The age group picked in the hero, which the rest of the page adapts to. */
@@ -22,7 +26,7 @@ interface LandingContextValue {
   readonly initials: boolean;
   readonly toggleInitials: () => void;
   readonly sheet: string;
-  readonly copied: boolean;
+  readonly copyState: CopyState;
   readonly copySheet: () => void;
 }
 
@@ -50,26 +54,27 @@ export function LandingProvider({ children }: LandingProviderProps) {
   const tone = phase ? TONE_FOR_PHASE[phase] : null;
   const [demo, act] = useReducer(demoReducer, DEMO_START);
   const [initials, setInitials] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
   const sheet = demoSheet(demo, initials);
 
-  const copySheet = useCallback(() => {
-    navigator.clipboard?.writeText(sheet).catch(() => {});
-    act({ type: "copied" });
-    setCopied(true);
+  // Only a copy that landed says so. A failed one says what to do instead.
+  const copySheet = useCallback(async () => {
+    const ok = await copyText(sheet);
+    if (ok) act({ type: "copied" });
+    setCopyState(ok ? "copied" : "failed");
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), LANDING_CONFIG.copiedMs);
+    timer.current = setTimeout(() => setCopyState("idle"), LANDING_CONFIG.copiedMs);
   }, [sheet]);
 
   const toggleInitials = useCallback(() => setInitials((v) => !v), []);
 
   const value = useMemo(
-    () => ({ age, setAge, tone, voice: LANDING_VOICE, copy: LANDING_COPY, demo, act, initials, toggleInitials, sheet, copied, copySheet }),
-    [age, setAge, tone, demo, initials, toggleInitials, sheet, copied, copySheet],
+    () => ({ age, setAge, tone, voice: LANDING_VOICE, copy: LANDING_COPY, demo, act, initials, toggleInitials, sheet, copyState, copySheet }),
+    [age, setAge, tone, demo, initials, toggleInitials, sheet, copyState, copySheet],
   );
 
   return <LandingContext value={value}>{children}</LandingContext>;

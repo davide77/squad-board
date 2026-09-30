@@ -229,7 +229,12 @@ export function HeroCarousel() {
             {/* Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause. */}
             {!reduced && !touch && (
               // py-3 makes it a 44px target, the same as every other button in the hero.
-              <Button variant="quiet" className="has-py-3 has-gap-2 is-chalk" onClick={() => setHeld((h) => !h)}>
+              <Button
+                variant="quiet"
+                className="has-py-3 has-gap-2 is-chalk"
+                aria-label={held ? STORY_UI.playLabel : STORY_UI.pauseLabel}
+                onClick={() => setHeld((h) => !h)}
+              >
                 <svg className="landing-story__glyph" viewBox="0 0 12 12" aria-hidden="true">
                   {held ? <path d="M3 1.5v9l7.5-4.5z" /> : <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" />}
                 </svg>

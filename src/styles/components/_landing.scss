@@ -301,6 +301,11 @@
     span {
       transition: color $transition-base;
     }
+
+    // A chapter not showing lifts to chalk under the pointer, so it reads as something to press.
+    &:hover:not([aria-selected='true']) span {
+      color: color(chalk);
+    }
   }
 
   // A 3px line reads as a progress bar without competing with the tab label.
