@@ -50,6 +50,8 @@ export interface Sub {
   min: number;
   onName: string;
   offName: string;
+  /** Came off injured. Shown in the coach's log only: the team sheet never says why. */
+  inj: boolean;
 }
 
 export interface Clock {
@@ -137,6 +139,9 @@ export type BoardStep = "pick" | "match" | "send";
 export interface UiState {
   /** Which step is showing: picking the team, the match itself, or sending to the parents. */
   step: BoardStep;
+  /** On Matchday, the pitch position whose player is coming off, and whether it is for an injury. */
+  offSlot: string | null;
+  offInjured: boolean;
   selected: string | null;
   editing: string | null;
   pickerSlot: string | null;

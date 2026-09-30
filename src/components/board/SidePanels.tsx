@@ -2,7 +2,7 @@
 
 import { useId, useState, type FormEvent } from "react";
 import { ANALYTICS_EVENTS, MESSAGE_CONFIG, PICTURE_CONFIG, SENT_HOW, SENT_WHAT } from "@/constants/config";
-import { CLUB, GLYPHS, SAVED, SHEET, SUBS } from "@/constants/content/board";
+import { CLUB, GLYPHS, SAVED, SHEET } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { trackEvent } from "@/lib/analytics";
 import { teamSlug } from "@/lib/board/names";
@@ -14,29 +14,6 @@ import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
 import { NameFirst, useNameFirst } from "./NameFirst";
 import { useCopySheet } from "./useCopySheet";
-
-export function SubsPanel() {
-  const { state } = useBoard();
-  const { subs } = state.data;
-  return (
-    <Panel heading={SUBS.heading} count={subs.length}>
-      {subs.length ? (
-        <ul className="text-base">
-          {subs.map((s, i) => (
-            <li key={i} className="list-rule is-flex has-gap-3 has-py-2">
-              <span className="sub-minute has-font-headline has-font-semibold is-dim is-tabular">{s.min}&apos;</span>
-              <span>
-                {s.onName} {SUBS.for} <span className="is-dimmer">{s.offName}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].subsEmpty}</p>
-      )}
-    </Panel>
-  );
-}
 
 export function SavedPanel() {
   const { state, act } = useBoard();

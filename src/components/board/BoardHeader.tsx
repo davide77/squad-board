@@ -46,7 +46,8 @@ export function BoardHeader() {
       <div className="board-header__steps">
         <StepTabs />
       </div>
-      <MatchClock />
+      {/* On Matchday the big clock takes over. */}
+      {state.ui.step !== "match" && <MatchClock />}
     </header>
   );
 }
