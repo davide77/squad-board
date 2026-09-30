@@ -2,10 +2,10 @@
 
 import { useId } from "react";
 import { MESSAGE_CONFIG } from "@/constants/config";
-import { MESSAGE } from "@/constants/content/board";
+import { COMPETITIONS, MESSAGE } from "@/constants/content/board";
 import { kitWords } from "@/lib/board/kit";
 import { mapLink } from "@/lib/board/message";
-import type { MatchTextField } from "@/lib/board/types";
+import type { Competition, MatchTextField } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
 import { CLUB_PANEL_ID } from "./ClubPanel";
 import { KitIcon } from "./KitIcon";
@@ -40,6 +40,24 @@ export function MatchDetailsPanel() {
             value={fixture}
             onChange={(e) => act({ type: "setFixture", value: e.target.value })}
           />
+        </div>
+        <div>
+          <label htmlFor={`${id}-comp`} className={LABEL}>
+            {MESSAGE.competitionLabel}
+          </label>
+          <select
+            id={`${id}-comp`}
+            className={`${FIELD} formation-select`}
+            value={match.competition}
+            onChange={(e) => act({ type: "setCompetition", competition: e.target.value as Competition })}
+          >
+            <option value="">{MESSAGE.competitionNone}</option>
+            {COMPETITIONS.map((c) => (
+              <option key={c.key} value={c.key}>
+                {c.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor={`${id}-date`} className={LABEL}>
@@ -88,6 +106,26 @@ export function MatchDetailsPanel() {
               {MESSAGE.venueHintLink}
             </a>
           </p>
+        </div>
+        <div>
+          <p id={`${id}-surface`} className={LABEL}>
+            {MESSAGE.surfaceLabel}
+          </p>
+          {/* Grass or astro decides the boots, so the message says which to bring. */}
+          <div role="group" aria-labelledby={`${id}-surface`} className="is-flex has-gap-2">
+            {MESSAGE.surfaces.map((v) => (
+              <button
+                key={v.key}
+                type="button"
+                aria-pressed={match.surface === v.key}
+                className="choice is-flex is-flex-1 is-align-center is-justify-center has-radius-field has-font-semibold text-md"
+                onClick={() => act({ type: "setSurface", surface: v.key })}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+          {match.surface && <p className="text-sm is-dim has-mt-2">{MESSAGE.surfaceLine[match.surface]}</p>}
         </div>
         <div>
           <label htmlFor={`${id}-address`} className={LABEL}>

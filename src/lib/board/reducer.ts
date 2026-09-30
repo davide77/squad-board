@@ -37,6 +37,7 @@ import type {
   BoardData,
   BoardState,
   BoardStep,
+  Competition,
   DropTarget,
   Kit,
   KitSide,
@@ -45,6 +46,7 @@ import type {
   Player,
   Point,
   SendKind,
+  Surface,
   UiState,
   Venue,
 } from "./types";
@@ -58,6 +60,8 @@ export type Action =
   | { type: "setFixture"; value: string }
   | { type: "setMatch"; field: MatchTextField; value: string }
   | { type: "setVenue"; venue: Venue }
+  | { type: "setSurface"; surface: Surface }
+  | { type: "setCompetition"; competition: Competition }
   | { type: "setKit"; side: KitSide; kit: Partial<Kit> }
   | { type: "changeScore"; side: "us" | "them"; by: 1 | -1 }
   | { type: "setPotm"; pid: string }
@@ -555,6 +559,14 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
 
     case "setVenue":
       d.match.venue = d.match.venue === action.venue ? "" : action.venue;
+      return next;
+
+    case "setCompetition":
+      d.match.competition = action.competition;
+      return next;
+
+    case "setSurface":
+      d.match.surface = d.match.surface === action.surface ? "" : action.surface;
       return next;
 
     case "changeScore":
