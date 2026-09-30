@@ -28,6 +28,7 @@ export const FOOTER_LINKS = {
   label: "About Gafferboard",
   privacy: "Privacy and safety",
   credits: "Credits",
+  contact: "Contact",
   madeBy: "Made by",
   at: "at",
 } as const;
@@ -38,8 +39,10 @@ export const MAKER = {
   studio: "Origin Social",
   site: "originsocialclub.com",
   url: "https://originsocialclub.com",
-  /** Who the maker is on the touchline. Confirmed by Davide: the team is Ayat U15. */
-  bio: "A grassroots football manager for many years, now running Ayat U15.",
+  /** The Gafferboard mailbox, set up on SiteGround on 2026-09-30. */
+  email: "davide@gafferboard.com",
+  /** Who the maker is on the touchline. Confirmed by Davide: the team is Ayat U15, coaching for more than seven years. */
+  bio: "A grassroots football manager for more than seven years, now running Ayat U15.",
   role: "Grassroots football manager",
 } as const;
 
@@ -108,7 +111,7 @@ export const PRIVACY = {
     },
   ] satisfies readonly PageSection[],
   contactHeading: "Questions",
-  contact: `Gafferboard is made by ${MAKER.name}. Get in touch through`,
+  contact: `Gafferboard is made by ${MAKER.name}. Email`,
 } as const;
 
 export const CREDITS = {

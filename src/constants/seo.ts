@@ -18,7 +18,7 @@ export const OPEN_GRAPH_BASE = {
 export const TWITTER_CARD = "summary_large_image";
 
 /** When the indexable pages last changed. Bump it when their content does, so the sitemap stays honest. */
-export const CONTENT_UPDATED = "2026-09-29";
+export const CONTENT_UPDATED = "2026-09-30";
 
 /** The share card drawn by src/app/opengraph-image.tsx. 1200 by 630 is the size every network crops to. */
 export const OG_IMAGE = {
@@ -83,6 +83,7 @@ export const JSON_LD = {
       "@id": `${SITE_URL}/#maker`,
       name: MAKER.name,
       url: MAKER.url,
+      email: MAKER.email,
       jobTitle: MAKER.role,
       description: MAKER.bio,
       worksFor: { "@type": "Organization", name: MAKER.studio, url: MAKER.url },
