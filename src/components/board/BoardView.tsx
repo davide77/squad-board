@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import type { BoardStep } from "@/lib/board/types";
+import { cx } from "../cx";
 import Image from "next/image";
 import { LOGO } from "@/constants/brand";
 import { CLUB } from "@/constants/content/board";
@@ -17,6 +19,8 @@ import { ShapePanel } from "./ShapePanel";
 import { MessagePanel } from "./MessagePanel";
 import { SheetPanel, SavedPanel, SubsPanel } from "./SidePanels";
 import { SquadPanel } from "./SquadPanel";
+import { StepActions } from "./StepActions";
+import { STEP_PANEL_ID, stepTabId } from "./StepTabs";
 import { Toast } from "./Toast";
 import { useBoardDrag } from "./useBoardDrag";
 
@@ -25,37 +29,83 @@ interface BoardViewProps {
   readonly top?: ReactNode;
 }
 
+interface StepColumns {
+  readonly left?: ReactNode;
+  readonly centre: ReactNode;
+  readonly right?: ReactNode;
+}
+
+/**
+ * What each step shows, and where. Left is the list the coach works from, centre the pitch,
+ * right what comes next. A phone stacks them with the centre first.
+ */
+const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
+  pick: {
+    left: <SquadPanel />,
+    centre: (
+      <>
+        <ShapePanel />
+        <BenchPanel />
+        <PoolPanel />
+      </>
+    ),
+    right: (
+      <>
+        <MessagePanel />
+        <SavedPanel />
+        <StepActions />
+        <ClubPanel />
+      </>
+    ),
+  },
+  match: {
+    left: <BenchPanel />,
+    centre: <ShapePanel />,
+    right: <SubsPanel />,
+  },
+  send: {
+    centre: <SheetPanel />,
+    right: <MessagePanel />,
+  },
+};
+
 /** A loaded board, for whichever BoardProvider it sits in. */
 export function BoardView({ top }: BoardViewProps) {
   const { state } = useBoard();
   const rootRef = useRef<HTMLDivElement>(null);
   const { onPointerDown, onClickCapture } = useBoardDrag(rootRef);
+  const { step } = state.ui;
+  const columns = STEP_COLUMNS[step];
+
+  // A new step starts at the top, not wherever the last one was scrolled to. Skipped on the first
+  // render, so opening the board never jumps.
+  const shownStep = useRef(step);
+  useEffect(() => {
+    if (shownStep.current === step) return;
+    shownStep.current = step;
+    rootRef.current?.scrollIntoView({ block: "start" });
+  }, [step]);
 
   return (
     <div
       ref={rootRef}
-      className="board container has-pt-4 has-pb-11"
+      className="board board--steps container-lg has-pt-4"
       style={kitColours(state.data.colour)}
       onPointerDown={onPointerDown}
       onClickCapture={onClickCapture}
     >
       {top ?? (state.data.example ? <ExampleBanner /> : <KeepSafe />)}
       <BoardHeader />
-      <div className="board__cols is-grid has-gap-5">
-        <div>
-          <ShapePanel />
-          <BenchPanel />
-          <PoolPanel />
-        </div>
-        <div>
-          <SquadPanel />
-          <MessagePanel />
-          <SubsPanel />
-          <SavedPanel />
-          <SheetPanel />
-        </div>
+      <div
+        id={STEP_PANEL_ID}
+        role="tabpanel"
+        aria-labelledby={stepTabId(step)}
+        className={cx("board-step", !columns.left && "board-step--no-left")}
+      >
+        {columns.left && <div className="board-step__left">{columns.left}</div>}
+        <div className="board-step__centre">{columns.centre}</div>
+        {columns.right && <div className="board-step__right">{columns.right}</div>}
       </div>
-      <ClubPanel />
       <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dimmer">
         <Image
           src={LOGO.src}

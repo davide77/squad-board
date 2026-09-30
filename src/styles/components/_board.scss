@@ -9,17 +9,105 @@
   --kit-edge: #{map.get($kit-defaults, kit-edge)};
 }
 
+// The step tabs' height when they are docked to the bottom of a phone: the 44px tabs,
+// the tab list's inset and the dock's own padding. The toast and the board's foot read it.
+$step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
+
 .board {
   // Pitch lines take a faint wash of the kit colour.
   --line: #{tint(kit, 24%)};
+
+  // A loaded board, with the step tabs. Room under the last panel so the docked tabs never cover it.
+  &--steps {
+    --dock-height: #{$step-dock-height};
+    padding-bottom: calc(#{$step-dock-height} + #{spacer(6)} + env(safe-area-inset-bottom));
+
+    @include min(bp(md)) {
+      --dock-height: 0px;
+      padding-bottom: spacer(11);
+    }
+  }
 }
 
-.board__cols {
+// One step at a time, in up to three columns: the list the coach works from, the pitch, and what comes
+// next. A phone stacks them with the pitch first; md puts the lists beside it; lg gives each its own column.
+.board-step {
+  display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'centre' 'left' 'right';
+  gap: spacer(5);
+  align-items: start;
 
   @include min(bp(md)) {
-    grid-template-columns: minmax(0, 1fr) 360px;
-    align-items: start;
+    grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+    grid-template-areas: 'left centre' 'right centre';
+  }
+
+  @include min(bp(lg)) {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(300px, 380px);
+    grid-template-areas: 'left centre right';
+  }
+
+  // A step with nothing on the left gives the pitch the room.
+  &--no-left {
+    @include min(bp(md)) {
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+      grid-template-areas: 'centre right';
+    }
+  }
+
+  &__left {
+    grid-area: left;
+  }
+
+  &__centre {
+    grid-area: centre;
+  }
+
+  &__right {
+    grid-area: right;
+  }
+}
+
+// The three steps. A phone docks them along the bottom, within reach of a thumb; from md they sit in the header.
+.step-tabs {
+  background-color: color(board-2);
+  border: 1px solid $edge;
+
+  &__tab {
+    min-height: $hit-size;
+    color: color(dim);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color $transition-fast, color $transition-fast;
+
+    &:hover:not(&--on) {
+      color: color(chalk);
+    }
+
+    &--on {
+      color: color(kit-ink);
+      background-color: color(kit);
+    }
+  }
+}
+
+.board-header__steps {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: z(dock);
+  padding: spacer(2) spacer(3) calc(#{spacer(2)} + env(safe-area-inset-bottom));
+  background-color: color(board);
+  border-top: 1px solid $edge;
+
+  @include min(bp(md)) {
+    position: static;
+    padding: 0;
+    background: none;
+    border: 0;
   }
 }
 

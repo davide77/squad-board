@@ -9,6 +9,20 @@ import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 
+/**
+ * Starts or stops the match clock. A kick-off, from a clock at zero, is counted: a restart after
+ * half-time is not, and neither is the example team.
+ */
+export function useClockToggle() {
+  const { state, act } = useBoard();
+  return () => {
+    if (!started(state.data) && !state.data.example) {
+      trackEvent(ANALYTICS_EVENTS.clockStarted, { age: state.data.age ?? AGE_NOT_SET });
+    }
+    act({ type: "clockToggle" });
+  };
+}
+
 export function MatchClock() {
   const { state, act } = useBoard();
   const { clock } = state.data;
@@ -17,6 +31,7 @@ export function MatchClock() {
 
   const ms = clock.running ? clock.base + Math.max(0, now - clock.since) : clock.base;
   const isOn = started(state.data);
+  const toggle = useClockToggle();
 
   return (
     <div className="is-flex is-align-center has-gap-2">
@@ -30,15 +45,7 @@ export function MatchClock() {
       >
         {fmtClock(ms)}
       </span>
-      <Button
-        onClick={() => {
-          // Kick-off only: stopped with nothing on the clock. A restart after half-time, or the example team, is not counted.
-          if (!isOn && !state.data.example) {
-            trackEvent(ANALYTICS_EVENTS.clockStarted, { age: state.data.age ?? AGE_NOT_SET });
-          }
-          act({ type: "clockToggle" });
-        }}
-      >
+      <Button onClick={toggle}>
         {clock.running ? HEADER.pause : isOn ? HEADER.resume : HEADER.start}
       </Button>
       <Button variant="quiet" size="tiny" onClick={() => act({ type: "clockReset" })}>

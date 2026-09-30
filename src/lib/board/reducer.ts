@@ -32,7 +32,7 @@ import {
 } from "./queries";
 import { placeStarters } from "./start";
 import { emptyData, emptyMatch, loadStored } from "./storage";
-import type { BoardData, BoardState, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
+import type { BoardData, BoardState, BoardStep, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
 
 export type Action =
   | { type: "load"; data: BoardData; notice?: string }
@@ -90,12 +90,14 @@ export type Action =
   | { type: "cycleNameStyle" }
   | { type: "toggleCover" }
   | { type: "clearPitch" }
-  | { type: "backedUp" };
+  | { type: "backedUp" }
+  | { type: "setStep"; step: BoardStep };
 
 /** Every action is stamped with the time it happened, so the reducer stays pure. */
 export type StampedAction = Action & { readonly now: number };
 
 const INITIAL_UI: UiState = {
+  step: "pick",
   selected: null,
   editing: null,
   pickerSlot: null,
@@ -151,7 +153,10 @@ function opened(d: BoardData): BoardData {
 
 export function initBoard(): BoardState {
   const stored = loadStored();
-  return { data: stored ? opened(stored) : emptyData(), ui: INITIAL_UI };
+  const data = stored ? opened(stored) : emptyData();
+  // A match under way when the page closed opens straight back on it. The clock itself reopens
+  // paused where it was (storage.ts), so it is the time on it that says so.
+  return { data, ui: { ...INITIAL_UI, step: started(data) ? "match" : "pick" } };
 }
 
 /** A board that lives in memory only, such as the example team, opening with a word from the Gaffer. */
@@ -352,6 +357,12 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       if (action.notice) {
         next.ui.notice = { id: (state.ui.notice?.id ?? 0) + 1, text: action.notice };
       }
+      return next;
+
+    case "setStep":
+      ui.step = action.step;
+      ui.selected = null;
+      closePicker();
       return next;
 
     case "notify":

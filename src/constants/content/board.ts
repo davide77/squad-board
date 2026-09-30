@@ -18,6 +18,20 @@ export const GLYPHS = {
   grip: "\u22EE\u22EE",
 } as const;
 
+/** The three matchday steps along the top of the board. Numbered, so the order reads at a glance. */
+export const STEPS = {
+  label: "Matchday steps",
+  items: [
+    { key: "pick", n: "1", label: "Pick the team", short: "Pick" },
+    { key: "match", n: "2", label: "Matchday", short: "Match" },
+    { key: "send", n: "3", label: "Send", short: "Send" },
+  ],
+  /** The ways on from Pick the team. */
+  startMatch: "Start the match",
+  backToMatch: "Back to the match",
+  sendCallUp: "Send the call-up first",
+} as const;
+
 export const HEADER = {
   teamLabel: "Team name",
   /** An unnamed board, straight off the start screen, asks for its name here. */

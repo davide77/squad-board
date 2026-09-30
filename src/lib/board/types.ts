@@ -131,7 +131,12 @@ export interface Notice {
   readonly text: string;
 }
 
+/** The three matchday steps the board is laid out in. */
+export type BoardStep = "pick" | "match" | "send";
+
 export interface UiState {
+  /** Which step is showing: picking the team, the match itself, or sending to the parents. */
+  step: BoardStep;
   selected: string | null;
   editing: string | null;
   pickerSlot: string | null;
