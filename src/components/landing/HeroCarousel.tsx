@@ -2,8 +2,8 @@
 
 import { useId, useRef, useState, type AnimationEvent, type CSSProperties, type FocusEvent, type KeyboardEvent } from "react";
 import { AnimatePresence, MotionConfig, motion, useInView, type Variants } from "framer-motion";
-import { STORY_DURATION_MS } from "@/constants/config";
-import { FILM, FILM_MEDIA, STORY, STORY_UI, type StoryChapter } from "@/constants/content/landing";
+import { STORY_DURATION_MS, VIDEO_CONFIG } from "@/constants/config";
+import { FILM, FILM_MEDIA, STORY, STORY_UI, phoneCopy, type StoryChapter } from "@/constants/content/landing";
 import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
 import { MOTION } from "@/constants/motion";
 import { useFilmPlayer, useIsTouch, usePrefersReducedMotion, useVideoAllowed } from "@/lib/hooks";
@@ -21,6 +21,8 @@ const KEEPS_ARROWS = "input, textarea, select, video, [contenteditable='true']";
 const IN_VIEW_AMOUNT = 0.4;
 
 const chapterNumber = (i: number) => String(i + 1).padStart(NUMBER_DIGITS, "0");
+// The film with sound, and its phone copy.
+const FILM_FILES = { src: FILM_MEDIA.film, phone: phoneCopy(FILM_MEDIA.film) } as const;
 
 // The words leave together, quickly, then come in line by line from the side the story is heading.
 // `dir` is 1 going forward and -1 going back.
@@ -288,7 +290,7 @@ interface StoryMediaProps {
 
 /** The chapter's clip. Keyed by chapter, so each loads fresh and cross-fades. */
 function StoryMedia({ chapter, still, onFilm }: StoryMediaProps) {
-  const { videoRef, playRef, playing, play, stop } = useFilmPlayer(FILM_MEDIA.film, still, onFilm);
+  const { videoRef, playRef, playing, play, stop } = useFilmPlayer(FILM_FILES, still, onFilm);
   const { media } = chapter;
   // Only the first chapter has the whole film behind its loop.
   const hasFilm = chapter.key === "gaffer";
@@ -319,6 +321,9 @@ function StoryMedia({ chapter, still, onFilm }: StoryMediaProps) {
         preload={still ? "none" : "auto"}
         onEnded={stop}
       >
+        {/* The browser takes the first source that fits, so a phone gets the light copy. */}
+        <source src={phoneCopy(media.webm)} type="video/webm" media={VIDEO_CONFIG.phoneQuery} />
+        <source src={phoneCopy(media.mp4)} type="video/mp4" media={VIDEO_CONFIG.phoneQuery} />
         <source src={media.webm} type="video/webm" />
         <source src={media.mp4} type="video/mp4" />
         {hasFilm && (

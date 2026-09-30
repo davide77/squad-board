@@ -158,6 +158,12 @@ export const FILM = {
   captionsLang: "en-GB",
 } as const;
 
+/**
+ * Every clip has a phone copy beside it, "-sm" before the extension: 480 wide instead of 720,
+ * about a third of the weight, and no different at the size a phone shows it.
+ */
+export const phoneCopy = (path: string): string => path.replace(/(\.\w+)$/, "-sm$1");
+
 /** The film files in public/film. Vertical 9:16, cut from the Runway renders. */
 export const FILM_MEDIA = {
   teaser: { mp4: "/film/gafferboard-teaser.mp4", webm: "/film/gafferboard-teaser.webm" },
@@ -258,7 +264,7 @@ export const STORY_UI = {
   pause: "Pause",
   play: "Play",
   keysHint: "Use the arrow keys, or tap a chapter.",
-  playFilm: "Play the film",
+  playFilm: "Play the film · 38s",
   ageLabel: "Age group",
   ageLine: (label: string, phase: Phase) =>
     phase === "development" ? `${label}. Everyone gets a go. I'll keep an eye on minutes.` : `${label}. Results count now. So do your decisions.`,
