@@ -6,7 +6,7 @@ import { STORY_DURATION_MS } from "@/constants/config";
 import { FILM, FILM_MEDIA, STORY, STORY_UI, type StoryChapter } from "@/constants/content/landing";
 import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
 import { MOTION } from "@/constants/motion";
-import { useFilmPlayer, useIsTouch, usePrefersReducedMotion } from "@/lib/hooks";
+import { useFilmPlayer, useIsTouch, usePrefersReducedMotion, useVideoAllowed } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useLanding } from "./LandingProvider";
@@ -61,6 +61,9 @@ export function HeroCarousel() {
   const chapter = STORY[index];
   const last = index === STORY.length - 1;
   const paused = reduced || touch || held || reading || focused || film || !inView;
+  // The clips wait for the page to settle, stop off screen, and never start on a data saver.
+  const videoAllowed = useVideoAllowed();
+  const moving = !reduced && videoAllowed && inView;
   const tabId = (i: number) => `${id}-tab-${i}`;
   const panelId = `${id}-panel`;
 
@@ -179,7 +182,7 @@ export function HeroCarousel() {
           {/* On a phone the clip sits under the words, so it glides rather than jumps when they change length. */}
           <motion.div layout="position" transition={MOTION.story} className="landing-film bg-board-2 has-radius-sheet is-w-full">
             <AnimatePresence initial={false}>
-              <StoryMedia key={chapter.key} chapter={chapter} still={reduced} onFilm={setFilm} />
+              <StoryMedia key={chapter.key} chapter={chapter} still={!moving} onFilm={setFilm} />
             </AnimatePresence>
           </motion.div>
         </div>
@@ -312,7 +315,8 @@ function StoryMedia({ chapter, still, onFilm }: StoryMediaProps) {
         muted
         loop
         playsInline
-        preload="metadata"
+        // Nothing downloads until the loop is allowed to move. Until then the poster is the picture.
+        preload={still ? "none" : "auto"}
         onEnded={stop}
       >
         <source src={media.webm} type="video/webm" />

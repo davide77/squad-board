@@ -110,6 +110,15 @@ export const LANDING_CONFIG = {
   copiedMs: TOAST_MS,
 } as const;
 
+// When the hero's clips may start downloading. The page itself comes first, so on a weak
+// touchline signal the words and buttons never wait behind a video.
+export const VIDEO_CONFIG = {
+  /** Wait this long after the page has loaded before a clip starts to download. */
+  afterLoadMs: 1500,
+  /** Connections too slow for video at all. The poster stays. Reported by Chrome and Android only. */
+  slowConnections: ["slow-2g", "2g"],
+} as const;
+
 // The Gaffer's clip in the homepage hero: the full width on a phone, half the page
 // beside the headline from the md breakpoint (900px, see _breakpoints.scss).
 export const ONBOARDING_CONFIG = {
