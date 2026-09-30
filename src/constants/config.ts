@@ -118,15 +118,13 @@ export const LANDING_CONFIG = {
 } as const;
 
 /**
- * The club waitlist, in Supabase: one table, written through its REST API with the publishable key.
- * Row-level security lets the site add a row and nothing else (supabase/migrations).
+ * The club waitlist, a contact list in Brevo. The server adds each address through Brevo's API with
+ * BREVO_API_KEY, to the list numbered BREVO_WAITLIST_LIST_ID (see .env.example).
  */
 export const WAITLIST_CONFIG = {
-  table: "club_waitlist",
-  /** Longest address the table takes, as in the migration's check. */
+  endpoint: "https://api.brevo.com/v3/contacts",
+  /** Longest address an email can have. */
   maxEmail: 254,
-  /** Longest page address kept as the source. */
-  maxSource: 64,
   /** A field people never see: a bot that fills it in is thanked and ignored. */
   trapField: "website",
 } as const;
