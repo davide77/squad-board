@@ -471,3 +471,9 @@
     @include focus-ring;
   }
 }
+
+// A shape on a format page, like a chip on the board.
+.format-shape {
+  background-color: color(board-2);
+  border: 1px solid $edge;
+}
