@@ -1,5 +1,6 @@
 import { MESSAGE_CONFIG, MESSAGE_DATE_FORMAT } from "@/constants/config";
 import { MESSAGE, SHEET } from "@/constants/content/board";
+import { sentName } from "./names";
 import type { BoardData } from "./types";
 
 /** "2026-10-04" as "Sunday 4 October". Read as a local date, so it never slips a day. */
@@ -40,7 +41,7 @@ export function matchHeader(d: BoardData): string[] {
  */
 export function squadMessage(d: BoardData): string {
   const out = matchHeader(d);
-  const squad = d.players.filter((p) => !p.out).map((p) => p.name);
+  const squad = d.players.filter((p) => !p.out).map((p) => sentName(d, p.name));
   out.push("", MESSAGE.squad, ...(squad.length ? squad : [MESSAGE.nobody]));
   out.push("", MESSAGE.confirm);
   if (d.sheetCredit) out.push("", SHEET.credit);

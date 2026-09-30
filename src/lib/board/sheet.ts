@@ -1,7 +1,7 @@
 import { NO_NUMBER, SHEET, SUBS } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { matchHeader } from "./message";
-import { firstName } from "./names";
+import { sentName } from "./names";
 import { byId, canonical, coverFor, slots } from "./queries";
 import type { BoardData } from "./types";
 
@@ -18,22 +18,22 @@ export function sheetText(d: BoardData): string {
     const p = byId(d, d.xi[s.id]);
     const cover = coverFor(d, s.id)
       .slice(0, BOARD_CONFIG.coverNamesShown)
-      .map((c) => firstName(c.name))
+      .map((c) => sentName(d, c.name))
       .join(" / ");
-    out.push(pad(s.role, 4) + (p ? pad(p.num, 3) + p.name + (cover ? `  (${cover})` : "") : NO_NUMBER));
+    out.push(pad(s.role, 4) + (p ? pad(p.num, 3) + sentName(d, p.name) + (cover ? `  (${cover})` : "") : NO_NUMBER));
   }
 
   if (d.bench.length) {
     out.push("", SHEET.bench);
     for (const id of d.bench) {
       const p = byId(d, id);
-      if (p) out.push(INDENT + pad(p.num, 3) + p.name);
+      if (p) out.push(INDENT + pad(p.num, 3) + sentName(d, p.name));
     }
   }
   // Who was left out, injured or unavailable stays with the coach. The sheet names only who is playing.
 
   if (d.subs.length) {
-    out.push("", SHEET.subs, ...d.subs.map((s) => `  ${s.min}' ${s.onName} ${SUBS.for} ${s.offName}`));
+    out.push("", SHEET.subs, ...d.subs.map((s) => `  ${s.min}' ${sentName(d, s.onName)} ${SUBS.for} ${sentName(d, s.offName)}`));
   }
   if (d.sheetCredit) out.push("", SHEET.credit);
   return out.join("\n");

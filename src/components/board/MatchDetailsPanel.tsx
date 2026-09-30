@@ -1,33 +1,25 @@
 "use client";
 
 import { useId } from "react";
-import { ANALYTICS_EVENTS, MESSAGE_CONFIG, SENT_HOW, SENT_WHAT } from "@/constants/config";
+import { MESSAGE_CONFIG } from "@/constants/config";
 import { MESSAGE } from "@/constants/content/board";
-import { trackEvent } from "@/lib/analytics";
-import { mapLink, squadMessage } from "@/lib/board/message";
+import { mapLink } from "@/lib/board/message";
 import type { MatchDetails } from "@/lib/board/types";
-import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
-import { NameFirst, useNameFirst } from "./NameFirst";
-import { useCopySheet } from "./useCopySheet";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
 // py-3 keeps every field at least 44px tall for a thumb.
 const FIELD = "field is-w-full has-radius-field has-py-3 has-px-3 text-base";
 
-/** This week's opponent, date, times, kit and ground, and the call-up for the parents' group. */
-export function MessagePanel() {
+/** This week's opponent, date, times, kit and ground. They head the call-up and the team sheet, sent from Send. */
+export function MatchDetailsPanel() {
   const { state, act } = useBoard();
   const { fixture, match } = state.data;
-  const copy = useCopySheet(squadMessage, SENT_WHAT.message);
   const id = useId();
   const set = (field: keyof MatchDetails) => (e: { target: { value: string } }) =>
     act({ type: "setMatch", field, value: e.target.value });
   const address = match.address.trim();
-  const message = squadMessage(state.data);
-  const whatsapp = MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(message);
-  const nameFirst = useNameFirst();
 
   return (
     <Panel heading={MESSAGE.heading}>
@@ -105,27 +97,6 @@ export function MessagePanel() {
           </p>
         </div>
       </div>
-
-      <p className="text-sm is-dimmer has-mt-5">{MESSAGE.squadHint}</p>
-      <details className="has-mt-2">
-        <summary className="hit-area is-inline-block text-sm is-kit">{MESSAGE.preview}</summary>
-        <p className="message-preview bg-board-2 has-radius-field has-p-3 has-mt-2 text-sm leading-normal">{message}</p>
-      </details>
-      <div className="is-flex is-flex-wrap has-gap-2 has-mt-3">
-        <a
-          href={whatsapp}
-          target="_blank"
-          rel="noopener"
-          onClick={nameFirst.guardLink("whatsapp", whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp }))}
-          className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
-        >
-          {MESSAGE.whatsapp}
-        </a>
-        <Button className="has-py-3" onClick={nameFirst.guard("copy", copy)}>
-          {MESSAGE.copy}
-        </Button>
-      </div>
-      <NameFirst {...nameFirst} />
     </Panel>
   );
 }

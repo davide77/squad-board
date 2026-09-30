@@ -1,4 +1,4 @@
-import { NAME_STYLES } from "@/constants/content/board";
+import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import type { VoiceKey } from "@/constants/content/landing";
 import { BOARD_CONFIG } from "@/constants/config";
@@ -32,7 +32,7 @@ import {
 } from "./queries";
 import { placeStarters } from "./start";
 import { emptyData, emptyMatch, loadStored } from "./storage";
-import type { BoardData, BoardState, BoardStep, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
+import type { BoardData, BoardState, BoardStep, SendKind, DropTarget, Lineup, MatchDetails, Player, Point, UiState } from "./types";
 
 export type Action =
   | { type: "load"; data: BoardData; notice?: string }
@@ -91,7 +91,9 @@ export type Action =
   | { type: "toggleCover" }
   | { type: "clearPitch" }
   | { type: "backedUp" }
-  | { type: "setStep"; step: BoardStep }
+  | { type: "setStep"; step: BoardStep; kind?: SendKind }
+  | { type: "setSendKind"; kind: SendKind }
+  | { type: "setNameStyle"; style: NameStyle }
   | { type: "selectOff"; slotId: string }
   | { type: "toggleOffInjured" }
   | { type: "bringOn"; pid: string }
@@ -104,6 +106,7 @@ const INITIAL_UI: UiState = {
   step: "pick",
   offSlot: null,
   offInjured: false,
+  sendKind: "callup",
   selected: null,
   editing: null,
   pickerSlot: null,
@@ -366,11 +369,21 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       return next;
 
     case "setStep":
+      // Send opens on the call-up before a match, and on the team sheet once one is under way.
+      if (action.step === "send") ui.sendKind = action.kind ?? (started(d) ? "sheet" : "callup");
       ui.step = action.step;
       ui.selected = null;
       ui.offSlot = null;
       ui.offInjured = false;
       closePicker();
+      return next;
+
+    case "setSendKind":
+      ui.sendKind = action.kind;
+      return next;
+
+    case "setNameStyle":
+      d.nameStyle = action.style;
       return next;
 
     // Matchday: tap the player coming off, then bring someone on for them.
@@ -412,6 +425,7 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     case "fullTime":
       if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
       ui.step = "send";
+      ui.sendKind = "sheet";
       ui.offSlot = null;
       ui.offInjured = false;
       note(say.fullTime);

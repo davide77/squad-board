@@ -286,6 +286,44 @@ export const SHEET = {
   subs: "Substitutions",
 } as const;
 
+/** The Send step: what goes out, how it will look, and the ways to send it. */
+export const SEND = {
+  kindsHeading: "What to send",
+  kinds: [
+    {
+      key: "callup",
+      when: "Before the match",
+      title: "Call-up message",
+      body: "Who's in, when to meet and the kit. For the parents' group.",
+    },
+    {
+      key: "sheet",
+      when: "Match day",
+      title: "Team sheet",
+      body: "The line-up by shirt number, with bench cover, the bench and the subs.",
+    },
+    {
+      key: "picture",
+      when: "Any time",
+      title: "Line-up picture",
+      body: "The pitch as a picture. Shows up well in WhatsApp.",
+    },
+  ],
+  previewLabel: "Preview",
+  /** The chat the preview pretends to be, so it reads the way the parents will see it. */
+  group: (team: string) => (team.trim() ? `${team.trim()} parents` : "Parents' group"),
+  groupInitial: (team: string) => (team.trim().charAt(0) || "P").toUpperCase(),
+  pictureAlt: "The line-up picture, as the parents will see it.",
+  pictureMaking: "Drawing the picture",
+  heading: "Send it",
+  namesLabel: "Names",
+  namesHint: "Use initials for groups with people outside the club.",
+  whatsapp: "Send on WhatsApp",
+  copy: "Copy",
+  share: "Share the picture",
+  shareHint: "Opens your phone's share sheet. On a laptop it downloads a PNG.",
+} as const;
+
 /** The call-up for the parents' group. It goes out in the coach's name, so it stays straight. */
 export const MESSAGE = {
   heading: "This week's match",
