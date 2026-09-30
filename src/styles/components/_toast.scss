@@ -3,7 +3,8 @@
 .toast-region {
   position: fixed;
   left: 50%;
-  bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
+  // --dock-height lifts it clear of the board's step tabs on a phone (components/_board.scss).
+  bottom: calc(#{spacer(5)} + var(--dock-height, 0px) + env(safe-area-inset-bottom));
   z-index: z(toast);
   // Sized to its message, but never wider than the screen less a gutter each side.
   width: max-content;

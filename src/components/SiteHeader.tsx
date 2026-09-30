@@ -23,7 +23,8 @@ export function SiteHeader({ onBoard = false, onHome = false, sticky = true }: S
   return (
     <>
       <header className={cx("landing-header", !sticky && "landing-header--static")}>
-        <div className="container">
+        {/* The board runs wider than the other pages, for its three columns, and the header lines up with it. */}
+        <div className={onBoard ? "container-lg" : "container"}>
           <div className="landing-header__bar is-flex is-align-center is-justify-between has-gap-3 has-radius-sheet">
             <SiteLogo label={NAV.home} />
             {!onBoard && (

@@ -2,11 +2,13 @@
 
 import { useId } from "react";
 import { HEADER, SHEET } from "@/constants/content/board";
+import { AGE_GROUPS, FORMATS } from "@/constants/football";
 import { matchDate } from "@/lib/board/message";
 import { useBoard } from "./BoardProvider";
 import { Crest } from "./Crest";
 import { MatchClock } from "./MatchClock";
 import { TEAM_NAME_MARK } from "./NameFirst";
+import { StepTabs } from "./StepTabs";
 
 export function BoardHeader() {
   const { state, act } = useBoard();
@@ -14,6 +16,9 @@ export function BoardHeader() {
   const { fixture, match } = state.data;
   // Filled in under This week's match. Here it is only a reminder on the touchline.
   const summary = [fixture.trim(), matchDate(match.date), match.kickoff].filter(Boolean).join(SHEET.pictureJoin);
+  // "Under 15s · 11-a-side": who this board is for, under the name.
+  const group = AGE_GROUPS.find((a) => a.key === state.data.age);
+  const squadLine = [group?.label, FORMATS[state.data.format].label].filter(Boolean).join(SHEET.pictureJoin);
 
   return (
     <header className="board-header is-flex is-flex-wrap is-align-end is-justify-between has-gap-3 has-mb-4 has-pb-3">
@@ -35,7 +40,11 @@ export function BoardHeader() {
             />
           </div>
         </div>
-        {summary && <p className="has-mt-1 text-base is-dim is-truncate">{summary}</p>}
+        <p className="has-mt-1 text-base is-dim is-truncate">{squadLine}</p>
+        {summary && <p className="text-sm is-dimmer is-truncate">{summary}</p>}
+      </div>
+      <div className="board-header__steps">
+        <StepTabs />
       </div>
       <MatchClock />
     </header>

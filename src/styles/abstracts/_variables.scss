@@ -7,6 +7,8 @@ $hit-size: 44px;
 // Z-index stack
 $z-index: (
   raised: 5,
+  // The step tabs, fixed along the bottom of a phone. Under the picker and every overlay.
+  dock: 50,
   // The example team sheet. Under the drag ghost and the picker, which open inside it.
   modal: 55,
   ghost: 60,
