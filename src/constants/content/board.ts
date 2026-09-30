@@ -429,7 +429,7 @@ export const MESSAGE = {
     { key: "astro", label: "Astro" },
   ],
   /** Under the kit in the message: the boots to bring. */
-  surfaceLine: { grass: "Grass pitch: studs or moulds.", astro: "Astro pitch: astro boots or trainers, no studs." },
+  surfaceLine: { grass: "Grass pitch: studs or moulds.", astro: "Astro pitch: moulds or astro boots, no metal studs." },
   addressLabel: "Address",
   addressPlaceholder: "Ground name, street, postcode",
   addressHint: "Parents get a Google Maps link with it.",
