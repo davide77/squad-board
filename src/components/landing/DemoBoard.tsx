@@ -31,6 +31,10 @@ export function DemoBoard({ line }: DemoBoardProps) {
         >
           &ldquo;{line}&rdquo;
         </p>
+        {/* The band is drawn in capitals with quote marks. This copy reads the line out as it changes. */}
+        <p role="status" className="sr-only">
+          {line}
+        </p>
 
         <div className="landing-demo__rule is-flex is-align-center is-justify-between has-gap-3 has-py-3 has-px-4">
           <div className="is-flex is-align-center has-gap-3 is-min-w-0">
@@ -45,11 +49,9 @@ export function DemoBoard({ line }: DemoBoardProps) {
               <span className="text-xs is-dim">{DEMO.detail}</span>
             </span>
           </div>
-          <span
-            aria-label={DEMO.minuteLabel}
-            className="bg-board has-py-1 has-px-3 has-radius-sm has-font-headline has-font-bold text-2xl is-tabular"
-          >
-            {DEMO.minute(String(demo.minute).padStart(MINUTE_DIGITS, "0"))}
+          <span className="bg-board has-py-1 has-px-3 has-radius-sm has-font-headline has-font-bold text-2xl is-tabular">
+            <span aria-hidden="true">{DEMO.minute(String(demo.minute).padStart(MINUTE_DIGITS, "0"))}</span>
+            <span className="sr-only">{DEMO.minuteSpoken(demo.minute)}</span>
           </span>
         </div>
 

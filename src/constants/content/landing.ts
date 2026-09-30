@@ -140,7 +140,8 @@ export const DEMO = {
   detail: "Under 14s · home",
   shapesLabel: "Shape",
   minute: (m: string) => `${m}'`,
-  minuteLabel: "Match minute",
+  /** Read out in place of the minute on the clock, which shows as 12'. */
+  minuteSpoken: (m: number) => `Match minute ${m}`,
   subOff: "Sub off",
   injured: "Injured",
   cancel: "Cancel",
@@ -263,6 +264,8 @@ export const STORY_UI = {
   restart: "From the top",
   pause: "Pause",
   play: "Play",
+  pauseLabel: "Pause the story",
+  playLabel: "Play the story",
   keysHint: "Use the arrow keys, or tap a chapter.",
   playFilm: "Play the film · 38s",
   ageLabel: "Age group",
@@ -289,6 +292,9 @@ export const SHEET_SECTION = {
   email: "Email",
   copy: "Copy",
   copied: "Copied",
+  /** Read out when the copy lands. The button's own label change is not announced. */
+  copiedSpoken: "Team sheet copied",
+  copyFailed: "This browser won't copy. Select the sheet and copy it yourself.",
   initials: "Initials only, for groups with people outside the club",
   chat: "Under 14s parents",
   mailSubject: "Team sheet: Ashford Juniors v Northgate",
