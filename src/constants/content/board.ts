@@ -85,6 +85,7 @@ export const PICK = {
   newMatchdayConfirm: "Start a new matchday",
   clearPitchConfirm: "Clear the pitch",
   keep: "Keep it",
+  backConfirm: "Go back to it",
 } as const;
 
 export const ZONES = {
@@ -94,6 +95,8 @@ export const ZONES = {
   bringBack: "Bring back",
   restore: (name: string) => `Bring ${name} back`,
   deleteForGood: (name: string) => `Delete ${name} for good`,
+  deleteConfirm: "Delete for good",
+  keep: "Keep them",
 } as const;
 
 export const SQUAD = {
@@ -122,7 +125,7 @@ export const SQUAD = {
   empty: "No players yet. Add the squad below.",
   noPosition: "no position set",
   status: {
-    xi: "On",
+    xi: "Starting",
     bench: "Bench",
     pool: "Called up",
     out: "Not called up",
@@ -282,6 +285,10 @@ export const MATCH = {
   pause: "Pause",
   resume: "Resume",
   fullTime: "Full time",
+  reset: "Reset",
+  resetText: "Puts the clock back to 0:00 and clears everyone's minutes. The subs stay in the log.",
+  resetConfirm: "Reset the clock",
+  keep: "Keep it",
   benchHeading: "Bench",
   benchHint: "Tap a player on the pitch, then bring someone on.",
   benchFor: (off: string) => `Who's coming on for ${off}?`,
@@ -381,7 +388,7 @@ export const PARENTS = {
 /** The call-up for the parents' group. It goes out in the coach's name, so it stays straight. */
 export const MESSAGE = {
   heading: "This week's match",
-  hint: "All optional. What you fill in goes at the top of the squad message and the team sheet. It clears when you start a new matchday.",
+  hint: "All optional. What you fill in heads the call-up and the result. It clears when you start a new matchday.",
   opponentLabel: "Opponent",
   opponentPlaceholder: "e.g. v City Select, friendly",
   dateLabel: "Date",

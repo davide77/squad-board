@@ -168,6 +168,8 @@ export interface UndoPoint {
   readonly id: number;
   readonly text: string;
   readonly data: BoardData;
+  /** The step the change was made from, so undoing Full time goes back to the match. */
+  readonly step: BoardStep;
 }
 
 export interface UiState {

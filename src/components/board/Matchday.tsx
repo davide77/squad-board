@@ -1,9 +1,10 @@
 "use client";
 
-import type { CSSProperties } from "react";
-import { BOARD_CONFIG } from "@/constants/config";
+import { useState, type CSSProperties } from "react";
+import { AGE_NOT_SET, ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
 import { MATCH, NO_NUMBER, SUBS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
+import { trackEvent } from "@/lib/analytics";
 import { firstName } from "@/lib/board/names";
 import { blocked, byId, elapsed, fmtClock, playedMinutes, playedMs, positionCodes, started, where } from "@/lib/board/queries";
 import type { BoardData, Player } from "@/lib/board/types";
@@ -19,13 +20,15 @@ function comingOff(d: BoardData, offSlot: string | null): Player | null {
   return offSlot ? byId(d, d.xi[offSlot]) : null;
 }
 
-/** The clock at the size a touchline needs: kick off, pause, resume, and the final whistle. */
+/** The clock at the size a touchline needs: kick off, pause, resume, half time, the final whistle and a reset. */
 export function MatchClockCard() {
   const { state, act } = useBoard();
   const { data } = state;
   const now = useNow(data.clock.running, BOARD_CONFIG.clockTickMs);
   const toggle = useClockToggle();
+  const [confirming, setConfirming] = useState(false);
   const on = started(data);
+  const ms = elapsed(data, now);
   const { half, atBreak } = data.match;
   const status = data.clock.running
     ? half === 1
@@ -36,36 +39,66 @@ export function MatchClockCard() {
       : on
         ? MATCH.stopped
         : MATCH.notStarted;
+  // Offered while the clock is stopped or just started, as after a false start. Past a couple of
+  // minutes a reset would lose real minutes, so it asks first.
+  const canReset = on && (!data.clock.running || ms < BOARD_CONFIG.resetAskAfterMs);
+  const askFirst = ms >= BOARD_CONFIG.resetAskAfterMs;
+
+  function fullTime() {
+    if (!data.example) trackEvent(ANALYTICS_EVENTS.fullTime, { age: data.age ?? AGE_NOT_SET });
+    act({ type: "fullTime" });
+  }
+
+  function reset() {
+    setConfirming(false);
+    act({ type: "clockReset" });
+  }
 
   return (
-    <div className="match-card is-flex is-flex-wrap is-align-center is-justify-between has-gap-4 has-py-3 has-px-4 has-radius-panel has-mb-4">
-      <div className="is-flex is-align-baseline has-gap-3">
-        <span
-          role="timer"
-          aria-label={MATCH.clockLabel}
-          className={cx("match-card__time has-font-headline has-font-bold is-tabular", on ? "is-chalk" : "is-dimmer")}
-        >
-          {fmtClock(elapsed(data, now))}
-        </span>
-        <span className="text-base is-dim" aria-live="polite">
-          {status}
-        </span>
-      </div>
-      <div className="is-flex is-flex-wrap has-gap-2">
-        <Button variant="primary" className="has-py-3 has-px-5 text-lg" onClick={toggle}>
-          {data.clock.running ? MATCH.pause : atBreak ? MATCH.startSecondHalf : on ? MATCH.resume : MATCH.kickOff}
-        </Button>
-        {data.clock.running && half === 1 && (
-          <Button className="has-py-3 has-px-4 text-lg" onClick={() => act({ type: "halfTime" })}>
-            {MATCH.halfTime}
+    <div className="match-card has-py-3 has-px-4 has-radius-panel has-mb-4">
+      <div className="is-flex is-flex-wrap is-align-center is-justify-between has-gap-4">
+        <div className="is-flex is-align-baseline has-gap-3">
+          <span role="timer" aria-label={MATCH.clockLabel} className={cx("match-card__time has-font-headline has-font-bold is-tabular", on ? "is-chalk" : "is-dimmer")}>
+            {fmtClock(ms)}
+          </span>
+          <span className="text-base is-dim" aria-live="polite">
+            {status}
+          </span>
+        </div>
+        <div className="is-flex is-flex-wrap has-gap-2">
+          <Button variant="primary" className="has-py-3 has-px-5 text-lg" onClick={toggle}>
+            {data.clock.running ? MATCH.pause : atBreak ? MATCH.startSecondHalf : on ? MATCH.resume : MATCH.kickOff}
           </Button>
-        )}
-        {on && (
-          <Button className="has-py-3 has-px-4 text-lg" onClick={() => act({ type: "fullTime" })}>
-            {MATCH.fullTime}
-          </Button>
-        )}
+          {data.clock.running && half === 1 && (
+            <Button className="has-py-3 has-px-4 text-lg" onClick={() => act({ type: "halfTime" })}>
+              {MATCH.halfTime}
+            </Button>
+          )}
+          {on && (
+            <Button className="has-py-3 has-px-4 text-lg" onClick={fullTime}>
+              {MATCH.fullTime}
+            </Button>
+          )}
+          {canReset && !confirming && (
+            <Button variant="quiet" className="has-py-3 has-px-4 text-lg" onClick={() => (askFirst ? setConfirming(true) : reset())}>
+              {MATCH.reset}
+            </Button>
+          )}
+        </div>
       </div>
+      {confirming && (
+        <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field has-mt-3">
+          <p className="text-base leading-snug">{MATCH.resetText}</p>
+          <div className="is-flex has-gap-2">
+            <Button variant="out" className="is-flex-1 has-py-3" onClick={reset}>
+              {MATCH.resetConfirm}
+            </Button>
+            <Button className="is-flex-1 has-py-3" onClick={() => setConfirming(false)}>
+              {MATCH.keep}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

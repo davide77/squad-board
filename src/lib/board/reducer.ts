@@ -378,6 +378,10 @@ const UNDOABLE: ReadonlySet<Action["type"]> = new Set([
   "clearPitch",
   "newMatchday",
   "bringOn",
+  "clockToggle",
+  "clockReset",
+  "halfTime",
+  "fullTime",
 ]);
 
 export function boardReducer(state: BoardState, action: StampedAction): BoardState {
@@ -387,7 +391,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
     const back = structuredClone(undo.data);
     syncMinutes(back, action.now);
     const notice = { id: (state.ui.notice?.id ?? 0) + 1, text: GAFFER[back.voice].undone };
-    return { data: back, ui: { ...state.ui, undo: null, notice, selected: null, pickerSlot: null, offSlot: null } };
+    return { data: back, ui: { ...state.ui, undo: null, notice, step: undo.step, selected: null, pickerSlot: null, offSlot: null } };
   }
   const next = reduce(state, action);
   // A change to the team can be undone for a moment. Any other change to the board ends that chance,
@@ -396,7 +400,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
     const changed = JSON.stringify(next.data) !== JSON.stringify(state.data);
     if (changed && UNDOABLE.has(action.type)) {
       const text = next.ui.notice && next.ui.notice.id !== state.ui.notice?.id ? next.ui.notice.text : GAFFER[next.data.voice].changed;
-      next.ui.undo = { id: (state.ui.undo?.id ?? 0) + 1, text, data: state.data };
+      next.ui.undo = { id: (state.ui.undo?.id ?? 0) + 1, text, data: state.data, step: state.ui.step };
     } else if (changed) {
       next.ui.undo = null;
     }
@@ -565,18 +569,23 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     case "clockToggle":
       // Back on after full time: the match is not over after all.
       d.match.ended = false;
-      if (!d.clock.running && d.match.atBreak) {
+      if (d.clock.running) {
+        d.clock = { running: false, base: elapsed(d, now), since: 0 };
+        note(say.clockPaused);
+      } else {
+        const breakOver = d.match.atBreak;
         d.match.atBreak = false;
-        note(say.secondHalf);
+        note(breakOver ? say.secondHalf : d.clock.base > 0 ? say.clockResumed : say.kickOff);
+        d.clock = { ...d.clock, running: true, since: now };
       }
-      if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
-      else d.clock = { ...d.clock, running: true, since: now };
       return next;
 
     case "clockReset":
       d.clock = { running: false, base: 0, since: 0 };
       d.match.half = 1;
       d.match.atBreak = false;
+      d.match.ended = false;
+      note(say.clockCleared);
       d.minutes = { on: {}, played: {} };
       return next;
 

@@ -16,6 +16,8 @@ export const BOARD_CONFIG = {
   edgeScrollStepPx: 12,
   edgeScrollIntervalMs: 16,
   clockTickMs: 1000,
+  /** Past this much on the match clock, Reset asks first: there is a real match's worth of minutes to lose. */
+  resetAskAfterMs: 2 * 60_000,
   /** Minutes played are shown in whole minutes, so they need checking far less often. */
   minutesTickMs: 15000,
   /** Saved line-ups kept, newest first. */
@@ -52,7 +54,7 @@ export const MESSAGE_CONFIG = {
   /** A Google Maps search for the address. Opens the Maps app on a phone, and WhatsApp previews it. */
   mapUrl: "https://www.google.com/maps/search/?api=1&query=",
   whatsappUrl: "https://wa.me/?text=",
-  dateLocale: "en-GB",
+  locale: "en-GB",
   addressRows: 2,
 } as const;
 
@@ -152,6 +154,8 @@ export const ANALYTICS_EVENTS = {
   sheetSent: "Sheet sent",
   /** The match clock started from zero: a real match, not a look round. */
   clockStarted: "Clock started",
+  /** Full time called: a match played to the end. */
+  fullTime: "Full time",
   /** A saved board opened again, with the days since it was last open. A coach coming back. */
   boardReopened: "Board reopened",
   /**

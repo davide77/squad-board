@@ -9,7 +9,7 @@ import { useBoard } from "./BoardProvider";
 import { useClockToggle } from "./MatchClock";
 import { Panel } from "./Panel";
 
-type Confirming = "new" | "clear" | null;
+type Confirming = "new" | "clear" | "back" | null;
 
 /**
  * The end of Pick the team: the strongest side to save or go back to, kick-off, and starting over.
@@ -24,15 +24,31 @@ export function PickActions() {
   const underway = started(data);
   const changed = changedFromStrongest(data);
 
+  // During a match, going back to the strongest side undoes the changes made on the day, so it asks first.
   function backToStrongest() {
-    if (data.preset && matchUnderway(data) && !window.confirm(GAFFER[data.voice].matchUnderway(plan))) return;
-    act({ type: "backToStrongest" });
+    if (data.preset && matchUnderway(data)) setConfirming("back");
+    else act({ type: "backToStrongest" });
   }
 
   function confirm() {
-    act(confirming === "new" ? { type: "newMatchday" } : { type: "clearPitch" });
+    act(confirming === "new" ? { type: "newMatchday" } : confirming === "clear" ? { type: "clearPitch" } : { type: "backToStrongest" });
     setConfirming(null);
   }
+
+  // The in-place check, the same for each of the three.
+  const ask = (text: string, yes: string, variant: "out" | "default") => (
+    <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field has-mt-3">
+      <p className="text-base leading-snug">{text}</p>
+      <div className="is-flex has-gap-2">
+        <Button variant={variant} className="is-flex-1 has-py-3" onClick={confirm}>
+          {yes}
+        </Button>
+        <Button className="is-flex-1 has-py-3" onClick={() => setConfirming(null)}>
+          {PICK.keep}
+        </Button>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -48,6 +64,7 @@ export function PickActions() {
             {PICK.backToStrongest}
           </Button>
         </div>
+        {confirming === "back" && ask(GAFFER[data.voice].matchUnderway(plan), PICK.backConfirm, "default")}
       </Panel>
 
       <Button
@@ -63,18 +80,10 @@ export function PickActions() {
 
       <section className="start-over has-mt-6 has-pt-5">
         <h3 className="has-font-headline has-font-bold text-sm tracking-caps uppercase is-out has-mb-3">{PICK.startOver}</h3>
-        {confirming ? (
-          <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field">
-            <p className="text-base leading-snug">{confirming === "new" ? PICK.newMatchdayText : PICK.clearPitchText}</p>
-            <div className="is-flex has-gap-2">
-              <Button variant="out" className="is-flex-1 has-py-3" onClick={confirm}>
-                {confirming === "new" ? PICK.newMatchdayConfirm : PICK.clearPitchConfirm}
-              </Button>
-              <Button className="is-flex-1 has-py-3" onClick={() => setConfirming(null)}>
-                {PICK.keep}
-              </Button>
-            </div>
-          </div>
+        {confirming === "new" ? (
+          ask(PICK.newMatchdayText, PICK.newMatchdayConfirm, "out")
+        ) : confirming === "clear" ? (
+          ask(PICK.clearPitchText, PICK.clearPitchConfirm, "out")
         ) : (
           <div className="is-flex has-gap-2">
             <Button variant="out" className="is-flex-1 has-py-3" onClick={() => setConfirming("new")}>

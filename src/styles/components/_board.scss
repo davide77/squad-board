@@ -48,9 +48,9 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     grid-template-areas: 'left centre right';
   }
 
-  // Send on a phone: choose what to send, then the buttons, with the preview underneath to check.
+  // Full time on a phone: choose what to send, then the buttons, with the preview underneath to check.
   // The buttons are what the coach came for, so they are not left below a long preview.
-  &--send {
+  &--full {
     @include max(bp(md)) {
       grid-template-areas: 'left' 'right' 'centre';
     }

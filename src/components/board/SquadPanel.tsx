@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import { CONFIRM, GLYPHS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
 import { blocked, dupeNumbers, freeAt, slotById } from "@/lib/board/queries";
@@ -17,7 +17,10 @@ import { RosterRow } from "./RosterRow";
 function RemovedList() {
   const { state, act } = useBoard();
   const { removed } = state.data;
+  // The one player being asked about, in place, before they are deleted for good.
+  const [asking, setAsking] = useState<string | null>(null);
   if (!removed.length) return null;
+  const doomed = removed.find((p) => p.id === asking);
   return (
     <div className="has-mt-5">
       <h3 className="has-font-headline text-sm tracking-caps uppercase is-dimmer has-mb-2">{ZONES.removed}</h3>
@@ -37,15 +40,34 @@ function RemovedList() {
               type="button"
               className="removed-chip__delete is-flex is-align-center is-justify-center is-dimmer"
               aria-label={ZONES.deleteForGood(p.name)}
-              onClick={() => {
-                if (window.confirm(CONFIRM.deleteForGood(p.name))) act({ type: "deletePlayer", id: p.id });
-              }}
+              aria-expanded={asking === p.id}
+              onClick={() => setAsking(p.id)}
             >
               {GLYPHS.close}
             </button>
           </li>
         ))}
       </ul>
+      {doomed && (
+        <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field has-mt-3">
+          <p className="text-base leading-snug">{CONFIRM.deleteForGood(doomed.name)}</p>
+          <div className="is-flex has-gap-2">
+            <Button
+              variant="out"
+              className="is-flex-1 has-py-3"
+              onClick={() => {
+                act({ type: "deletePlayer", id: doomed.id });
+                setAsking(null);
+              }}
+            >
+              {ZONES.deleteConfirm}
+            </Button>
+            <Button className="is-flex-1 has-py-3" onClick={() => setAsking(null)}>
+              {ZONES.keep}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
