@@ -115,7 +115,8 @@ export type Action =
   | { type: "selectOff"; slotId: string }
   | { type: "toggleOffInjured" }
   | { type: "bringOn"; pid: string }
-  | { type: "fullTime" };
+  | { type: "fullTime" }
+  | { type: "halfTime" };
 
 /** Every action is stamped with the time it happened, so the reducer stays pure. */
 export type StampedAction = Action & { readonly now: number };
@@ -446,7 +447,17 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       return next;
     }
 
+    // The whistle for the break: the clock stops, and the next start is the second half.
+    case "halfTime":
+      if (!d.clock.running || d.match.half === 2) return state;
+      d.clock = { running: false, base: elapsed(d, now), since: 0 };
+      d.match.half = 2;
+      d.match.atBreak = true;
+      note(say.halfTime);
+      return next;
+
     case "fullTime":
+      d.match.atBreak = false;
       d.match.ended = true;
       if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
       ui.step = "full";
@@ -503,12 +514,18 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     case "clockToggle":
       // Back on after full time: the match is not over after all.
       d.match.ended = false;
+      if (!d.clock.running && d.match.atBreak) {
+        d.match.atBreak = false;
+        note(say.secondHalf);
+      }
       if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
       else d.clock = { ...d.clock, running: true, since: now };
       return next;
 
     case "clockReset":
       d.clock = { running: false, base: 0, since: 0 };
+      d.match.half = 1;
+      d.match.atBreak = false;
       d.minutes = { on: {}, played: {} };
       return next;
 

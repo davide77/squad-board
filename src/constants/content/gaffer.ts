@@ -26,6 +26,8 @@ export interface GafferLines {
   readonly subInjured: (on: string, off: string) => string;
   /** The final whistle: the clock stops and the board moves on to sending. */
   readonly fullTime: string;
+  readonly halfTime: string;
+  readonly secondHalf: string;
   /** Player of the match picked, or taken off. */
   readonly potm: (n: string) => string;
   readonly potmNone: string;
@@ -100,6 +102,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     sub: (on, off) => `${off} off. ${on} on. Good.`,
     subInjured: (on, off) => `Get well, ${off}. ${on}, you're on.`,
     fullTime: "Full time. Send the result.",
+    halfTime: "Half time. Keep it short.",
+    secondHalf: "Second half. Go again.",
     potm: (n) => `${n}. Deserved.`,
     potmNone: "Nobody this week. Fair enough.",
     cantPickInjured: (n) => `${n}'s injured. Pick someone else.`,
@@ -161,6 +165,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     sub: (on, off) => `${on}'s on. Great shift, ${off}.`,
     subInjured: (on, off) => `${off}'s done for today. ${on}, this is your moment.`,
     fullTime: "Full time. Well played, everyone. Let's tell the parents.",
+    halfTime: "Half time. Water, a word, and back out.",
+    secondHalf: "Second half. Here we go again, team.",
     potm: (n) => `${n}. What a game they had.`,
     potmNone: "No award this week. That's fine too.",
     cantPickInjured: (n) => `${n}'s injured, so not today. Pick someone else.`,

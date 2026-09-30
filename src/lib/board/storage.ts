@@ -19,7 +19,7 @@ import { captureLineup, elapsed } from "./queries";
 import type { BoardData, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyMatch(): MatchDetails {
-  return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", us: 0, them: 0, potm: "", ended: false };
+  return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
 }
 
 export function emptyData(): BoardData {
@@ -136,6 +136,8 @@ function readMatch(v: unknown): MatchDetails {
     them: Math.max(0, Math.floor(num(v.them))),
     potm: str(v.potm),
     ended: v.ended === true,
+    half: v.half === 2 ? 2 : 1,
+    atBreak: v.atBreak === true,
   };
 }
 

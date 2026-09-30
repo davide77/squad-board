@@ -273,6 +273,15 @@ export const DRAWER = {
 export const MATCH = {
   clockLabel: "Match clock",
   running: "Clock running",
+  firstHalf: "First half",
+  secondHalf: "Second half",
+  atBreak: "Half time",
+  halfTime: "Half time",
+  startSecondHalf: "Second half",
+  /** The bench tray docked under the pitch on a phone. */
+  trayFor: (off: string) => `On for ${off}`,
+  trayHint: "Bench · tap a player on the pitch first",
+  trayLabel: (name: string, off: string) => `${name}, on for ${off}`,
   stopped: "Clock stopped",
   notStarted: "Not started",
   kickOff: "Kick off",

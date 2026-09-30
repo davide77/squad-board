@@ -635,3 +635,47 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 .start-over {
   border-top: 1px solid $edge;
 }
+
+// ---------- The bench tray, on a phone ----------
+
+// Matchday on a phone: the bench list gives way to the tray, held under the pitch.
+.board-step--match .board-step__left {
+  @include max(bp(md)) {
+    display: none;
+  }
+}
+
+// Sticks just above the docked step tabs, so "On for" stays in reach wherever the page is scrolled.
+.bench-tray {
+  position: sticky;
+  bottom: calc(var(--dock-height, 0px) + env(safe-area-inset-bottom));
+  z-index: z(raised);
+  background-color: tint(board, 95%);
+  border-top: 1px solid $edge;
+
+  &__list {
+    overflow-x: auto;
+    padding-bottom: spacer(1);
+  }
+
+  &__player {
+    flex: none;
+    min-width: spacer(11) + spacer(6);
+    min-height: spacer(10);
+    color: color(dim);
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    // A player coming off is picked: every bench player is a tap from going on.
+    &--ready {
+      color: color(kit-ink);
+      background-color: color(kit);
+      border-color: color(kit-edge);
+    }
+  }
+}

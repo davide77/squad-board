@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
-import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
+import type { CSSProperties } from "react";
+import { BOARD_CONFIG } from "@/constants/config";
 import { MATCH, NO_NUMBER, SUBS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { firstName } from "@/lib/board/names";
 import { blocked, byId, elapsed, fmtClock, playedMinutes, playedMs, positionCodes, started, where } from "@/lib/board/queries";
 import type { BoardData, Player } from "@/lib/board/types";
-import { useNow, usePrefersReducedMotion } from "@/lib/hooks";
+import { useNow } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
@@ -26,7 +26,16 @@ export function MatchClockCard() {
   const now = useNow(data.clock.running, BOARD_CONFIG.clockTickMs);
   const toggle = useClockToggle();
   const on = started(data);
-  const status = data.clock.running ? MATCH.running : on ? MATCH.stopped : MATCH.notStarted;
+  const { half, atBreak } = data.match;
+  const status = data.clock.running
+    ? half === 1
+      ? MATCH.firstHalf
+      : MATCH.secondHalf
+    : atBreak
+      ? MATCH.atBreak
+      : on
+        ? MATCH.stopped
+        : MATCH.notStarted;
 
   return (
     <div className="match-card is-flex is-flex-wrap is-align-center is-justify-between has-gap-4 has-py-3 has-px-4 has-radius-panel has-mb-4">
@@ -38,12 +47,19 @@ export function MatchClockCard() {
         >
           {fmtClock(elapsed(data, now))}
         </span>
-        <span className="text-base is-dim">{status}</span>
+        <span className="text-base is-dim" aria-live="polite">
+          {status}
+        </span>
       </div>
-      <div className="is-flex has-gap-2">
+      <div className="is-flex is-flex-wrap has-gap-2">
         <Button variant="primary" className="has-py-3 has-px-5 text-lg" onClick={toggle}>
-          {data.clock.running ? MATCH.pause : on ? MATCH.resume : MATCH.kickOff}
+          {data.clock.running ? MATCH.pause : atBreak ? MATCH.startSecondHalf : on ? MATCH.resume : MATCH.kickOff}
         </Button>
+        {data.clock.running && half === 1 && (
+          <Button className="has-py-3 has-px-4 text-lg" onClick={() => act({ type: "halfTime" })}>
+            {MATCH.halfTime}
+          </Button>
+        )}
         {on && (
           <Button className="has-py-3 has-px-4 text-lg" onClick={() => act({ type: "fullTime" })}>
             {MATCH.fullTime}
@@ -60,19 +76,8 @@ export function ChangeBar() {
   const { data, ui } = state;
   const now = useNow(data.clock.running, BOARD_CONFIG.minutesTickMs);
   const off = comingOff(data, ui.offSlot);
-  const barRef = useRef<HTMLDivElement>(null);
-  const reduced = usePrefersReducedMotion();
-
-  // On a phone the bench is below the pitch. Picking the player coming off brings this bar and the
-  // bench under it up the screen, so "On for" is in reach without hunting for it.
-  useEffect(() => {
-    if (!ui.offSlot || !window.matchMedia(PHONE_QUERY).matches) return;
-    barRef.current?.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
-  }, [ui.offSlot, reduced]);
-
   return (
     <div
-      ref={barRef}
       className={cx(
         "change-bar is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-py-3 has-px-4 has-radius-panel has-mt-4",
         off && "change-bar--on",
@@ -133,14 +138,54 @@ function BenchRow({ p, off, now, pool = false }: BenchRowProps) {
   );
 }
 
+/** Who can come on: the bench first, then anyone else called up and free. */
+function candidates(d: BoardData): { bench: Player[]; pool: Player[] } {
+  return {
+    bench: d.bench.map((id) => byId(d, id)).filter((p): p is Player => !!p),
+    pool: d.players.filter((p) => !p.out && !blocked(p) && where(d, p.id) === "pool"),
+  };
+}
+
+/**
+ * On a phone, the bench as a tray held under the pitch, above the step tabs: pick the player coming
+ * off on the pitch, then "On for" is one tap away, with no scrolling in between.
+ */
+export function BenchTray() {
+  const { state, act } = useBoard();
+  const { data, ui } = state;
+  const off = comingOff(data, ui.offSlot);
+  const { bench, pool } = candidates(data);
+  return (
+    <div className="bench-tray is-md-hidden has-pt-3 has-pb-3">
+      <p className="has-font-headline has-font-bold text-xs tracking-caps uppercase is-dim has-mb-2" aria-live="polite">
+        {off ? MATCH.trayFor(firstName(off.name)) : MATCH.trayHint}
+      </p>
+      <div className="bench-tray__list is-flex has-gap-2">
+        {[...bench, ...pool].map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            className={cx("bench-tray__player is-flex is-flex-column is-justify-center has-gap-1 has-py-2 has-px-3 has-radius-panel text-left", off && "bench-tray__player--ready")}
+            disabled={!off}
+            aria-label={off ? MATCH.trayLabel(p.name, firstName(off.name)) : p.name}
+            onClick={() => act({ type: "bringOn", pid: p.id })}
+          >
+            <span className="has-font-headline has-font-bold text-xl leading-tight">{p.num || NO_NUMBER}</span>
+            <span className="text-md has-font-bold is-truncate">{firstName(p.name)}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** Who can come on: the bench first, then anyone else called up. The injured are listed apart. */
 export function MatchBench() {
   const { state } = useBoard();
   const { data, ui } = state;
   const now = useNow(data.clock.running, BOARD_CONFIG.minutesTickMs);
   const off = comingOff(data, ui.offSlot);
-  const bench = data.bench.map((id) => byId(data, id)).filter((p): p is Player => !!p);
-  const pool = data.players.filter((p) => !p.out && !blocked(p) && where(data, p.id) === "pool");
+  const { bench, pool } = candidates(data);
   const injured = data.players.filter((p) => p.inj);
 
   return (
