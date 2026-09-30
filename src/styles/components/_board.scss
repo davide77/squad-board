@@ -78,9 +78,9 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 }
 
 // The three steps. A phone docks them along the bottom, within reach of a thumb; from md they sit in the header.
+// The fill is the track. No outline: the kit rule under the header already frames it.
 .step-tabs {
   background-color: color(board-2);
-  border: 1px solid $edge;
 
   &__tab {
     min-height: $hit-size;
@@ -183,6 +183,31 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   & + & {
     margin-top: spacer(5);
   }
+
+  // Jumped to from a link, as Your club is from the kit hint.
+  &:focus {
+    outline: none;
+  }
+}
+
+// A panel at the top of a column sits right under the header's kit rule, so it drops its own
+// hairline rather than draw a second line. Only where the columns sit side by side: stacked on a
+// phone, the rule is what parts one column from the one above.
+.board-step {
+  @include min(bp(md)) {
+    &__left > .panel:first-child,
+    &--no-left .board-step__right > .panel:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+  }
+
+  @include min(bp(lg)) {
+    &__right > .panel:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+  }
 }
 
 .control-label {
@@ -254,6 +279,8 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   padding: 0;
   background-color: var(--swatch);
   border: 2px solid transparent;
+  // A faint ring, so black and navy still read on the board.
+  box-shadow: inset 0 0 0 1px $edge;
   cursor: pointer;
 
   // 44px to tap, 26px to see
@@ -588,13 +615,45 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     border-color: color(chalk);
   }
 
-  // The kit's colour beside its name.
-  &__swatch {
-    width: spacer(3) + spacer(1) * 0.5;
-    height: spacer(3) + spacer(1) * 0.5;
-    flex-shrink: 0;
-    background-color: var(--swatch);
-    border: 1px solid tint(chalk, 30%);
+}
+
+// ---------- Kits ----------
+
+// A strip, drawn: shirt, shorts, socks. The fills are the strip's own colours, set on the SVG; the
+// line is chalk, so a black kit still shows on the board.
+.kit-icon {
+  display: block;
+  flex-shrink: 0;
+  aspect-ratio: 40 / 56;
+
+  // The shirt's outline, drawn over its clipped pattern, and the shorts and socks, which keep their fill.
+  &__line,
+  &__part {
+    stroke: tint(chalk, 45%);
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+
+  &__line {
+    fill: none;
+  }
+
+  &--sm {
+    height: spacer(6);
+  }
+
+  &--md {
+    height: spacer(10);
+  }
+}
+
+// One strip under Your club.
+.kit-editor {
+  border-top: 1px solid $edge;
+
+  // "Black and yellow stripes, ...": a sentence, so only its first letter is capital.
+  &__words::first-letter {
+    text-transform: uppercase;
   }
 }
 

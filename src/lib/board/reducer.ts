@@ -38,6 +38,8 @@ import type {
   BoardState,
   BoardStep,
   DropTarget,
+  Kit,
+  KitSide,
   Lineup,
   MatchTextField,
   Player,
@@ -56,7 +58,7 @@ export type Action =
   | { type: "setFixture"; value: string }
   | { type: "setMatch"; field: MatchTextField; value: string }
   | { type: "setVenue"; venue: Venue }
-  | { type: "setAwayColour"; index: number }
+  | { type: "setKit"; side: KitSide; kit: Partial<Kit> }
   | { type: "changeScore"; side: "us" | "them"; by: 1 | -1 }
   | { type: "setPotm"; pid: string }
   | { type: "clockToggle" }
@@ -926,8 +928,8 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       d.colour = action.index;
       return next;
 
-    case "setAwayColour":
-      d.awayColour = action.index;
+    case "setKit":
+      d.kits[action.side] = { ...d.kits[action.side], ...action.kit };
       return next;
 
     case "setStrongest":

@@ -1,4 +1,4 @@
-import { AWAY_KIT_DEFAULT, KIT_COLOURS } from "@/constants/brand";
+import { KIT_COLOURS } from "@/constants/brand";
 import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { BADGE_CONFIG, STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
@@ -15,6 +15,7 @@ import {
   type PositionKey,
 } from "@/constants/football";
 import { isVoice } from "@/lib/voice";
+import { defaultKits, readKit, stripOf } from "./kit";
 import { captureLineup, elapsed } from "./queries";
 import type { BoardData, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
@@ -41,7 +42,7 @@ export function emptyData(): BoardData {
     saved: null,
     removed: [],
     colour: 0,
-    awayColour: AWAY_KIT_DEFAULT,
+    kits: defaultKits(stripOf(0)),
     badge: "",
     clock: { running: false, base: 0, since: 0 },
     example: false,
@@ -168,6 +169,20 @@ function readSub(v: unknown): Sub | null {
   return isRec(v) ? { min: num(v.min), onName: str(v.onName), offName: str(v.offName), inj: v.inj === true } : null;
 }
 
+/**
+ * The home and away strips. A board from before them wore its club colour at home and, when it had
+ * one, its away colour away, each as a plain shirt with black shorts.
+ */
+function readKits(raw: Record<string, unknown>, colour: number): BoardData["kits"] {
+  const fallback = defaultKits(stripOf(colour));
+  if (typeof raw.awayColour === "number" && KIT_COLOURS[raw.awayColour]) {
+    const away = stripOf(raw.awayColour);
+    fallback.away = { ...fallback.away, shirt: away, socks: away, second: away === "white" ? "black" : "white" };
+  }
+  const kits = isRec(raw.kits) ? raw.kits : {};
+  return { home: readKit(kits.home, fallback.home), away: readKit(kits.away, fallback.away) };
+}
+
 const notNull = <T,>(v: T | null): v is T => v !== null;
 
 /** Turns a saved or imported board into safe state, or null when it is not a squad file. */
@@ -196,8 +211,7 @@ export function readBoard(raw: unknown): BoardData | null {
     saved: readLineup(raw.saved),
     removed: list(raw.removed).map(readPlayer).filter(notNull),
     colour: KIT_COLOURS[colour] ? colour : 0,
-    // Boards from before the away kit get the default.
-    awayColour: typeof raw.awayColour === "number" && KIT_COLOURS[raw.awayColour] ? raw.awayColour : AWAY_KIT_DEFAULT,
+    kits: readKits(raw, KIT_COLOURS[colour] ? colour : 0),
     badge: isBadge(raw.badge) ? raw.badge : "",
     // A board always reopens with the clock paused where it was left.
     clock: { running: false, base: isRec(raw.clock) ? num(raw.clock.base) : 0, since: 0 },

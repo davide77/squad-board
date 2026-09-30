@@ -1,6 +1,6 @@
-import { KIT_COLOURS } from "@/constants/brand";
 import { MESSAGE_CONFIG, MESSAGE_DATE_FORMAT } from "@/constants/config";
 import { MESSAGE, SHEET } from "@/constants/content/board";
+import { kitWords } from "./kit";
 import { sentName } from "./names";
 import type { BoardData } from "./types";
 
@@ -25,10 +25,9 @@ export function matchHeader(d: BoardData): string[] {
   const title = (d.team || SHEET.fallbackTitle) + (d.season ? SHEET.pictureJoin + d.season : "");
   const out: string[] = [date ? `${title} - ${date}` : title];
   if (d.fixture.trim()) out.push(d.fixture.trim() + (match.venue ? MESSAGE.venueTag(match.venue) : ""));
-  // Home or away says which kit, from the club's colours. A board from before that keeps its own words.
+  // Home or away says which strip, in full. A board from before that keeps its own words.
   if (match.venue) {
-    const kit = KIT_COLOURS[match.venue === "home" ? d.colour : d.awayColour];
-    if (kit) out.push(MESSAGE.kitLine(match.venue, kit.name));
+    out.push(MESSAGE.kitLine(match.venue, kitWords(d.kits[match.venue])));
   } else if (match.kit.trim()) {
     out.push(match.kit.trim());
   }

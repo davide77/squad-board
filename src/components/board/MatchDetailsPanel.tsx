@@ -1,12 +1,14 @@
 "use client";
 
-import { useId, type CSSProperties } from "react";
-import { KIT_COLOURS } from "@/constants/brand";
+import { useId } from "react";
 import { MESSAGE_CONFIG } from "@/constants/config";
 import { MESSAGE } from "@/constants/content/board";
+import { kitWords } from "@/lib/board/kit";
 import { mapLink } from "@/lib/board/message";
 import type { MatchTextField } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
+import { CLUB_PANEL_ID } from "./ClubPanel";
+import { KitIcon } from "./KitIcon";
 import { Panel } from "./Panel";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
@@ -16,7 +18,7 @@ const FIELD = "field is-w-full has-radius-field has-py-3 has-px-3 text-base";
 /** This week's opponent, date, times, home or away, and ground. They head the call-up and the result. */
 export function MatchDetailsPanel() {
   const { state, act } = useBoard();
-  const { fixture, match, colour, awayColour } = state.data;
+  const { fixture, match, kits } = state.data;
   const id = useId();
   const set = (field: MatchTextField) => (e: { target: { value: string } }) =>
     act({ type: "setMatch", field, value: e.target.value });
@@ -64,25 +66,28 @@ export function MatchDetailsPanel() {
           <p id={`${id}-venue`} className={LABEL}>
             {MESSAGE.venueLabel}
           </p>
-          {/* Which kit, from the club's colours: the message says "Home kit (yellow)." */}
+          {/* Which strip, drawn on the button. The message says it in full: "Home kit: red shirts, white shorts, red socks." */}
           <div role="group" aria-labelledby={`${id}-venue`} className="is-flex has-gap-2">
-            {MESSAGE.venues.map((v) => {
-              const kit = KIT_COLOURS[v.key === "home" ? colour : awayColour];
-              return (
-                <button
-                  key={v.key}
-                  type="button"
-                  aria-pressed={match.venue === v.key}
-                  className="choice is-flex is-flex-1 is-align-center is-justify-center has-gap-2 has-radius-field has-font-semibold text-md"
-                  onClick={() => act({ type: "setVenue", venue: v.key })}
-                >
-                  <span className="choice__swatch has-radius-pill" style={{ "--swatch": kit?.kit } as CSSProperties} aria-hidden="true" />
-                  {MESSAGE.venueOption(v.label, kit?.name ?? "")}
-                </button>
-              );
-            })}
+            {MESSAGE.venues.map((v) => (
+              <button
+                key={v.key}
+                type="button"
+                aria-pressed={match.venue === v.key}
+                className="choice is-flex is-flex-1 is-align-center is-justify-center has-gap-2 has-radius-field has-font-semibold text-md"
+                onClick={() => act({ type: "setVenue", venue: v.key })}
+              >
+                <KitIcon kit={kits[v.key]} className="kit-icon--sm" />
+                {v.label}
+              </button>
+            ))}
           </div>
-          <p className="text-sm is-dimmer has-mt-1">{MESSAGE.venueHint}</p>
+          {match.venue && <p className="kit-editor__words text-sm is-dim has-mt-2">{kitWords(kits[match.venue])}</p>}
+          <p className="text-sm is-dimmer has-mt-1">
+            {MESSAGE.venueHint}{" "}
+            <a href={`#${CLUB_PANEL_ID}`} className="hit-area is-kit">
+              {MESSAGE.venueHintLink}
+            </a>
+          </p>
         </div>
         <div>
           <label htmlFor={`${id}-address`} className={LABEL}>

@@ -22,8 +22,32 @@ export const KIT_COLOURS: readonly KitColour[] = [
   { name: "Pink", kit: "#EC4F9B", ink: "#1A0610", edge: "#BD3F7C" },
 ];
 
-/** A new board's away kit: white, the change strip most clubs have. The coach can pick another under Your club. */
-export const AWAY_KIT_DEFAULT = KIT_COLOURS.findIndex((c) => c.name === "White");
+/**
+ * What a strip is made of: the colours a shirt, its second colour, the shorts and the socks can be.
+ * Wider than KIT_COLOURS, because black and navy are the commonest shorts and socks there are, and
+ * neither would show as the board's colour. Every KIT_COLOURS name is here too, so an older board's
+ * kit carries over.
+ */
+export const STRIP_COLOURS = {
+  black: { name: "Black", hex: "#161616" },
+  white: { name: "White", hex: "#ECECE8" },
+  yellow: { name: "Yellow", hex: "#F2D106" },
+  amber: { name: "Amber", hex: "#F2A51A" },
+  orange: { name: "Orange", hex: "#E8811F" },
+  red: { name: "Red", hex: "#D93A2B" },
+  claret: { name: "Claret", hex: "#8A2B4A" },
+  pink: { name: "Pink", hex: "#EC4F9B" },
+  purple: { name: "Purple", hex: "#6B3FA0" },
+  navy: { name: "Navy", hex: "#1D2B53" },
+  blue: { name: "Blue", hex: "#2E6BD9" },
+  sky: { name: "Sky", hex: "#59B6E8" },
+  green: { name: "Green", hex: "#1FA463" },
+  grey: { name: "Grey", hex: "#8C8C86" },
+} as const;
+
+export type StripColour = keyof typeof STRIP_COLOURS;
+
+export const STRIP_COLOUR_KEYS = Object.keys(STRIP_COLOURS) as StripColour[];
 
 /**
  * The board's neutrals, for drawing the line-up picture on a canvas, which cannot
