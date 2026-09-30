@@ -63,11 +63,11 @@ export const TONE_SLIDES: Readonly<Record<Tone, ToneSlides>> = {
     squadBody: "Paste the names. Put the positions in too, or I'm guessing.",
     sideHeading: "Pick your strongest side.",
     sideBody: "Save it once, come back to it every week. I'll question it. You'll pick it anyway.",
-    matchHeading: "Missed training? Not in the squad.",
+    matchHeading: "Missed training. Noted.",
     matchBody: "Injured, unavailable, missed training. Every sub logged to the minute, and the sheet goes to the players' group.",
     matchLine: "Three changes at half-time? Your call.",
     finish: "Get on with it",
-    skip: "Skip it then. You know best.",
+    skip: "Skip it. The board's ready.",
   },
 };
 

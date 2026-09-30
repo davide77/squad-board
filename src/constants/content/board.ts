@@ -167,6 +167,8 @@ export const KEEP = {
   homeOther: "Open your browser menu, then Add to Home screen.",
   homeInstall: "Add to home screen",
   backupTitle: "Keep a copy",
+  /** The first backup card, the first time the board opens after a match. */
+  backupAfterMatchTitle: "Match done. Keep a copy?",
   backupNever: "You haven't saved a squad file yet. Keep one somewhere safe in case this phone is lost or reset.",
   backupOld: "Your last squad file is a few weeks old. Save a fresh one to keep it up to date.",
   later: "Not now",

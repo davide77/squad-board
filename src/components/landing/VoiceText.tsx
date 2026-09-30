@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import type { VoiceCopy } from "@/constants/content/landing";
-import { ROUTES } from "@/constants/routes";
-import { cx } from "../cx";
+import { AGE_GROUPS, FORMATS } from "@/constants/football";
+import { BoardCta } from "../BoardCta";
 import { useLanding } from "./LandingProvider";
 
 type TextKey = { [K in keyof VoiceCopy]: VoiceCopy[K] extends string ? K : never }[keyof VoiceCopy];
@@ -29,17 +28,9 @@ interface VoiceCtaProps {
   readonly size?: CtaSize;
 }
 
-/** The link to the board, labelled in the picked voice. */
+/** The link to the board. Once an age is picked it names the format that board will open on. */
 export function VoiceCta({ size = "regular" }: VoiceCtaProps) {
-  return (
-    <Link
-      href={ROUTES.board}
-      className={cx(
-        "button button--primary is-inline-flex is-align-center has-font-bold has-radius-field",
-        CTA_SIZES[size],
-      )}
-    >
-      <VoiceText k="cta" />
-    </Link>
-  );
+  const { age } = useLanding();
+  const group = AGE_GROUPS.find((a) => a.key === age);
+  return <BoardCta className={CTA_SIZES[size]} format={group && FORMATS[group.format].label} />;
 }

@@ -3,7 +3,7 @@
 import { HEADER } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { fmtClock, started } from "@/lib/board/queries";
-import { useNow } from "@/lib/hooks";
+import { useNow, useWakeLock } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
@@ -12,6 +12,7 @@ export function MatchClock() {
   const { state, act } = useBoard();
   const { clock } = state.data;
   const now = useNow(clock.running, BOARD_CONFIG.clockTickMs);
+  useWakeLock(clock.running);
 
   const ms = clock.running ? clock.base + Math.max(0, now - clock.since) : clock.base;
   const isOn = started(state.data);
