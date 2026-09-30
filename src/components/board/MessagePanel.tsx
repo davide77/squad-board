@@ -1,8 +1,9 @@
 "use client";
 
 import { useId } from "react";
-import { MESSAGE_CONFIG } from "@/constants/config";
+import { ANALYTICS_EVENTS, MESSAGE_CONFIG, SENT_HOW, SENT_WHAT } from "@/constants/config";
 import { MESSAGE } from "@/constants/content/board";
+import { trackEvent } from "@/lib/analytics";
 import { mapLink, squadMessage } from "@/lib/board/message";
 import type { MatchDetails } from "@/lib/board/types";
 import { Button } from "../Button";
@@ -18,7 +19,7 @@ const FIELD = "field is-w-full has-radius-field has-py-3 has-px-3 text-base";
 export function MessagePanel() {
   const { state, act } = useBoard();
   const { fixture, match } = state.data;
-  const copy = useCopySheet(squadMessage);
+  const copy = useCopySheet(squadMessage, SENT_WHAT.message);
   const id = useId();
   const set = (field: keyof MatchDetails) => (e: { target: { value: string } }) =>
     act({ type: "setMatch", field, value: e.target.value });
@@ -112,6 +113,7 @@ export function MessagePanel() {
           href={MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(message)}
           target="_blank"
           rel="noopener"
+          onClick={() => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp })}
           className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
         >
           {MESSAGE.whatsapp}

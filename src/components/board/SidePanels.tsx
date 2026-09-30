@@ -1,9 +1,10 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { MESSAGE_CONFIG, PICTURE_CONFIG } from "@/constants/config";
+import { ANALYTICS_EVENTS, MESSAGE_CONFIG, PICTURE_CONFIG, SENT_HOW, SENT_WHAT } from "@/constants/config";
 import { CLUB, GLYPHS, SAVED, SHEET, SUBS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
+import { trackEvent } from "@/lib/analytics";
 import { teamSlug } from "@/lib/board/names";
 import { fitsFormat } from "@/lib/board/queries";
 import { lineupPicture, sharePicture } from "@/lib/board/picture";
@@ -93,6 +94,7 @@ export function SheetPanel() {
       const blob = await lineupPicture(data);
       const name = teamSlug(data.team, CLUB.fileFallback) + PICTURE_CONFIG.fileSuffix;
       const result = await sharePicture(blob, name, data.team || SHEET.fallbackTitle);
+      if (result !== "cancelled") trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.sheet, how: SENT_HOW.picture });
       if (result === "downloaded") act({ type: "notify", text: GAFFER[state.data.voice].pictureSaved });
     } catch {
       act({ type: "notify", text: GAFFER[state.data.voice].pictureFailed });
@@ -108,6 +110,7 @@ export function SheetPanel() {
           href={MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(sheetText(state.data))}
           target="_blank"
           rel="noopener"
+          onClick={() => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.sheet, how: SENT_HOW.whatsapp })}
           className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
         >
           {SHEET.whatsapp}

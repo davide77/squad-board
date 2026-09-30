@@ -83,7 +83,7 @@ export const LLMS_TXT = {
   body: [
     "It is built for grassroots and youth coaches, assistant coaches and team managers who pick a side every week and run the subs on matchday.",
     "The board keeps the squad, marks who is available or injured, sets the formation, fills the bench and records the minute of every substitution. The team sheet can be sent to parents by WhatsApp or email.",
-    "Everything is stored in the browser on the coach's own device. There are no accounts, no cookies and no tracking. A squad file moves the board to another device.",
+    "Everything is stored in the browser on the coach's own device. There are no accounts, no cookies and no advertising, and nothing on the board is sent to Gafferboard. A squad file moves the board to another device.",
   ],
   pagesHeading: "## Pages",
   pages: [

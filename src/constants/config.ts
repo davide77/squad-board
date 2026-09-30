@@ -117,3 +117,23 @@ export const ONBOARDING_CONFIG = {
 // Each chapter of the homepage story stays up this long before the next one. The
 // tab's progress bar reads it as --story-ms, and the next chapter comes when it fills.
 export const STORY_DURATION_MS = 9000;
+
+// Visitor counts, through Vercel Web Analytics: no cookies, and the script is served from gafferboard.com.
+// Page views work on every Vercel plan. Custom events (a board started, a sheet sent) need Pro,
+// so they stay off until the team is upgraded. Flip `events` then, and they start counting.
+export const ANALYTICS_CONFIG = {
+  events: false,
+} as const;
+
+/** Every custom event the board sends, and the one property each may carry. Never a name from the board. */
+export const ANALYTICS_EVENTS = {
+  boardStarted: "Board started",
+  sheetSent: "Sheet sent",
+} as const;
+
+export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
+
+/** What went out to the parents, and how. Two properties, the most Vercel Pro keeps per event. */
+export const SENT_WHAT = { sheet: "Team sheet", message: "Squad message" } as const;
+export const SENT_HOW = { whatsapp: "WhatsApp", copy: "Copied", picture: "Picture" } as const;
+export type SentWhat = (typeof SENT_WHAT)[keyof typeof SENT_WHAT];
