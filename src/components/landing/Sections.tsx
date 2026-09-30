@@ -78,6 +78,9 @@ export function LandingFooter() {
           <Link href={ROUTES.credits} className="hit-area">
             {FOOTER_LINKS.credits}
           </Link>
+          <a href={`mailto:${MAKER.email}`} className="hit-area">
+            {FOOTER_LINKS.contact}
+          </a>
         </nav>
         <p>
           {FOOTER_LINKS.madeBy} {MAKER.name} {FOOTER_LINKS.at}{" "}

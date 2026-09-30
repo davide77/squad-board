@@ -30,8 +30,8 @@ export default function PrivacyPage() {
         <h2 className="text-2xl tracking-heading has-mb-3">{PRIVACY.contactHeading}</h2>
         <p className="text-md leading-relaxed is-dim">
           {PRIVACY.contact}{" "}
-          <a href={MAKER.url} className="is-kit has-font-semibold">
-            {MAKER.site}
+          <a href={`mailto:${MAKER.email}`} className="is-kit has-font-semibold">
+            {MAKER.email}
           </a>
           .
         </p>
