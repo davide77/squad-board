@@ -117,6 +117,8 @@ export const VIDEO_CONFIG = {
   afterLoadMs: 1500,
   /** Connections too slow for video at all. The poster stays. Reported by Chrome and Android only. */
   slowConnections: ["slow-2g", "2g"],
+  /** Screens that get the phone copy of each clip. Below the md breakpoint (900px, see _breakpoints.scss). */
+  phoneQuery: "(max-width: 899.98px)",
 } as const;
 
 // The Gaffer's clip in the homepage hero: the full width on a phone, half the page

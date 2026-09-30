@@ -272,7 +272,11 @@ export function useVideoAllowed(): boolean {
  * browsers only allow sound when play() runs inside the click. The loop moves only while
  * `still` is false, and the film goes back to the loop when it ends.
  */
-export function useFilmPlayer(film: string, still: boolean, onPlayingChange?: (playing: boolean) => void) {
+export function useFilmPlayer(
+  film: { readonly src: string; readonly phone: string },
+  still: boolean,
+  onPlayingChange?: (playing: boolean) => void,
+) {
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const playRef = useRef<HTMLButtonElement>(null);
@@ -303,7 +307,7 @@ export function useFilmPlayer(film: string, still: boolean, onPlayingChange?: (p
   function play() {
     const video = videoRef.current;
     if (!video) return;
-    video.src = film;
+    video.src = window.matchMedia(VIDEO_CONFIG.phoneQuery).matches ? film.phone : film.src;
     video.loop = false;
     video.muted = false;
     video.play().catch(() => {});
