@@ -32,8 +32,8 @@ export const MAKER = {
 export const PRIVACY = {
   title: "Privacy and safety",
   description:
-    "How Gafferboard looks after your squad: no accounts, no cookies, no tracking. The board stays in the browser on your device.",
-  updated: "Last updated 28 September 2026",
+    "How Gafferboard looks after your squad: no accounts, no cookies, no advertising. The board stays in the browser on your device.",
+  updated: "Last updated 30 September 2026",
   intro:
     "Gafferboard has no accounts and no database. Your squad lives in the browser on your device, and nothing about your players is sent to us.",
   sections: [
@@ -47,8 +47,15 @@ export const PRIVACY = {
     {
       heading: "What we do not collect",
       body: [
-        "No account, no sign-up and no email address. No cookies, no analytics and no advertising trackers. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
+        "No account, no sign-up and no email address. No cookies, no advertising and no trackers that follow you to other sites. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
         "Like any website, our host, Vercel, sees what every browser sends when a page loads, such as your IP address, and keeps it briefly in its logs for security. What is on your board is never part of that.",
+      ],
+    },
+    {
+      heading: "What we count",
+      body: [
+        "We count visits, so we know how many coaches use Gafferboard. Vercel Web Analytics records which page was opened, the site you came from, your country and the kind of device and browser. It sets no cookie and does not know who you are: a visitor is a code that resets every day.",
+        "Nothing on your board is part of it. Not the team, not a player, not the message you send.",
       ],
     },
     {

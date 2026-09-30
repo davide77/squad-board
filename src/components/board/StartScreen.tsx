@@ -1,11 +1,12 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { BOARD_CONFIG } from "@/constants/config";
+import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
 import { START } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
 import { GAFFER, PHASE_GAFFER } from "@/constants/content/gaffer";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
+import { trackEvent } from "@/lib/analytics";
 import { buildBoard, parseSquad, startingCount } from "@/lib/board/start";
 import { readAgePref, readVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
@@ -50,6 +51,7 @@ export function StartScreen() {
     if (!squad.length || !group) return;
     const team = String(new FormData(e.currentTarget).get("team") ?? "");
     act({ type: "load", data: { ...buildBoard(team, squad, newId, group.key), badge, voice }, notice: say.teamPicked });
+    trackEvent(ANALYTICS_EVENTS.boardStarted, { age: group.key });
     window.scrollTo({ top: 0 });
   }
 

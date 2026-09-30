@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Barlow, Saira_Condensed } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { THEME_COLOUR } from "@/constants/brand";
 import { OPEN_GRAPH_BASE, SITE_URL, TITLE_TEMPLATE, TWITTER_CARD } from "@/constants/seo";
 import { SITE } from "@/constants/site";
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
           {SITE.skipLink}
         </a>
         {children}
+        <Analytics />
       </body>
     </html>
   );
