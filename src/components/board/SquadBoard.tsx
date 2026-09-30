@@ -21,10 +21,11 @@ function Board() {
   const { state, act } = useBoard();
   // Read once: a board already saved when the page opened is a coach coming back.
   const [reopened] = useState(() => state.data.players.length > 0 && !state.data.example);
+  const [openedAge] = useState(() => state.data.age);
   const [asked] = useState(formatAsked);
   useEffect(() => {
-    if (reopened) trackBoardOpened();
-  }, [reopened]);
+    if (reopened) trackBoardOpened(openedAge);
+  }, [reopened, openedAge]);
 
   // A format page's button: a saved team switches to that format (Undo takes it back), and a new
   // board starts on it. The address is tidied, so a reload does not switch it again.

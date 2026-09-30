@@ -1,8 +1,8 @@
 "use client";
 
 import { HEADER } from "@/constants/content/board";
-import { AGE_NOT_SET, ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
-import { trackEvent } from "@/lib/analytics";
+import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
+import { trackBoard } from "@/lib/analytics";
 import { fmtClock, started } from "@/lib/board/queries";
 import { useNow, useWakeLock } from "@/lib/hooks";
 import { Button } from "../Button";
@@ -16,9 +16,7 @@ import { useBoard } from "./BoardProvider";
 export function useClockToggle() {
   const { state, act } = useBoard();
   return () => {
-    if (!started(state.data) && !state.data.example) {
-      trackEvent(ANALYTICS_EVENTS.clockStarted, { age: state.data.age ?? AGE_NOT_SET });
-    }
+    if (!started(state.data)) trackBoard(ANALYTICS_EVENTS.clockStarted, state.data);
     act({ type: "clockToggle" });
   };
 }

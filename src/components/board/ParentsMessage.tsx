@@ -1,8 +1,8 @@
 "use client";
 
-import { ANALYTICS_EVENTS, MESSAGE_CONFIG, SENT_HOW, SENT_WHAT } from "@/constants/config";
+import { ANALYTICS_EVENTS, MESSAGE_CONFIG, SENT_HOW } from "@/constants/config";
 import { FULL, PARENTS, SHEET } from "@/constants/content/board";
-import { trackEvent } from "@/lib/analytics";
+import { trackSend } from "@/lib/analytics";
 import { squadMessage } from "@/lib/board/message";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
@@ -20,7 +20,7 @@ export function ParentsMessage() {
   const { data } = state;
   const message = squadMessage(data);
   const whatsapp = MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(message);
-  const copy = useCopySheet(squadMessage, SENT_WHAT.message);
+  const copy = useCopySheet(squadMessage, ANALYTICS_EVENTS.callUpSent);
   const nameFirst = useNameFirst();
 
   return (
@@ -40,7 +40,7 @@ export function ParentsMessage() {
           target="_blank"
           rel="noopener"
           onClick={nameFirst.guardLink("whatsapp", whatsapp, () =>
-            trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp }),
+            trackSend(ANALYTICS_EVENTS.callUpSent, data, SENT_HOW.whatsapp),
           )}
           className="button button--chalk is-flex is-flex-1 is-align-center is-justify-center has-py-3 text-md has-radius-field has-font-bold"
         >

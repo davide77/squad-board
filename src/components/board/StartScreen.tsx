@@ -6,7 +6,7 @@ import { START } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS, type AgeKey, type FormatKey } from "@/constants/football";
 import { GAFFER, PHASE_GAFFER } from "@/constants/content/gaffer";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
-import { trackBoardOpened, trackEvent } from "@/lib/analytics";
+import { trackBoard, trackBoardOpened } from "@/lib/analytics";
 import { buildBoard, parseSquad, startingCount } from "@/lib/board/start";
 import { readAgePref, readVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
@@ -67,9 +67,9 @@ export function StartScreen({ format }: StartScreenProps) {
     if (!squad.length || !group) return;
     // Named on the board afterwards, in the header, where "Name your team" is waiting.
     act({ type: "load", data: { ...buildBoard("", squad, newId, group.key), voice }, notice: say.teamPicked });
-    trackEvent(ANALYTICS_EVENTS.boardStarted, { age: group.key });
+    trackBoard(ANALYTICS_EVENTS.boardStarted, { age: group.key, example: false });
     // Notes today as the first visit, so coming back next week counts as a return.
-    trackBoardOpened();
+    trackBoardOpened(group.key);
     window.scrollTo({ top: 0 });
   }
 

@@ -1,5 +1,6 @@
 import { track } from "@vercel/analytics";
 import {
+  AGE_NOT_SET,
   ANALYTICS_CONFIG,
   ANALYTICS_EVENTS,
   FIRST_WEEK,
@@ -8,7 +9,9 @@ import {
   REOPEN_GAPS,
   WEEK_GAPS,
   type AnalyticsEvent,
+  type SentHow,
 } from "@/constants/config";
+import type { AgeKey } from "@/constants/football";
 
 /**
  * Counts one thing a coach did, for the usage numbers a sponsor asks for.
@@ -37,6 +40,26 @@ function queueUntilLoaded(): void {
   };
 }
 
+/** The board a moment on the board belongs to: its age group, and whether it is the made-up example team. */
+interface Tracked {
+  readonly age: AgeKey | null;
+  readonly example: boolean;
+}
+
+/**
+ * Counts a moment on a coach's own board, with its age group. The example team is a demo, so nothing
+ * done on it is counted.
+ */
+export function trackBoard(name: AnalyticsEvent, board: Tracked, props: Readonly<Record<string, string>> = {}): void {
+  if (board.example) return;
+  trackEvent(name, { age: board.age ?? AGE_NOT_SET, ...props });
+}
+
+/** A call-up, result or picture sent: which one, and how it went out. */
+export function trackSend(name: AnalyticsEvent, board: Tracked, how: SentHow): void {
+  trackBoard(name, board, { how });
+}
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_DAYS = 7;
 // 5 January 1970 was a Monday, so weeks counted from it turn over on a Monday, as matchweeks do.
@@ -58,13 +81,13 @@ function weekGapLabel(weeks: number): string {
  * Counts the first use of the board in a calendar week, with the weeks since it was last used, then
  * notes this week. Later uses in the same week count nothing. Only the week number is kept, on this device.
  */
-function trackWeekActive(): void {
+function trackWeekActive(age: string): void {
   const week = weekNumber(new Date());
   const last = Number(localStorage.getItem(LAST_ACTIVE_WEEK_KEY) ?? NaN);
   if (last === week) return;
   const gap = week - last;
   const weeks = Number.isFinite(last) && gap > 0 ? weekGapLabel(gap) : FIRST_WEEK;
-  trackEvent(ANALYTICS_EVENTS.weekActive, { weeks });
+  trackEvent(ANALYTICS_EVENTS.weekActive, { age, weeks });
   localStorage.setItem(LAST_ACTIVE_WEEK_KEY, String(week));
 }
 
@@ -82,7 +105,7 @@ function gapLabel(ms: number): string {
  * open. The time stays on this device; only the band is sent. With nothing stored yet, as on a
  * board just made, it only notes the time.
  */
-export function trackBoardOpened(): void {
+export function trackBoardOpened(age: AgeKey | null): void {
   if (!ANALYTICS_CONFIG.events || openCounted) return;
   openCounted = true;
   const now = Date.now();
@@ -91,7 +114,7 @@ export function trackBoardOpened(): void {
     if (last > 0 && last <= now) trackEvent(ANALYTICS_EVENTS.boardReopened, { gap: gapLabel(now - last) });
     localStorage.setItem(LAST_OPENED_KEY, String(now));
     // Opening or starting a board is using it, so this is where a week becomes active.
-    trackWeekActive();
+    trackWeekActive(age ?? AGE_NOT_SET);
   } catch {
     // Storage blocked, as in some private windows. Nothing is counted rather than a guess.
   }
