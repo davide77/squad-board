@@ -13,15 +13,33 @@ interface RosterRowProps {
   readonly player: Player;
   readonly index: number;
   readonly dupe: boolean;
+  /** A position is picked on the pitch and this player can go there: how well they fit it. */
+  readonly place?: { readonly role: string; readonly fit: 0 | 1 | 2 };
 }
 
-export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
+export function RosterRow({ player: p, index, dupe, place }: RosterRowProps) {
   const { state, act } = useBoard();
   const { data, ui } = state;
   const status = reasonOf(p) ?? where(data, p.id);
   const isBlocked = blocked(p);
   const now = useNow(data.clock.running, BOARD_CONFIG.minutesTickMs);
   const minutes = started(data) && !p.out ? SQUAD.minutes(playedMinutes(data, p.id, now)) : "";
+
+  const body = (
+    <>
+      <b className="roster-row__name is-block has-font-medium is-truncate">{p.name}</b>
+      <span className="is-flex is-flex-wrap is-align-center has-gap-2">
+        {place && place.fit > 0 && (
+          <span className={cx("fit-tag text-xs has-font-semibold has-radius-sm has-px-1", place.fit === 2 && "fit-tag--there")}>
+            {place.fit === 2 ? SQUAD.playsThere : SQUAD.atAPush}
+          </span>
+        )}
+        <span className="has-font-headline text-xs tracking-tag is-dimmer">
+          {[p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition, minutes].filter(Boolean).join(" · ")}
+        </span>
+      </span>
+    </>
+  );
 
   function onGripKey(e: KeyboardEvent) {
     const step = e.key === "ArrowUp" ? -1 : e.key === "ArrowDown" ? 1 : 0;
@@ -36,6 +54,7 @@ export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
       data-pid={p.id}
       className={cx("roster-row is-flex is-align-center has-gap-2 has-py-2", `roster-row--${isBlocked || p.out ? "out" : status}`, {
         "roster-row--dragging": ui.draggingRow === p.id,
+        "roster-row--fit": place?.fit === 2,
       })}
     >
       <button
@@ -72,12 +91,19 @@ export function RosterRow({ player: p, index, dupe }: RosterRowProps) {
           if (e.key === "Enter") e.currentTarget.blur();
         }}
       />
-      <span className="is-flex-1 is-min-w-0">
-        <b className="roster-row__name is-block has-font-medium is-truncate">{p.name}</b>
-        <span className="has-font-headline text-xs tracking-tag is-dimmer">
-          {[p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition, minutes].filter(Boolean).join(" · ")}
-        </span>
-      </span>
+      {/* With a position picked, the name is the way to put them in. */}
+      {place ? (
+        <button
+          type="button"
+          className="roster-row__place is-flex-1 is-min-w-0 text-left"
+          aria-label={SQUAD.putIn(p.name, place.role)}
+          onClick={() => act({ type: "tapPlayer", pid: p.id })}
+        >
+          {body}
+        </button>
+      ) : (
+        <span className="is-flex-1 is-min-w-0">{body}</span>
+      )}
       <span
         className={cx(
           "status-pill has-font-headline text-2xs tracking-heading text-center has-radius-pill has-px-2 is-shrink-0",

@@ -169,6 +169,19 @@ function subscribeToPointer(onChange: () => void) {
   return () => query.removeEventListener("change", onChange);
 }
 
+/** Whether a media query matches, kept up to date. False on the server. */
+export function useMediaQuery(query: string): boolean {
+  return useSyncExternalStore(
+    (onChange) => {
+      const list = window.matchMedia(query);
+      list.addEventListener("change", onChange);
+      return () => list.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
+}
+
 /** Whether the main pointer is a finger, as on a phone or tablet. */
 export function useIsTouch(): boolean {
   return useSyncExternalStore(subscribeToPointer, () => window.matchMedia(COARSE_POINTER).matches, () => false);
