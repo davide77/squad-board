@@ -116,12 +116,12 @@ export function MessagePanel() {
           href={whatsapp}
           target="_blank"
           rel="noopener"
-          onClick={nameFirst.guardLink(whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp }))}
+          onClick={nameFirst.guardLink("whatsapp", whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp }))}
           className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
         >
           {MESSAGE.whatsapp}
         </a>
-        <Button className="has-py-3" onClick={nameFirst.guard(copy)}>
+        <Button className="has-py-3" onClick={nameFirst.guard("copy", copy)}>
           {MESSAGE.copy}
         </Button>
       </div>
