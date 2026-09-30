@@ -79,7 +79,6 @@ export const SAY: Readonly<Record<VoiceKey, Say>> = {
 
 export interface VoiceCopy {
   readonly sub: string;
-  readonly cta: string;
   readonly note: string;
   readonly weekH: string;
   readonly steps: readonly [string, string, string, string];
@@ -92,14 +91,13 @@ export interface VoiceCopy {
 /** Headings and calls to action on the home page. The website always speaks Hairdryer (brand.md). */
 export const LANDING_COPY: VoiceCopy = {
   sub: "Squad. Call-ups. Shape. Bench. Subs. One screen, on your phone.",
-  cta: "Get picking",
-  note: "Free. No account. Nothing to install.",
+  note: "Free for your team. No account. Nothing to install.",
   weekH: "Four taps. Every Saturday.",
   steps: ["Squad in", "Who's here?", "Pick a shape", "Make changes"],
   filmH: "Chalk. Magnets. Chaos.",
   sheetH: "Send the team sheet",
   privH: "Your team. Nobody else's.",
-  endH: "Matchday's coming. Squad in first.",
+  endH: "Matchday's coming. Pick your team.",
 };
 
 export const LANDING_META = {
@@ -118,14 +116,21 @@ export const NAV = {
     { href: "#sheet", label: "Team sheet" },
     { href: "#private", label: "Privacy" },
   ],
-  /** The header button on every page but the board. Straight, so it reads right to a coach coming back. */
-  cta: "Open the board",
   /** The coach's own team, pinned beside the logo once they have one. It stands in for the button above. */
   team: {
     label: "Your team",
     fallback: "your team",
     aria: (team: string) => `Back to ${team} on the board`,
   },
+} as const;
+
+/**
+ * The way to the board, in the header, the hero and the closing band. One set of words everywhere:
+ * the same as the start screen's own button, the format once an age is picked, and plain for a coach coming back.
+ */
+export const BOARD_CTA = {
+  fresh: "Pick my team",
+  back: "Open the board",
 } as const;
 
 export const DEMO = {

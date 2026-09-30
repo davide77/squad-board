@@ -14,6 +14,36 @@ export function useNow(active: boolean, everyMs: number): number {
   return now;
 }
 
+/**
+ * Keeps the screen on while `active`, so a phone on the touchline does not lock mid-match.
+ * The browser drops the lock whenever the page is hidden, so it is taken again on the way back.
+ * Where the Screen Wake Lock API is missing it does nothing.
+ */
+export function useWakeLock(active: boolean) {
+  useEffect(() => {
+    if (!active || !("wakeLock" in navigator)) return;
+    let lock: WakeLockSentinel | null = null;
+    let done = false;
+    const take = async () => {
+      if (document.visibilityState !== "visible") return;
+      try {
+        const next = await navigator.wakeLock.request("screen");
+        if (done) void next.release();
+        else lock = next;
+      } catch {
+        // Refused, for example on low battery. The match carries on either way.
+      }
+    };
+    void take();
+    document.addEventListener("visibilitychange", take);
+    return () => {
+      done = true;
+      document.removeEventListener("visibilitychange", take);
+      void lock?.release();
+    };
+  }, [active]);
+}
+
 /** Calls `onEscape` on Escape while `active`. */
 export function useEscapeKey(active: boolean, onEscape: () => void) {
   useEffect(() => {
@@ -276,4 +306,10 @@ export function useStoredBoard(): BoardData | null {
   const raw = useSyncExternalStore(subscribeToStorage, readStoredRaw, () => null);
   // The snapshot is the raw string, so the board is only parsed again when it changes.
   return useMemo(() => parseStored(raw), [raw]);
+}
+
+/** True once the coach has a team of their own saved in this browser. The example team does not count. */
+export function useHasOwnBoard(): boolean {
+  const board = useStoredBoard();
+  return !!board && !board.example;
 }

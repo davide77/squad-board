@@ -43,6 +43,8 @@ export function KeepSafe() {
   const [hidden, setHidden] = useState<"home" | "backup" | null>(null);
   // Read once when the board opens, so the cards do not appear mid-match.
   const [openedAt] = useState(Date.now);
+  // Also read once: a clock stopped at half-time mid-session must not bring the card up.
+  const [matchPlayed] = useState(() => !data.clock.running && data.clock.base >= KEEP_CONFIG.matchPlayedMs);
 
   if (data.example || !data.players.length) return null;
   const since = data.createdAt ? openedAt - data.createdAt : Infinity;
@@ -68,7 +70,10 @@ export function KeepSafe() {
   }
 
   const lastCopy = data.backedUpAt || data.createdAt;
-  const showBackup = hidden !== "backup" && (!lastCopy || openedAt - lastCopy > KEEP_CONFIG.backupEveryMs);
+  // Never saved and a match already played: that is four matchdays sooner than waiting for the date.
+  const firstAfterMatch = !data.backedUpAt && matchPlayed;
+  const showBackup =
+    hidden !== "backup" && (!lastCopy || firstAfterMatch || openedAt - lastCopy > KEEP_CONFIG.backupEveryMs);
   if (showBackup) {
     const save = () => {
       exportSquadFile(data, Date.now());
@@ -76,7 +81,7 @@ export function KeepSafe() {
       act({ type: "notify", text: GAFFER[data.voice].exported });
     };
     return (
-      <Card title={KEEP.backupTitle} body={data.backedUpAt ? KEEP.backupOld : KEEP.backupNever}>
+      <Card title={firstAfterMatch ? KEEP.backupAfterMatchTitle : KEEP.backupTitle} body={data.backedUpAt ? KEEP.backupOld : KEEP.backupNever}>
         <Button variant="primary" onClick={save}>
           {CLUB.export}
         </Button>

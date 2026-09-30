@@ -68,6 +68,8 @@ export const KEEP_CONFIG = {
   homeAfterMs: 10 * MINUTE_MS,
   /** The backup card shows once the last squad file is older than this. */
   backupEveryMs: 28 * DAY_MS,
+  /** This much on the match clock means a real match was played, so the first backup card need not wait. */
+  matchPlayedMs: 20 * MINUTE_MS,
   /** Remembers, on this device only, that the coach closed the home screen card. */
   homeDismissedKey: "gafferboard:home-card-closed",
 } as const;

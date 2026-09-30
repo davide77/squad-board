@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { NAV } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
+import { BoardCta } from "./BoardCta";
 import { cx } from "./cx";
 import { SiteLogo } from "./SiteLogo";
 import { TeamDock, TeamRail } from "./TeamRail";
@@ -36,12 +36,7 @@ export function SiteHeader({ onBoard = false, onHome = false, sticky = true }: S
                     </a>
                   ))}
                 </span>
-                <Link
-                  href={ROUTES.board}
-                  className="landing-header__cta button button--primary is-inline-flex is-align-center has-font-bold has-radius-field has-py-2 has-px-4 text-md"
-                >
-                  {NAV.cta}
-                </Link>
+                <BoardCta className="landing-header__cta has-py-2 has-px-4 text-md" />
                 <TeamDock />
               </nav>
             )}

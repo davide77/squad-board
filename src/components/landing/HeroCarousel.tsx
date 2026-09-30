@@ -156,7 +156,8 @@ export function HeroCarousel() {
                   </motion.p>
                 </div>
 
-                {chapter.key === "age" && (
+                {/* On a phone the carousel never moves on by itself, so the question comes up under the first chapter too. */}
+                {(chapter.key === "age" || (touch && index === 0)) && (
                   <motion.div custom={dir} variants={LINE}>
                     <AgePicker onPick={() => setHeld(true)} />
                   </motion.div>
@@ -222,7 +223,8 @@ export function HeroCarousel() {
             {!touch && <span>{STORY_UI.keysHint}</span>}
             {/* Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause. */}
             {!reduced && !touch && (
-              <Button variant="quiet" size="tiny" className="has-gap-2" onClick={() => setHeld((h) => !h)}>
+              // py-3 makes it a 44px target, the same as every other button in the hero.
+              <Button variant="quiet" className="has-py-3 has-gap-2 is-chalk" onClick={() => setHeld((h) => !h)}>
                 <svg className="landing-story__glyph" viewBox="0 0 12 12" aria-hidden="true">
                   {held ? <path d="M3 1.5v9l7.5-4.5z" /> : <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" />}
                 </svg>
