@@ -13,6 +13,7 @@ import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
+import { ConfirmBox } from "./ConfirmBox";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
 const HEADING = "has-font-headline has-font-bold text-lg";
@@ -189,17 +190,13 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
           {DRAWER.done}
         </Button>
         {confirming ? (
-          <div role="alert" className="drawer__confirm is-flex is-flex-column has-gap-3 has-p-4 has-radius-field">
-            <p className="text-base leading-snug">{DRAWER.removeText(firstName(p.name))}</p>
-            <div className="is-flex has-gap-2">
-              <Button variant="out" className="is-flex-1 has-py-3" onClick={() => act({ type: "removePlayer", id: p.id })}>
-                {DRAWER.removeConfirm}
-              </Button>
-              <Button className="is-flex-1 has-py-3" onClick={() => setConfirming(false)}>
-                {DRAWER.keep}
-              </Button>
-            </div>
-          </div>
+          <ConfirmBox
+            text={DRAWER.removeText(firstName(p.name))}
+            yes={DRAWER.removeConfirm}
+            keep={DRAWER.keep}
+            onYes={() => act({ type: "removePlayer", id: p.id })}
+            onKeep={() => setConfirming(false)}
+          />
         ) : (
           <Button variant="out" className="has-py-3" onClick={() => setConfirming(true)}>
             {DRAWER.remove}

@@ -469,7 +469,9 @@ export const PICKER = {
 export const CONFIRM = {
   deleteForGood: (name: string) => `Delete ${name} for good? This cannot be undone.`,
   replaceSquad: "Replace the squad on this board with the one in the file?",
+  replaceSquadYes: "Replace the squad",
   wipe: "Clear this board and start again? Everything on it is deleted. Export a file first if you want a copy.",
+  keep: "Keep it",
 } as const;
 
 // Toasts, empty states and the match-under-way check are said by the Gaffer: see gaffer.ts.
