@@ -117,6 +117,20 @@ export const LANDING_CONFIG = {
   copiedMs: TOAST_MS,
 } as const;
 
+/**
+ * The club waitlist, in Supabase: one table, written through its REST API with the publishable key.
+ * Row-level security lets the site add a row and nothing else (supabase/migrations).
+ */
+export const WAITLIST_CONFIG = {
+  table: "club_waitlist",
+  /** Longest address the table takes, as in the migration's check. */
+  maxEmail: 254,
+  /** Longest page address kept as the source. */
+  maxSource: 64,
+  /** A field people never see: a bot that fills it in is thanked and ignored. */
+  trapField: "website",
+} as const;
+
 /** Screens laid out as a phone: below the md breakpoint (900px, see _breakpoints.scss). Change both together. */
 export const PHONE_QUERY = "(max-width: 899.98px)";
 

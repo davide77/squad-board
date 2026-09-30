@@ -11,6 +11,19 @@ export const PAGE_SHELL = {
   home: "Gafferboard home",
 } as const;
 
+/** The club waitlist line in the footer. The site speaks Hairdryer; the field and button stay straight. */
+export const WAITLIST = {
+  prompt: "Running a club?",
+  cta: "Join the waitlist.",
+  label: "Email address for the club waitlist",
+  placeholder: "Your email",
+  button: "Join",
+  sending: "Joining",
+  joined: "Noted. We'll be in touch when clubs are ready.",
+  invalid: "That email doesn't look right. Check it and go again.",
+  failed: "That didn't go through. Try again in a minute.",
+} as const;
+
 export const FOOTER_LINKS = {
   label: "About Gafferboard",
   privacy: "Privacy and safety",
@@ -52,7 +65,7 @@ export const PRIVACY = {
     {
       heading: "What we do not collect",
       body: [
-        "No account, no sign-up and no email address. No cookies, no advertising and no trackers that follow you to other sites. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
+        "No account and no sign-up. No email address, unless you choose to join the club waitlist. No cookies, no advertising and no trackers that follow you to other sites. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
         "Like any website, our host, Vercel, sees what every browser sends when a page loads, such as your IP address, and keeps it briefly in its logs for security. What is on your board is never part of that.",
       ],
     },
@@ -63,6 +76,13 @@ export const PRIVACY = {
         // Only said while the board's events are switched on, so the page never claims more than is counted.
         ...(ANALYTICS_CONFIG.events ? [EVENTS_COUNTED] : []),
         "Nothing on your board is part of it. Not the team, not a player, not the message you send.",
+      ],
+    },
+    {
+      heading: "The club waitlist",
+      body: [
+        "If you run a club and leave your email address in the footer, we keep that address, when you left it and the page you were on. It is stored in a database run by Supabase, and only we can read it.",
+        "We use it for one thing: to tell you when Gafferboard for clubs is ready. It is never shared or sold. To be taken off the list, get in touch and we delete it.",
       ],
     },
     {

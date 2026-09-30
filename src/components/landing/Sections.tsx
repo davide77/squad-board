@@ -3,6 +3,7 @@ import { FAQ, PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
 import { SITE } from "@/constants/site";
+import { ClubWaitlist } from "./ClubWaitlist";
 import { VoiceCta, VoiceText } from "./VoiceText";
 
 export function PrivateSection() {
@@ -65,6 +66,9 @@ export function EndSection() {
 export function LandingFooter() {
   return (
     <footer className="landing-section">
+      <div className="container has-pt-6">
+        <ClubWaitlist />
+      </div>
       <div className="container is-flex is-flex-wrap is-justify-between has-gap-3 has-py-6 text-sm is-dimmer">
         <span translate="no">{SITE.name}</span>
         <nav aria-label={FOOTER_LINKS.label} className="is-flex is-flex-wrap has-gap-6">

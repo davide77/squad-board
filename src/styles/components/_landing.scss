@@ -477,3 +477,9 @@
   background-color: color(board-2);
   border: 1px solid $edge;
 }
+
+// The waitlist email: wide enough for an address, never wider than a phone.
+.waitlist__email {
+  width: min(100%, 18rem);
+  min-height: $hit-size;
+}
