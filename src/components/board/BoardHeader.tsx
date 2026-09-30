@@ -6,6 +6,7 @@ import { matchDate } from "@/lib/board/message";
 import { useBoard } from "./BoardProvider";
 import { Crest } from "./Crest";
 import { MatchClock } from "./MatchClock";
+import { TEAM_NAME_MARK } from "./NameFirst";
 
 export function BoardHeader() {
   const { state, act } = useBoard();
@@ -25,6 +26,7 @@ export function BoardHeader() {
             </label>
             <input
               id={teamId}
+              {...TEAM_NAME_MARK}
               className="board-header__team is-w-full has-font-headline has-font-bold leading-tight tracking-number is-kit"
               placeholder={HEADER.teamPlaceholder}
               autoComplete="off"

@@ -72,3 +72,17 @@
     color: inherit;
   }
 }
+
+// Reads as a link, for a small action inside a line of text such as "Change".
+// The 44px hit area still comes from .button's overlay.
+.button--text {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: color(kit);
+  font: inherit;
+
+  &:hover:not(:disabled) {
+    color: color(chalk);
+  }
+}

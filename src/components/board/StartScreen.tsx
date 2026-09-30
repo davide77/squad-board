@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
 import { START } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
@@ -29,6 +29,9 @@ export function StartScreen() {
   const ageId = useId();
   // Opens on the age group picked on the homepage, when there was one.
   const [age, setAge] = useState<AgeKey | "">(() => readAgePref() ?? "");
+  // An age answered on the homepage shows as one line, not a list to confirm. Change opens the list.
+  const [ageOpen, setAgeOpen] = useState(() => !readAgePref());
+  const ageSelect = useRef<HTMLSelectElement>(null);
   const [showExample, setShowExample] = useState(false);
   const group = AGE_GROUPS.find((a) => a.key === age) ?? null;
   // The age group sets the Gaffer's tone: very soft up to under 11s, rough from under 12s.
@@ -66,27 +69,51 @@ export function StartScreen() {
       <p className="text-md leading-relaxed is-dim has-mb-5">{START.intro}</p>
 
       <form onSubmit={pickTeam}>
-        <label htmlFor={ageId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
-          {START.ageLabel}
-        </label>
-        <select
-          id={ageId}
-          name="age"
-          className="formation-select is-w-full has-radius-field has-py-2 text-md"
-          value={age}
-          required
-          onChange={(e) => setAge(e.target.value as AgeKey)}
-        >
-          <option value="" disabled>
-            {START.agePrompt}
-          </option>
-          {AGE_GROUPS.map((a) => (
-            <option key={a.key} value={a.key}>
-              {START.ageOption(a.label, FORMATS[a.format].label)}
-            </option>
-          ))}
-        </select>
-        <p className="text-sm is-dimmer has-mt-1 has-mb-4">{START.ageHint}</p>
+        {group && !ageOpen ? (
+          <div className="has-mb-4">
+            <p className="has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">{START.ageLabel}</p>
+            <p className="is-flex is-align-center is-flex-wrap has-gap-3 text-md">
+              <span className="has-font-semibold">{START.ageOption(group.label, FORMATS[group.format].label)}</span>
+              <button
+                type="button"
+                className="button button--text"
+                aria-label={START.ageChangeLabel}
+                onClick={() => {
+                  setAgeOpen(true);
+                  // The list is there on the next paint.
+                  requestAnimationFrame(() => ageSelect.current?.focus());
+                }}
+              >
+                {START.ageChange}
+              </button>
+            </p>
+          </div>
+        ) : (
+          <>
+            <label htmlFor={ageId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
+              {START.ageLabel}
+            </label>
+            <select
+              ref={ageSelect}
+              id={ageId}
+              name="age"
+              className="formation-select is-w-full has-radius-field has-py-2 text-md"
+              value={age}
+              required
+              onChange={(e) => setAge(e.target.value as AgeKey)}
+            >
+              <option value="" disabled>
+                {START.agePrompt}
+              </option>
+              {AGE_GROUPS.map((a) => (
+                <option key={a.key} value={a.key}>
+                  {START.ageOption(a.label, FORMATS[a.format].label)}
+                </option>
+              ))}
+            </select>
+            <p className="text-sm is-dimmer has-mt-1 has-mb-4">{START.ageHint}</p>
+          </>
+        )}
 
         <label htmlFor={squadId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
           {START.squadLabel}
@@ -111,6 +138,7 @@ export function StartScreen() {
         <Button type="submit" variant="primary" disabled={!squad.length || !group}>
           {START.submit}
         </Button>
+        <p className="text-sm is-dimmer has-mt-2">{START.afterSubmit}</p>
       </form>
 
       <div className="has-mt-7">

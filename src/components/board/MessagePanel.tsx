@@ -9,6 +9,7 @@ import type { MatchDetails } from "@/lib/board/types";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
+import { NameFirst, useNameFirst } from "./NameFirst";
 import { useCopySheet } from "./useCopySheet";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
@@ -25,6 +26,8 @@ export function MessagePanel() {
     act({ type: "setMatch", field, value: e.target.value });
   const address = match.address.trim();
   const message = squadMessage(state.data);
+  const whatsapp = MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(message);
+  const nameFirst = useNameFirst();
 
   return (
     <Panel heading={MESSAGE.heading}>
@@ -110,18 +113,19 @@ export function MessagePanel() {
       </details>
       <div className="is-flex is-flex-wrap has-gap-2 has-mt-3">
         <a
-          href={MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(message)}
+          href={whatsapp}
           target="_blank"
           rel="noopener"
-          onClick={() => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp })}
+          onClick={nameFirst.guardLink(whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.message, how: SENT_HOW.whatsapp }))}
           className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
         >
           {MESSAGE.whatsapp}
         </a>
-        <Button className="has-py-3" onClick={copy}>
+        <Button className="has-py-3" onClick={nameFirst.guard(copy)}>
           {MESSAGE.copy}
         </Button>
       </div>
+      <NameFirst {...nameFirst} />
     </Panel>
   );
 }

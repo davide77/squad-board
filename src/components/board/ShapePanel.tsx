@@ -9,6 +9,7 @@ import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ControlRow, Panel } from "./Panel";
 import { Pitch } from "./Pitch";
+import { NameFirst, useNameFirst } from "./NameFirst";
 import { useCopySheet } from "./useCopySheet";
 
 export function ShapePanel() {
@@ -21,6 +22,7 @@ export function ShapePanel() {
   const plan = planName(data);
   const shapes = [...FORMATS[data.format].shapes, CUSTOM_FORMATION];
   const copySheet = useCopySheet();
+  const nameFirst = useNameFirst();
 
   function backToStrongest() {
     if (data.preset && matchUnderway(data) && !window.confirm(GAFFER[data.voice].matchUnderway(plan))) return;
@@ -68,7 +70,7 @@ export function ShapePanel() {
         <Button size="tiny" variant={dirty ? "primary" : "quiet"} onClick={() => act({ type: "saveLineup" })}>
           {dirty ? SHAPE.saveLineup : SHAPE.lineupSaved}
         </Button>
-        <Button size="tiny" variant="primary" onClick={copySheet}>
+        <Button size="tiny" variant="primary" onClick={nameFirst.guard(copySheet)}>
           {SHAPE.copySheet}
         </Button>
         <Button size="tiny" onClick={() => act({ type: "setStrongest" })}>
@@ -84,6 +86,7 @@ export function ShapePanel() {
           {SHAPE.clearPitch}
         </Button>
       </ControlRow>
+      <NameFirst {...nameFirst} />
       <ControlRow label={SHAPE.shirtsLabel}>
         <Button size="tiny" variant="quiet" onClick={() => act({ type: "cycleNameStyle" })}>
           {styleLabel}
