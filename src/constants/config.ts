@@ -197,6 +197,6 @@ export const AGE_NOT_SET = "Not set";
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
 
 /** What went out to the parents, and how. Two properties, the most Vercel Pro keeps per event. */
-export const SENT_WHAT = { sheet: "Team sheet", message: "Squad message" } as const;
+export const SENT_WHAT = { message: "Squad message", result: "Result", picture: "Line-up picture" } as const;
 export const SENT_HOW = { whatsapp: "WhatsApp", copy: "Copied", picture: "Picture" } as const;
 export type SentWhat = (typeof SENT_WHAT)[keyof typeof SENT_WHAT];

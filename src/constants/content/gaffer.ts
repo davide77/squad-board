@@ -16,7 +16,7 @@ export interface GafferLines {
   /** What the Gaffer says at the top of each step until something happens. */
   readonly stepPick: string;
   readonly stepMatch: string;
-  readonly stepSend: string;
+  readonly stepFull: string;
 
   // Toasts
   readonly teamPicked: string;
@@ -26,6 +26,9 @@ export interface GafferLines {
   readonly subInjured: (on: string, off: string) => string;
   /** The final whistle: the clock stops and the board moves on to sending. */
   readonly fullTime: string;
+  /** Player of the match picked, or taken off. */
+  readonly potm: (n: string) => string;
+  readonly potmNone: string;
   readonly cantPickInjured: (n: string) => string;
   readonly cantPickUnavailable: (n: string) => string;
   readonly cantPickNotCalledUp: (n: string) => string;
@@ -90,13 +93,15 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     hello: "Right. I'll keep it short.",
     stepPick: "Who's in? Tick them.",
     stepMatch: "Tap a player. Bring the bench on.",
-    stepSend: "Pick it. Send it.",
+    stepFull: "Score in. Then send it.",
 
     teamPicked: "Team's picked. Tap a position to change it.",
     exampleLoaded: "Example team. Tap a position.",
     sub: (on, off) => `${off} off. ${on} on. Good.`,
     subInjured: (on, off) => `Get well, ${off}. ${on}, you're on.`,
-    fullTime: "Full time. Send the sheet.",
+    fullTime: "Full time. Send the result.",
+    potm: (n) => `${n}. Deserved.`,
+    potmNone: "Nobody this week. Fair enough.",
     cantPickInjured: (n) => `${n}'s injured. Pick someone else.`,
     cantPickUnavailable: (n) => `${n}'s not available. Pick someone else.`,
     cantPickNotCalledUp: (n) => `${n}'s not called up. Tick them first.`,
@@ -149,13 +154,15 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     hello: "Lovely. I'm in your corner.",
     stepPick: "Tick who's in this week, Coach.",
     stepMatch: "Tap a player on the pitch to make a change. I'll keep the minutes.",
-    stepSend: "Choose what the parents need, and it's one tap from there.",
+    stepFull: "Put the score in, pick a star, and let the parents know.",
 
     teamPicked: "There's your team. Tap any position to change it.",
     exampleLoaded: "Here's an example team. Tap any position to try it.",
     sub: (on, off) => `${on}'s on. Great shift, ${off}.`,
     subInjured: (on, off) => `${off}'s done for today. ${on}, this is your moment.`,
-    fullTime: "Full time. Well played, everyone. Let's send the sheet.",
+    fullTime: "Full time. Well played, everyone. Let's tell the parents.",
+    potm: (n) => `${n}. What a game they had.`,
+    potmNone: "No award this week. That's fine too.",
     cantPickInjured: (n) => `${n}'s injured, so not today. Pick someone else.`,
     cantPickUnavailable: (n) => `${n} can't make it this week. Pick someone else.`,
     cantPickNotCalledUp: (n) => `${n} isn't called up yet. Tick them in the squad first.`,

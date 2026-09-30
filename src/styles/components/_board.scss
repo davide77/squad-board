@@ -551,3 +551,87 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     white-space: nowrap;
   }
 }
+
+// A choice among a few, such as home or away, or a name style. Chosen reads white-edged on a lighter
+// ground, so yellow stays for the pitch and the one main action.
+.choice {
+  min-height: $hit-size;
+  color: color(chalk);
+  background-color: color(board-2);
+  border: 1px solid $edge;
+  cursor: pointer;
+  transition: background-color $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    border-color: tint(chalk, 40%);
+  }
+
+  &[aria-pressed='true'],
+  &[aria-checked='true'] {
+    background-color: color(board-3);
+    border-color: color(chalk);
+  }
+
+  // The kit's colour beside its name.
+  &__swatch {
+    width: spacer(3) + spacer(1) * 0.5;
+    height: spacer(3) + spacer(1) * 0.5;
+    flex-shrink: 0;
+    background-color: var(--swatch);
+    border: 1px solid tint(chalk, 30%);
+  }
+}
+
+// Name styles, two to a row.
+.name-styles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+// The call-up as the parents will read it: a sent message, kept short with its own scroll.
+.parents-preview {
+  max-height: 220px;
+  overflow-y: auto;
+  margin-inline-start: 0;
+  max-width: 100%;
+}
+
+// ---------- Full time ----------
+
+// The result as a card: the club, the score and the player of the match, at the picture's shape.
+.result-card {
+  max-width: 420px;
+  aspect-ratio: 4 / 5;
+  background-color: color(board);
+  border: 1px solid $edge;
+
+  &__score {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  &__goals {
+    font-size: font-size(5xl);
+    line-height: line-height(tight);
+  }
+}
+
+// A side's goals: the name, minus, the number, plus. 48px steps, for a thumb in the cold.
+.score-row {
+  grid-template-columns: minmax(0, 1fr) spacer(9) spacer(10) spacer(9);
+
+  &__step {
+    width: spacer(9);
+    height: spacer(9);
+    color: color(chalk);
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    cursor: pointer;
+
+    &:hover {
+      background-color: color(board-3);
+    }
+  }
+}
+
+.start-over {
+  border-top: 1px solid $edge;
+}

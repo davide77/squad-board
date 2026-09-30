@@ -86,3 +86,16 @@
     color: color(chalk);
   }
 }
+
+// A strong button that is not the step's main action: chalk white, so yellow stays for that one.
+.button--chalk {
+  color: color(board);
+  background-color: color(chalk);
+  border-color: color(chalk);
+
+  // The colour is restated so a link keeps its ink over the global a:hover.
+  &:hover:not(:disabled) {
+    color: color(board);
+    filter: brightness(1.08);
+  }
+}
