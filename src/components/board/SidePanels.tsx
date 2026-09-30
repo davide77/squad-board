@@ -12,6 +12,7 @@ import { sheetText } from "@/lib/board/sheet";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
+import { NameFirst, useNameFirst } from "./NameFirst";
 import { useCopySheet } from "./useCopySheet";
 
 export function SubsPanel() {
@@ -87,6 +88,8 @@ export function SheetPanel() {
   const { state, act } = useBoard();
   const [making, setMaking] = useState(false);
   const copy = useCopySheet();
+  const nameFirst = useNameFirst();
+  const whatsapp = MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(sheetText(state.data));
   async function share() {
     setMaking(true);
     try {
@@ -107,24 +110,25 @@ export function SheetPanel() {
       <p className="text-sm is-dimmer">{SHEET.hint}</p>
       <div className="is-flex is-flex-wrap has-gap-2 has-mt-3">
         <a
-          href={MESSAGE_CONFIG.whatsappUrl + encodeURIComponent(sheetText(state.data))}
+          href={whatsapp}
           target="_blank"
           rel="noopener"
-          onClick={() => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.sheet, how: SENT_HOW.whatsapp })}
+          onClick={nameFirst.guardLink(whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.sheet, how: SENT_HOW.whatsapp }))}
           className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
         >
           {SHEET.whatsapp}
         </a>
-        <Button className="has-py-3" onClick={copy}>
+        <Button className="has-py-3" onClick={nameFirst.guard(copy)}>
           {SHEET.copy}
         </Button>
       </div>
+      <NameFirst {...nameFirst} />
       <label className="is-flex is-align-center has-gap-2 text-sm is-dim has-mt-3">
         <input type="checkbox" checked={state.data.sheetCredit} onChange={() => act({ type: "toggleSheetCredit" })} />
         {SHEET.creditLabel}
       </label>
       <p className="text-sm is-dimmer has-mt-4">{SHEET.pictureHint}</p>
-      <Button className="has-mt-3" onClick={share} disabled={making} aria-busy={making}>
+      <Button className="has-mt-3" onClick={nameFirst.guard(share)} disabled={making} aria-busy={making}>
         {SHEET.sharePicture}
       </Button>
     </Panel>

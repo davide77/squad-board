@@ -134,11 +134,13 @@ export const SQUAD = {
 /** The first screen on an empty board. */
 export const START = {
   heading: "Create your team",
-  intro:
-    "Pick the age group and paste your squad, one player per line. Shirt numbers and positions are optional. Name the team and add a badge on the board.",
+  intro: "One player per line. Numbers and positions if you've got them.",
   ageLabel: "Age group",
   agePrompt: "Choose an age group",
   ageOption: (label: string, format: string) => `${label} \u00b7 ${format}`,
+  /** Opens the age list again when the age came from the homepage. */
+  ageChange: "Change",
+  ageChangeLabel: "Change the age group",
   ageHint: "Sets the format, and whether everyone gets equal time. You can change both later.",
   countNeedsAge: "Choose an age group first.",
   squadLabel: "Your squad",
@@ -151,10 +153,20 @@ export const START = {
       : `${n} players. ${starting} start, ${n - starting} on the bench.`,
   countCapped: (max: number) => `Only the first ${max} are used.`,
   submit: "Pick my team",
+  /** Under the button: what comes after. */
+  afterSubmit: "Name the team and add a badge on the board.",
   lookHeading: "Just having a look?",
   example: "Try the example team",
   importHint: "Moving from another phone? Import the squad file you exported.",
   privacy: "No account, no sign-up. Your squad stays on this device.",
+} as const;
+
+/** Asked once, the first time an unnamed team's sheet is about to go out. */
+export const NAME_FIRST = {
+  label: "Name your team first",
+  line: "Name your team first? Parents see it at the top.",
+  nameIt: "Name it",
+  sendAnyway: "Send anyway",
 } as const;
 
 /** The cards at the top of the board that help keep it safe. */

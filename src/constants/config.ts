@@ -72,6 +72,8 @@ export const KEEP_CONFIG = {
   matchPlayedMs: 20 * MINUTE_MS,
   /** Remembers, on this device only, that the coach closed the home screen card. */
   homeDismissedKey: "gafferboard:home-card-closed",
+  /** Remembers that the coach was asked once to name the team before sending a sheet. */
+  nameFirstKey: "gafferboard:name-first-asked",
 } as const;
 
 // The line-up picture shared from the team sheet panel. Portrait 4:5, the shape
