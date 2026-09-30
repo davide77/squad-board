@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type RefObject } from "react";
+import { VIDEO_CONFIG } from "@/constants/config";
 import { parseStored, readStoredRaw } from "@/lib/board/storage";
 import type { BoardData } from "@/lib/board/types";
 
@@ -236,6 +237,36 @@ export function useStoredFlag(key: string): readonly [boolean, () => void] {
   return [value, set] as const;
 }
 
+/** The Network Information API. Not in the DOM types, and missing on Safari and Firefox. */
+interface NetworkInformation {
+  readonly saveData?: boolean;
+  readonly effectiveType?: string;
+}
+
+/**
+ * False until the page has loaded and had a moment to settle, and for good when the visitor
+ * asked their browser to save data or is on a 2G-class connection. Video waits for it.
+ */
+export function useVideoAllowed(): boolean {
+  const [allowed, setAllowed] = useState(false);
+  useEffect(() => {
+    const conn = (navigator as Navigator & { connection?: NetworkInformation }).connection;
+    const slow: readonly string[] = VIDEO_CONFIG.slowConnections;
+    if (conn?.saveData || (conn?.effectiveType && slow.includes(conn.effectiveType))) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const wait = () => {
+      timer = setTimeout(() => setAllowed(true), VIDEO_CONFIG.afterLoadMs);
+    };
+    if (document.readyState === "complete") wait();
+    else window.addEventListener("load", wait, { once: true });
+    return () => {
+      window.removeEventListener("load", wait);
+      clearTimeout(timer);
+    };
+  }, []);
+  return allowed;
+}
+
 /**
  * A silent loop that turns into a film with sound on request, in the same video element:
  * browsers only allow sound when play() runs inside the click. The loop moves only while
@@ -255,6 +286,7 @@ export function useFilmPlayer(film: string, still: boolean, onPlayingChange?: (p
       video.pause();
       return;
     }
+    // play() is also what makes an iPhone start buffering, so it runs as soon as the loop may move.
     video.play().catch(() => {});
   }, [playing, still]);
 
