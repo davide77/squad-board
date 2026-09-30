@@ -20,7 +20,8 @@ export const GLYPHS = {
 
 export const HEADER = {
   teamLabel: "Team name",
-  teamPlaceholder: "Team name",
+  /** An unnamed board, straight off the start screen, asks for its name here. */
+  teamPlaceholder: "Name your team",
   clockLabel: "Match clock",
   start: "Start",
   pause: "Pause",
@@ -133,16 +134,13 @@ export const SQUAD = {
 /** The first screen on an empty board. */
 export const START = {
   heading: "Create your team",
-  intro: "Paste or type your squad, one player per line. Shirt numbers and positions are optional. You can change anything later.",
-  teamLabel: "Team name",
+  intro:
+    "Pick the age group and paste your squad, one player per line. Shirt numbers and positions are optional. Name the team and add a badge on the board.",
   ageLabel: "Age group",
   agePrompt: "Choose an age group",
   ageOption: (label: string, format: string) => `${label} \u00b7 ${format}`,
   ageHint: "Sets the format, and whether everyone gets equal time. You can change both later.",
   countNeedsAge: "Choose an age group first.",
-  teamPlaceholder: "e.g. Riverside Under 10s",
-  badgeLabel: "Club badge",
-  badgeHint: "Optional. A badge, crest or logo sits next to your team name. PNG, JPG or SVG.",
   squadLabel: "Your squad",
   squadPlaceholder: "1 Alex GK\n2 Charlie\n3 Sam\n4 Jamie\n5 Riley\n...",
   squadHint: "Copy it straight from WhatsApp, your notes or a spreadsheet.",
