@@ -15,6 +15,7 @@ import { ClubPanel } from "./ClubPanel";
 import { ExampleBanner } from "./ExampleBanner";
 import { KeepSafe } from "./KeepSafe";
 import { Picker } from "./Picker";
+import { PlayerDrawer } from "./PlayerDrawer";
 import { ShapePanel } from "./ShapePanel";
 import { MatchDetailsPanel } from "./MatchDetailsPanel";
 import { SavedPanel } from "./SavedPanel";
@@ -126,6 +127,7 @@ export function BoardView({ top }: BoardViewProps) {
         <span>{state.ui.storageOK ? CLUB.stored : CLUB.noStorage}</span>
       </footer>
       <Picker />
+      <PlayerDrawer />
       <Toast />
     </div>
   );
