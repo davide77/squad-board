@@ -22,7 +22,9 @@ export function SiteLogo({ label, className }: SiteLogoProps) {
       )}
     >
       <Image className="site-logo__mark" src={VISOR_MARK.src} alt="" width={VISOR_MARK.headerSize} height={VISOR_MARK.headerSize} priority />
-      <span className="site-logo__name">{SITE.name}</span>
+      <span className="site-logo__name" translate="no">
+        {SITE.name}
+      </span>
     </Link>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { HEADER } from "@/constants/content/board";
-import { BOARD_CONFIG } from "@/constants/config";
+import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
+import { trackEvent } from "@/lib/analytics";
 import { fmtClock, started } from "@/lib/board/queries";
 import { useNow, useWakeLock } from "@/lib/hooks";
 import { Button } from "../Button";
@@ -29,7 +30,13 @@ export function MatchClock() {
       >
         {fmtClock(ms)}
       </span>
-      <Button onClick={() => act({ type: "clockToggle" })}>
+      <Button
+        onClick={() => {
+          // Kick-off, not a restart after half-time: a real match on the example team does not count.
+          if (!isOn && !state.data.example) trackEvent(ANALYTICS_EVENTS.clockStarted);
+          act({ type: "clockToggle" });
+        }}
+      >
         {clock.running ? HEADER.pause : isOn ? HEADER.resume : HEADER.start}
       </Button>
       <Button variant="quiet" size="tiny" onClick={() => act({ type: "clockReset" })}>

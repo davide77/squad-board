@@ -2,7 +2,12 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
+  // Every page is dark, so scrollbars and native controls are drawn dark too.
+  color-scheme: dark;
+  // No double-tap zoom delay on a tap. Pinch zoom still works.
+  touch-action: manipulation;
+  // A tap flashes the kit colour, not the browser's grey box.
+  -webkit-tap-highlight-color: #{tint(kit, 20%)};
   // A jump link lands below the floating header, not under it. Just over the
   // header's height: 78px on a phone, 122px from md (.landing-header in
   // components/_landing.scss). Change both together.
@@ -11,6 +16,11 @@ html {
 
   @include min(bp(md)) {
     scroll-padding-top: spacer(11) + spacer(9);
+  }
+
+  // A jump link glides only for a visitor who has not asked for less motion.
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
   }
 }
 
