@@ -269,3 +269,75 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     box-shadow: 0 0 0 2px color(board);
   }
 }
+
+// ---------- Matchday ----------
+
+// The clock at touchline size: readable at arm's length, in rain and glare.
+.match-card {
+  background-color: color(board-2);
+  border: 1px solid $edge;
+
+  &__time {
+    font-size: clamp(#{font-size(4xl)}, 12vw, #{font-size(5xl)});
+    line-height: line-height(tight);
+  }
+}
+
+// Under the pitch: how to make a change, or the one in progress, outlined in kit colour.
+.change-bar {
+  min-height: $hit-size + spacer(5);
+  background-color: color(board-2);
+  border: 1px solid $edge;
+
+  &--on {
+    background-color: tint(kit, 8%);
+    border-color: color(kit);
+  }
+}
+
+// A player who can come on: shirt, name and minutes, and the button that brings them on.
+.bench-row {
+  grid-template-columns: $hit-size minmax(0, 1fr) auto;
+  background-color: color(board-2);
+  border: 1px solid $edge;
+
+  &__disc {
+    width: $hit-size;
+    height: $hit-size;
+    color: color(kit);
+    background-color: color(board);
+    border: 2px solid color(kit);
+
+    // Called up but not on the bench: still free to come on, drawn a step quieter.
+    &--pool {
+      color: color(dim);
+      border-style: dashed;
+      border-color: color(dim);
+    }
+  }
+}
+
+.sub-row {
+  grid-template-columns: spacer(10) minmax(0, 1fr);
+}
+
+// Each player's minutes against the time played so far. The fill's width is set per player as --pct.
+.minutes-row {
+  grid-template-columns: minmax(0, 1fr) $hit-size;
+
+  &__track {
+    height: spacer(1);
+    overflow: hidden;
+    background-color: color(board-3);
+  }
+
+  &__fill {
+    width: var(--pct, 0%);
+    height: 100%;
+    background-color: color(dimmer);
+
+    &--on {
+      background-color: color(kit);
+    }
+  }
+}

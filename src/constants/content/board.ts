@@ -224,6 +224,40 @@ export const SUBS = {
   for: "for",
 } as const;
 
+/** Matchday: the clock, the bench, the change in progress, and the log. */
+export const MATCH = {
+  clockLabel: "Match clock",
+  running: "Clock running",
+  stopped: "Clock stopped",
+  notStarted: "Not started",
+  kickOff: "Kick off",
+  pause: "Pause",
+  resume: "Resume",
+  fullTime: "Full time",
+  benchHeading: "Bench",
+  benchHint: "Tap a player on the pitch, then bring someone on.",
+  benchFor: (off: string) => `Who's coming on for ${off}?`,
+  on: "On",
+  onFor: (off: string) => `On for ${off}`,
+  /** A called-up player who is not on the bench, still free to come on. */
+  calledUp: "Called up",
+  injuredHeading: "Injured",
+  injured: "Injured",
+  changeTitle: "Make a change",
+  changeHint: "Tap the player coming off.",
+  offTitle: (name: string, mins: number) => `${name} · ${mins}' played`,
+  offHint: "Pick who comes on from the bench.",
+  offInjuredHint: "Marked injured. They won't go back on the bench.",
+  cancel: "Cancel",
+  played: (mins: number) => `${mins}' played`,
+  minute: (m: number) => `${m}'`,
+  subOn: "on",
+  subOff: "off",
+  subInjured: "injured",
+  minutesHeading: "Minutes played",
+  noChanges: "No changes yet.",
+} as const;
+
 export const SAVED = {
   heading: "Saved line-ups",
   nameLabel: "Name this line-up",

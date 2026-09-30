@@ -157,7 +157,7 @@ function readNamedLineup(v: unknown): NamedLineup | null {
 }
 
 function readSub(v: unknown): Sub | null {
-  return isRec(v) ? { min: num(v.min), onName: str(v.onName), offName: str(v.offName) } : null;
+  return isRec(v) ? { min: num(v.min), onName: str(v.onName), offName: str(v.offName), inj: v.inj === true } : null;
 }
 
 const notNull = <T,>(v: T | null): v is T => v !== null;

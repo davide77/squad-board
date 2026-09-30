@@ -18,6 +18,10 @@ export interface GafferLines {
   readonly teamPicked: string;
   readonly exampleLoaded: string;
   readonly sub: (on: string, off: string) => string;
+  /** A change for an injury: the player coming off is marked injured and does not go back on the bench. */
+  readonly subInjured: (on: string, off: string) => string;
+  /** The final whistle: the clock stops and the board moves on to sending. */
+  readonly fullTime: string;
   readonly cantPickInjured: (n: string) => string;
   readonly cantPickUnavailable: (n: string) => string;
   readonly cantPickNotCalledUp: (n: string) => string;
@@ -84,6 +88,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     teamPicked: "Team's picked. Tap a position to change it.",
     exampleLoaded: "Example team. Tap a position.",
     sub: (on, off) => `${off} off. ${on} on. Good.`,
+    subInjured: (on, off) => `Get well, ${off}. ${on}, you're on.`,
+    fullTime: "Full time. Send the sheet.",
     cantPickInjured: (n) => `${n}'s injured. Pick someone else.`,
     cantPickUnavailable: (n) => `${n}'s not available. Pick someone else.`,
     cantPickNotCalledUp: (n) => `${n}'s not called up. Tick them first.`,
@@ -138,6 +144,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     teamPicked: "There's your team. Tap any position to change it.",
     exampleLoaded: "Here's an example team. Tap any position to try it.",
     sub: (on, off) => `${on}'s on. Great shift, ${off}.`,
+    subInjured: (on, off) => `${off}'s done for today. ${on}, this is your moment.`,
+    fullTime: "Full time. Well played, everyone. Let's send the sheet.",
     cantPickInjured: (n) => `${n}'s injured, so not today. Pick someone else.`,
     cantPickUnavailable: (n) => `${n} can't make it this week. Pick someone else.`,
     cantPickNotCalledUp: (n) => `${n} isn't called up yet. Tick them in the squad first.`,

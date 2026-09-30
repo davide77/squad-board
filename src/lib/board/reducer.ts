@@ -91,13 +91,19 @@ export type Action =
   | { type: "toggleCover" }
   | { type: "clearPitch" }
   | { type: "backedUp" }
-  | { type: "setStep"; step: BoardStep };
+  | { type: "setStep"; step: BoardStep }
+  | { type: "selectOff"; slotId: string }
+  | { type: "toggleOffInjured" }
+  | { type: "bringOn"; pid: string }
+  | { type: "fullTime" };
 
 /** Every action is stamped with the time it happened, so the reducer stays pure. */
 export type StampedAction = Action & { readonly now: number };
 
 const INITIAL_UI: UiState = {
   step: "pick",
+  offSlot: null,
+  offInjured: false,
   selected: null,
   editing: null,
   pickerSlot: null,
@@ -180,7 +186,7 @@ function logSub(d: BoardData, onId: string, offId: string, now: number, note: No
   const on = byId(d, onId);
   const off = byId(d, offId);
   if (!on || !off) return;
-  d.subs.push({ min: Math.floor(elapsed(d, now) / 60000) + 1, onName: on.name, offName: off.name });
+  d.subs.push({ min: Math.floor(elapsed(d, now) / 60000) + 1, onName: on.name, offName: off.name, inj: false });
   note(GAFFER[d.voice].sub(firstName(on.name), firstName(off.name)));
 }
 
@@ -362,7 +368,53 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     case "setStep":
       ui.step = action.step;
       ui.selected = null;
+      ui.offSlot = null;
+      ui.offInjured = false;
       closePicker();
+      return next;
+
+    // Matchday: tap the player coming off, then bring someone on for them.
+    case "selectOff":
+      ui.offSlot = ui.offSlot === action.slotId || !d.xi[action.slotId] ? null : action.slotId;
+      ui.offInjured = false;
+      return next;
+
+    case "toggleOffInjured":
+      if (!ui.offSlot) return state;
+      ui.offInjured = !ui.offInjured;
+      return next;
+
+    case "bringOn": {
+      const slotId = ui.offSlot;
+      const offId = slotId ? d.xi[slotId] : null;
+      if (!slotId || !offId) return state;
+      const subsBefore = d.subs.length;
+      toSlot(d, action.pid, slotId, now, note);
+      // Refused, such as a player not called up: the Gaffer has said why, and nothing moved.
+      if (d.xi[slotId] !== action.pid) return next;
+      if (ui.offInjured) {
+        const off = player(offId);
+        if (off) {
+          off.inj = true;
+          off.una = false;
+          off.trn = false;
+          off.out = true;
+          detach(d, off.id);
+          if (d.subs.length > subsBefore) d.subs[d.subs.length - 1].inj = true;
+          note(say.subInjured(firstName(player(action.pid)?.name ?? ""), firstName(off.name)));
+        }
+      }
+      ui.offSlot = null;
+      ui.offInjured = false;
+      return next;
+    }
+
+    case "fullTime":
+      if (d.clock.running) d.clock = { running: false, base: elapsed(d, now), since: 0 };
+      ui.step = "send";
+      ui.offSlot = null;
+      ui.offInjured = false;
+      note(say.fullTime);
       return next;
 
     case "notify":

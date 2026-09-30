@@ -17,7 +17,9 @@ import { KeepSafe } from "./KeepSafe";
 import { Picker } from "./Picker";
 import { ShapePanel } from "./ShapePanel";
 import { MessagePanel } from "./MessagePanel";
-import { SheetPanel, SavedPanel, SubsPanel } from "./SidePanels";
+import { SheetPanel, SavedPanel } from "./SidePanels";
+import { ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
+import { Pitch } from "./Pitch";
 import { SquadPanel } from "./SquadPanel";
 import { StepActions } from "./StepActions";
 import { STEP_PANEL_ID, stepTabId } from "./StepTabs";
@@ -59,9 +61,15 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
     ),
   },
   match: {
-    left: <BenchPanel />,
-    centre: <ShapePanel />,
-    right: <SubsPanel />,
+    left: <MatchBench />,
+    centre: (
+      <>
+        <MatchClockCard />
+        <Pitch />
+        <ChangeBar />
+      </>
+    ),
+    right: <MatchLog />,
   },
   send: {
     centre: <SheetPanel />,
