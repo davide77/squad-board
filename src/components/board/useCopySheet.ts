@@ -1,23 +1,23 @@
 "use client";
 
 import { useCallback } from "react";
-import { ANALYTICS_EVENTS, SENT_HOW, type SentWhat } from "@/constants/config";
+import { SENT_HOW, type AnalyticsEvent } from "@/constants/config";
 import { GAFFER } from "@/constants/content/gaffer";
-import { trackEvent } from "@/lib/analytics";
+import { trackSend } from "@/lib/analytics";
 import { copyText } from "@/lib/clipboard";
 import type { BoardData } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
 
 /**
- * Copies the team sheet, or another message built from the board, and lets the Gaffer say how it went.
- * Used by the pitch, the sheet panel and the squad message.
+ * Copies a message built from the board, the call-up or the result, counts it as sent by copying,
+ * and lets the Gaffer say how it went.
  */
-export function useCopySheet(build: (d: BoardData) => string, what: SentWhat) {
+export function useCopySheet(build: (d: BoardData) => string, sent: AnalyticsEvent) {
   const { state, act } = useBoard();
   const { data } = state;
   return useCallback(async () => {
     const ok = await copyText(build(data));
-    if (ok) trackEvent(ANALYTICS_EVENTS.sheetSent, { what, how: SENT_HOW.copy });
+    if (ok) trackSend(sent, data, SENT_HOW.copy);
     act({ type: "notify", text: ok ? GAFFER[data.voice].copied : GAFFER[data.voice].copyFailed });
-  }, [data, act, build, what]);
+  }, [data, act, build, sent]);
 }

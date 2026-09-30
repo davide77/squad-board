@@ -165,7 +165,12 @@ export const ANALYTICS_CONFIG = {
 /** Every custom event the board sends, and the one property each may carry. Never a name from the board. */
 export const ANALYTICS_EVENTS = {
   boardStarted: "Board started",
-  sheetSent: "Sheet sent",
+  /** What went to whom. Each carries the age group and how it went out: two properties, Pro's most per event. */
+  callUpSent: "Call-up sent",
+  resultSent: "Result sent",
+  pictureShared: "Picture shared",
+  /** The whistle for the break. */
+  halfTime: "Half time",
   /** The match clock started from zero: a real match, not a look round. */
   clockStarted: "Clock started",
   /** Full time called: a match played to the end. */
@@ -218,6 +223,6 @@ export const AGE_NOT_SET = "Not set";
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
 
 /** What went out to the parents, and how. Two properties, the most Vercel Pro keeps per event. */
-export const SENT_WHAT = { message: "Squad message", result: "Result", picture: "Line-up picture" } as const;
-export const SENT_HOW = { whatsapp: "WhatsApp", copy: "Copied", picture: "Picture" } as const;
-export type SentWhat = (typeof SENT_WHAT)[keyof typeof SENT_WHAT];
+/** How a call-up, result or picture went out. */
+export const SENT_HOW = { whatsapp: "WhatsApp", copy: "Copied", shared: "Shared", downloaded: "Downloaded" } as const;
+export type SentHow = (typeof SENT_HOW)[keyof typeof SENT_HOW];

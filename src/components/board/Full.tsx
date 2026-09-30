@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { ANALYTICS_EVENTS, MESSAGE_CONFIG, PICTURE_CONFIG, SENT_HOW, SENT_WHAT } from "@/constants/config";
+import { ANALYTICS_EVENTS, MESSAGE_CONFIG, PICTURE_CONFIG, SENT_HOW } from "@/constants/config";
 import { CLUB, FULL, SHEET } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
-import { trackEvent } from "@/lib/analytics";
+import { trackSend } from "@/lib/analytics";
 import { matchDate } from "@/lib/board/message";
 import { sentName, teamSlug } from "@/lib/board/names";
 import { lineupPicture, sharePicture } from "@/lib/board/picture";
@@ -125,7 +125,7 @@ export function FullActions() {
   const { state, act } = useBoard();
   const { data, ui } = state;
   const nameFirst = useNameFirst();
-  const copy = useCopySheet(resultText, SENT_WHAT.result);
+  const copy = useCopySheet(resultText, ANALYTICS_EVENTS.resultSent);
   const [making, setMaking] = useState(false);
   const potmId = useId();
   const text = resultText(data);
@@ -139,7 +139,9 @@ export function FullActions() {
       const blob = await lineupPicture(data);
       const file = teamSlug(data.team, CLUB.fileFallback) + PICTURE_CONFIG.fileSuffix;
       const result = await sharePicture(blob, file, data.team || SHEET.fallbackTitle);
-      if (result !== "cancelled") trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.picture, how: SENT_HOW.picture });
+      if (result !== "cancelled") {
+        trackSend(ANALYTICS_EVENTS.pictureShared, data, result === "downloaded" ? SENT_HOW.downloaded : SENT_HOW.shared);
+      }
       if (result === "downloaded") act({ type: "notify", text: GAFFER[data.voice].pictureSaved });
     } catch {
       act({ type: "notify", text: GAFFER[data.voice].pictureFailed });
@@ -206,7 +208,7 @@ export function FullActions() {
           target="_blank"
           rel="noopener"
           onClick={nameFirst.guardLink("whatsapp", whatsapp, () =>
-            trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.result, how: SENT_HOW.whatsapp }),
+            trackSend(ANALYTICS_EVENTS.resultSent, data, SENT_HOW.whatsapp),
           )}
           className="button button--primary is-flex is-align-center is-justify-center has-py-4 text-lg has-radius-field has-font-bold"
         >

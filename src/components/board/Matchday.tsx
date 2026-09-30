@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import { AGE_NOT_SET, ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
+import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
 import { MATCH, NO_NUMBER, SUBS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
-import { trackEvent } from "@/lib/analytics";
+import { trackBoard } from "@/lib/analytics";
 import { firstName } from "@/lib/board/names";
 import { blocked, byId, elapsed, fmtClock, playedMinutes, playedMs, positionCodes, started, where } from "@/lib/board/queries";
 import type { BoardData, Player } from "@/lib/board/types";
@@ -46,8 +46,13 @@ export function MatchClockCard() {
   const askFirst = ms >= BOARD_CONFIG.resetAskAfterMs;
 
   function fullTime() {
-    if (!data.example) trackEvent(ANALYTICS_EVENTS.fullTime, { age: data.age ?? AGE_NOT_SET });
+    trackBoard(ANALYTICS_EVENTS.fullTime, data);
     act({ type: "fullTime" });
+  }
+
+  function halfTime() {
+    trackBoard(ANALYTICS_EVENTS.halfTime, data);
+    act({ type: "halfTime" });
   }
 
   function reset() {
@@ -71,7 +76,7 @@ export function MatchClockCard() {
             {data.clock.running ? MATCH.pause : atBreak ? MATCH.startSecondHalf : on ? MATCH.resume : MATCH.kickOff}
           </Button>
           {data.clock.running && half === 1 && (
-            <Button className="has-py-3 has-px-4 text-lg" onClick={() => act({ type: "halfTime" })}>
+            <Button className="has-py-3 has-px-4 text-lg" onClick={halfTime}>
               {MATCH.halfTime}
             </Button>
           )}
