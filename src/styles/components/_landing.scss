@@ -338,6 +338,12 @@
     fill: currentColor;
   }
 
+  // Paused by the visitor: outlined and lettered in kit colour. Drawn inside, so nothing shifts.
+  &__pause[aria-pressed='true'] {
+    color: color(kit);
+    box-shadow: inset 0 0 0 2px color(kit);
+  }
+
   &[data-paused='true'] &__fill--run {
     animation-play-state: paused;
   }

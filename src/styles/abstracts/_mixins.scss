@@ -24,6 +24,13 @@
   outline-offset: $focus-ring-offset;
 }
 
+// Side padding that also clears the notch. The viewport is viewport-fit=cover
+// (layout.tsx), so on a phone held sideways the page runs under it.
+@mixin safe-padding-inline($size) {
+  padding-left: max(#{$size}, env(safe-area-inset-left));
+  padding-right: max(#{$size}, env(safe-area-inset-right));
+}
+
 // A 44px hit target that does not push the layout around. Negative margin
 // pulls the extra area back out of the flow.
 @mixin icon-hit-area($size: $hit-size, $pull: 10px) {

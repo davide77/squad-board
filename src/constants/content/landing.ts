@@ -260,13 +260,9 @@ export const STORY_UI = {
   label: "How Gafferboard works",
   chapters: "Chapters",
   count: (n: number, total: number) => `${String(n).padStart(2, "0")} / ${String(total).padStart(2, "0")}`,
-  next: (tab: string) => `Next: ${tab}`,
-  restart: "From the top",
   pause: "Pause",
-  play: "Play",
+  /** A toggle, so the name stays the same and aria-pressed says whether it is paused. */
   pauseLabel: "Pause the story",
-  playLabel: "Play the story",
-  keysHint: "Use the arrow keys, or tap a chapter.",
   playFilm: "Play the film · 38s",
   ageLabel: "Age group",
   ageLine: (label: string, phase: Phase) =>
@@ -289,6 +285,8 @@ export const WEEK_BODIES: readonly [string, string, string, string] = [
 export const SHEET_SECTION = {
   body: "This is the team sheet from the board above, changes and all. Send it to the WhatsApp group, email it to parents, or copy it.",
   whatsapp: "WhatsApp",
+  /** Read out after the WhatsApp link, which opens in a new tab. */
+  newTab: "(opens in a new tab)",
   email: "Email",
   copy: "Copy",
   copied: "Copied",

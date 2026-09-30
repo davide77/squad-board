@@ -61,7 +61,6 @@ export function HeroCarousel() {
   const id = useId();
 
   const chapter = STORY[index];
-  const last = index === STORY.length - 1;
   const paused = reduced || touch || held || reading || focused || film || !inView;
   // The clips wait for the page to settle, stop off screen, and never start on a data saver.
   const videoAllowed = useVideoAllowed();
@@ -172,11 +171,8 @@ export function HeroCarousel() {
 
             {/* The buttons stay put between chapters, and glide when the words above them change length. */}
             <motion.div layout="position" transition={MOTION.story} className="is-flex is-flex-wrap is-align-center has-gap-4">
+              {/* The one button in the hero. The chapter tabs below are the way round the story. */}
               <VoiceCta />
-              {/* A quiet way on, so the call to action is the only strong button in the hero. */}
-              <Button variant="quiet" className="has-py-4 has-px-4 has-font-bold text-lg" onClick={() => go(index + 1)}>
-                {last ? STORY_UI.restart : STORY_UI.next(STORY[index + 1].tab)}
-              </Button>
               <span className="text-base is-dimmer">{copy.note}</span>
             </motion.div>
           </div>
@@ -186,6 +182,11 @@ export function HeroCarousel() {
             <AnimatePresence initial={false}>
               <StoryMedia key={chapter.key} chapter={chapter} still={!moving} onFilm={setFilm} />
             </AnimatePresence>
+            {/*
+              On a big screen the story moves on by itself, so the next clip loads while this one plays
+              and is ready when the chapter turns. A phone only moves when tapped, so it never loads ahead.
+            */}
+            {moving && !touch && <NextClip chapter={STORY[(index + 1) % STORY.length]} />}
           </motion.div>
         </div>
 
@@ -224,24 +225,27 @@ export function HeroCarousel() {
             })}
           </div>
 
-          <div className="is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 text-sm is-dimmer">
-            {!touch && <span>{STORY_UI.keysHint}</span>}
-            {/* Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause. */}
-            {!reduced && !touch && (
-              // py-3 makes it a 44px target, the same as every other button in the hero.
+          {/* Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause. */}
+          {!reduced && !touch && (
+            <div className="is-flex is-justify-end">
+              {/*
+                A toggle: the words stay "Pause" and the pressed state says it is paused, with a kit-colour
+                outline. py-3 makes it a 44px target, like every other button in the hero.
+              */}
               <Button
                 variant="quiet"
-                className="has-py-3 has-gap-2 is-chalk"
-                aria-label={held ? STORY_UI.playLabel : STORY_UI.pauseLabel}
+                aria-pressed={held}
+                aria-label={STORY_UI.pauseLabel}
+                className={cx("landing-story__pause has-py-3 has-gap-2 text-sm", !held && "is-chalk")}
                 onClick={() => setHeld((h) => !h)}
               >
                 <svg className="landing-story__glyph" viewBox="0 0 12 12" aria-hidden="true">
-                  {held ? <path d="M3 1.5v9l7.5-4.5z" /> : <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" />}
+                  <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" />
                 </svg>
-                {held ? STORY_UI.play : STORY_UI.pause}
+                {STORY_UI.pause}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </section>
     </MotionConfig>
@@ -284,6 +288,19 @@ function AgePicker({ onPick }: AgePickerProps) {
         </p>
       )}
     </div>
+  );
+}
+
+/** The next chapter's clip, loading out of sight. Same sources as StoryMedia, so the browser reuses the file. */
+function NextClip({ chapter }: { readonly chapter: StoryChapter }) {
+  const { media } = chapter;
+  return (
+    <video className="is-hidden" muted playsInline preload="auto" aria-hidden="true" tabIndex={-1}>
+      <source src={phoneCopy(media.webm)} type="video/webm" media={VIDEO_CONFIG.phoneQuery} />
+      <source src={phoneCopy(media.mp4)} type="video/mp4" media={VIDEO_CONFIG.phoneQuery} />
+      <source src={media.webm} type="video/webm" />
+      <source src={media.mp4} type="video/mp4" />
+    </video>
   );
 }
 

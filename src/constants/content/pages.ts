@@ -1,5 +1,6 @@
 // Every string on the small pages around the board: privacy, credits and the 404.
 // Anything about data keeps it straight, whichever voice the coach picked (brand.md).
+import { ANALYTICS_CONFIG } from "@/constants/config";
 
 export interface PageSection {
   readonly heading: string;
@@ -29,6 +30,10 @@ export const MAKER = {
   role: "Grassroots football manager",
 } as const;
 
+/** The board's events, in words, for the privacy page. Keep in step with ANALYTICS_EVENTS in config.ts. */
+const EVENTS_COUNTED =
+  "On the board we count four moments: a new board started, with its age group; the match clock started; a team sheet sent, and whether it went by WhatsApp, a copy or a picture; and a saved board opened again, with roughly how long since the last visit (the same day, within a week, or a week or more). To tell that gap, the board keeps the date of your last visit in this browser. It never leaves your device.";
+
 export const PRIVACY = {
   title: "Privacy and safety",
   description:
@@ -55,6 +60,8 @@ export const PRIVACY = {
       heading: "What we count",
       body: [
         "We count visits, so we know how many coaches use Gafferboard. Vercel Web Analytics records which page was opened, the site you came from, your country and the kind of device and browser. It sets no cookie and does not know who you are: a visitor is a code that resets every day.",
+        // Only said while the board's events are switched on, so the page never claims more than is counted.
+        ...(ANALYTICS_CONFIG.events ? [EVENTS_COUNTED] : []),
         "Nothing on your board is part of it. Not the team, not a player, not the message you send.",
       ],
     },

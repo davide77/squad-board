@@ -142,7 +142,22 @@ export const ANALYTICS_CONFIG = {
 export const ANALYTICS_EVENTS = {
   boardStarted: "Board started",
   sheetSent: "Sheet sent",
+  /** The match clock started from zero: a real match, not a look round. */
+  clockStarted: "Clock started",
+  /** A saved board opened again, with the days since it was last open. A coach coming back. */
+  boardReopened: "Board reopened",
 } as const;
+
+/**
+ * The day the board was last open, kept on this device only, so a return can be counted
+ * without knowing who anyone is. Only written while events are on.
+ */
+export const LAST_VISIT_KEY = "gafferboard:last-visit-day";
+
+/** Days since the board was last open, in the three bands a "Board reopened" reports. 7+ is next matchweek. */
+export const DAYS_SINCE = { sameDay: "0", thisWeek: "1-6", nextWeek: "7+" } as const;
+/** The first day of the 7+ band. */
+export const NEXT_WEEK_DAYS = 7;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
 

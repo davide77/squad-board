@@ -20,6 +20,7 @@ export function SheetSection() {
           <div className="is-flex is-flex-wrap has-gap-2">
             <a href={SHARE_URLS.whatsapp + text} target="_blank" rel="noopener" className={SHARE_LINK}>
               {SHEET_SECTION.whatsapp}
+              <span className="sr-only"> {SHEET_SECTION.newTab}</span>
             </a>
             <a
               href={`${SHARE_URLS.mail}${encodeURIComponent(SHEET_SECTION.mailSubject)}&body=${text}`}
