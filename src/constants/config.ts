@@ -133,9 +133,9 @@ export const STORY_DURATION_MS = 9000;
 
 // Visitor counts, through Vercel Web Analytics: no cookies, and the script is served from gafferboard.com.
 // Page views work on every Vercel plan. Custom events (a board started, a sheet sent) need Pro,
-// so they stay off until the team is upgraded. Flip `events` then, and they start counting.
+// which the team is on. Set `events` to false to stop them, and the privacy page follows.
 export const ANALYTICS_CONFIG = {
-  events: false,
+  events: true,
 } as const;
 
 /** Every custom event the board sends, and the one property each may carry. Never a name from the board. */
