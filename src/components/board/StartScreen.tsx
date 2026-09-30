@@ -3,7 +3,7 @@
 import { useId, useRef, useState, type FormEvent } from "react";
 import { ANALYTICS_EVENTS, BOARD_CONFIG } from "@/constants/config";
 import { START } from "@/constants/content/board";
-import { AGE_GROUPS, FORMATS, type AgeKey } from "@/constants/football";
+import { AGE_GROUPS, FORMATS, type AgeKey, type FormatKey } from "@/constants/football";
 import { GAFFER, PHASE_GAFFER } from "@/constants/content/gaffer";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import { trackBoardOpened, trackEvent } from "@/lib/analytics";
@@ -20,17 +20,30 @@ const newId = () => crypto.randomUUID();
  * The first screen on an empty board: the age group and a pasted squad, then straight onto the pitch.
  * The team name and badge wait for the board itself, so nothing stands between a coach and a first line-up.
  */
-export function StartScreen() {
+interface StartScreenProps {
+  /** A format asked for by a format page: the board opens on an age group that plays it. */
+  readonly format?: FormatKey | null;
+}
+
+/** The age to open on: the homepage's, unless a format page asked for a format that age does not play. */
+function startingAge(format: FormatKey | null | undefined): AgeKey | null {
+  const pref = readAgePref();
+  const prefGroup = AGE_GROUPS.find((a) => a.key === pref);
+  if (!format || prefGroup?.format === format) return pref;
+  return AGE_GROUPS.find((a) => a.format === format)?.key ?? pref;
+}
+
+export function StartScreen({ format }: StartScreenProps) {
   const { act } = useBoard();
   const headingId = useId();
   const squadId = useId();
   const countId = useId();
   const [squadText, setSquadText] = useState("");
   const ageId = useId();
-  // Opens on the age group picked on the homepage, when there was one.
-  const [age, setAge] = useState<AgeKey | "">(() => readAgePref() ?? "");
+  // Opens on the age group picked on the homepage, or one that plays the format a format page asked for.
+  const [age, setAge] = useState<AgeKey | "">(() => startingAge(format) ?? "");
   // An age answered on the homepage shows as one line, not a list to confirm. Change opens the list.
-  const [ageOpen, setAgeOpen] = useState(() => !readAgePref());
+  const [ageOpen, setAgeOpen] = useState(() => !startingAge(format));
   const ageSelect = useRef<HTMLSelectElement>(null);
   const [showExample, setShowExample] = useState(false);
   const group = AGE_GROUPS.find((a) => a.key === age) ?? null;

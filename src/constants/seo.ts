@@ -1,3 +1,4 @@
+import { FORMAT_PAGES } from "@/constants/content/formats";
 import { FAQ } from "@/constants/content/landing";
 import { MAKER } from "@/constants/content/pages";
 import { SITE } from "@/constants/site";
@@ -101,6 +102,7 @@ export const LLMS_TXT = {
   pagesHeading: "## Pages",
   pages: [
     { name: "Home", path: "/", note: "What the board does, with a working demo" },
+    ...FORMAT_PAGES.map((f) => ({ name: f.title, path: `/${f.slug}`, note: f.description })),
     { name: "Privacy and safety", path: "/privacy", note: "What is stored, where, and how to delete it" },
     { name: "Credits", path: "/credits", note: "Who made it and what it is built with" },
   ],
