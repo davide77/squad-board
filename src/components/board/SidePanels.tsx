@@ -113,12 +113,12 @@ export function SheetPanel() {
           href={whatsapp}
           target="_blank"
           rel="noopener"
-          onClick={nameFirst.guardLink(whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.sheet, how: SENT_HOW.whatsapp }))}
+          onClick={nameFirst.guardLink("whatsapp", whatsapp, () => trackEvent(ANALYTICS_EVENTS.sheetSent, { what: SENT_WHAT.sheet, how: SENT_HOW.whatsapp }))}
           className="button button--primary is-inline-flex is-align-center has-py-3 has-px-3 text-base has-radius-field has-font-bold"
         >
           {SHEET.whatsapp}
         </a>
-        <Button className="has-py-3" onClick={nameFirst.guard(copy)}>
+        <Button className="has-py-3" onClick={nameFirst.guard("copy", copy)}>
           {SHEET.copy}
         </Button>
       </div>
@@ -128,7 +128,7 @@ export function SheetPanel() {
         {SHEET.creditLabel}
       </label>
       <p className="text-sm is-dimmer has-mt-4">{SHEET.pictureHint}</p>
-      <Button className="has-mt-3" onClick={nameFirst.guard(share)} disabled={making} aria-busy={making}>
+      <Button className="has-mt-3" onClick={nameFirst.guard("picture", share)} disabled={making} aria-busy={making}>
         {SHEET.sharePicture}
       </Button>
     </Panel>

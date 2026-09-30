@@ -70,7 +70,7 @@ export function ShapePanel() {
         <Button size="tiny" variant={dirty ? "primary" : "quiet"} onClick={() => act({ type: "saveLineup" })}>
           {dirty ? SHAPE.saveLineup : SHAPE.lineupSaved}
         </Button>
-        <Button size="tiny" variant="primary" onClick={nameFirst.guard(copySheet)}>
+        <Button size="tiny" variant="primary" onClick={nameFirst.guard("copy", copySheet)}>
           {SHAPE.copySheet}
         </Button>
         <Button size="tiny" onClick={() => act({ type: "setStrongest" })}>

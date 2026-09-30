@@ -167,6 +167,9 @@ export const NAME_FIRST = {
   line: "Name your team first? Parents see it at the top.",
   nameIt: "Name it",
   sendAnyway: "Send anyway",
+  /** Once the name is in: the sheet the coach meant to send is still waiting. */
+  named: "Named. Send it.",
+  send: "Send",
 } as const;
 
 /** The cards at the top of the board that help keep it safe. */
