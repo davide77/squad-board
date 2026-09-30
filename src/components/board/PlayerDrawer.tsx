@@ -133,7 +133,7 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
                   key={o.label}
                   type="button"
                   aria-pressed={p.side === o.key}
-                  className="drawer-option is-flex-1 has-radius-field has-font-semibold text-md"
+                  className="choice is-flex-1 has-radius-field has-font-semibold text-md"
                   onClick={() => act({ type: "setSide", side: o.key })}
                 >
                   {o.label}
@@ -174,7 +174,8 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
               type="button"
               role="radio"
               aria-checked={week === s.key}
-              className={cx("drawer-option has-radius-field has-font-semibold text-md", s.key === "inj" && "drawer-option--out")}
+              // Injured keeps the Out accent; the rest choose quietly, so yellow is kept for positions.
+              className={cx("has-radius-field has-font-semibold text-md", s.key === "inj" ? "drawer-option drawer-option--out" : "choice")}
               onClick={() => act({ type: "setAvailability", id: p.id, status: s.key })}
             >
               {s.label}

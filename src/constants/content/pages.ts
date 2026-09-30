@@ -32,7 +32,7 @@ export const MAKER = {
 
 /** The board's events, in words, for the privacy page. Keep in step with ANALYTICS_EVENTS in config.ts. */
 const EVENTS_COUNTED =
-  "On the board we also count a few moments: a board started or opened again, the first use of the board each week, the match clock started, and a team sheet sent. With them go the age group, how the sheet went out (WhatsApp, a copy or a picture) and roughly how long since the last visit, such as \"7 to 13 days\" or \"1 week\". To tell that gap, the time and week of your last visit are kept in this browser and never leave it. No names, no team details and nothing else from your board are sent.";
+  "On the board we also count a few moments: a board started or opened again, the first use of the board each week, the match clock started, and a message or picture sent. With them go the age group, how it went out (WhatsApp, a copy or a picture) and roughly how long since the last visit, such as \"7 to 13 days\" or \"1 week\". To tell that gap, the time and week of your last visit are kept in this browser and never leave it. No names, no team details and nothing else from your board are sent.";
 
 export const PRIVACY = {
   title: "Privacy and safety",
@@ -46,7 +46,7 @@ export const PRIVACY = {
       heading: "What is stored, and where",
       body: [
         "The board keeps your team name, fixture, players' names, shirt numbers, positions, injuries, saved line-ups and substitutions. All of it is saved in this browser on this device.",
-        "The team sheet and the line-up picture are made on your device too. They only go where you send them.",
+        "The messages to the parents and the line-up picture are made on your device too. They only go where you send them.",
       ],
     },
     {
@@ -69,7 +69,7 @@ export const PRIVACY = {
       heading: "Most squads are children",
       body: [
         "Treat the board like any team list. Use first names or initials where you can. The Shape panel can show players by initials, and the line-up picture follows it.",
-        "Share the team sheet and the picture only with people who should see them, such as the team's parents group.",
+        "Send the call-up and the result only to people who should see them, such as the team's parents group. The line-up picture is for the coaches.",
       ],
     },
     {

@@ -58,7 +58,7 @@ export function StepTabs() {
             )}
             onClick={() => act({ type: "setStep", step: s.key })}
           >
-            <span className="has-font-headline is-tabular" aria-hidden="true">
+            <span className="step-tabs__n has-font-headline is-tabular" aria-hidden="true">
               {s.n}
             </span>
             <span className="is-hidden is-lg-inline">{s.label}</span>

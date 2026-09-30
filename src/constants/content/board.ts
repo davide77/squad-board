@@ -18,6 +18,10 @@ export const GLYPHS = {
   grip: "\u22EE\u22EE",
 } as const;
 
+export const UNDO = {
+  button: "Undo",
+} as const;
+
 /** The Gaffer's line at the top of each step. */
 export const GAFFER_LINE = {
   kicker: "The Gaffer",
@@ -34,7 +38,6 @@ export const STEPS = {
   /** The ways on from Pick the team. */
   startMatch: "Start the match",
   backToMatch: "Back to the match",
-  sendCallUp: "Send the call-up first",
 } as const;
 
 export const HEADER = {
@@ -57,15 +60,6 @@ export const SHAPE = {
   resetShape: "Reset shape",
   hint: "Tap a position to see who can play there and swap them in. Drag works too.",
   moveHint: "Drag the markers anywhere on the pitch. Each one takes its role from where it sits.",
-  teamLabel: "Team",
-  saveLineup: "Save line-up",
-  lineupSaved: "Line-up saved",
-  setPlan: (plan: string) => `Set as ${plan}`,
-  backToPlan: (plan: string) => `Back to ${plan}`,
-  copySheet: "Copy team sheet",
-  newMatchday: "New matchday",
-  clearPitch: "Clear the pitch",
-  shirtsLabel: "Shirts",
   hideCover: "Hide bench cover",
   showCover: "Show bench cover",
   slotEmpty: (role: string) => `${role}, empty`,
@@ -365,7 +359,6 @@ export const FULL = {
   copy: "Copy",
   pictureHeading: "For the coaches",
   pictureBody: "This picture shows the shape and who started. Send it to your assistant or the club's coaches' group, not the parents.",
-  coachesOnly: "Coaches only",
   share: "Share the picture",
   shareHint: "Opens your phone's share sheet. On a laptop it downloads a PNG.",
   pictureAlt: "The line-up picture, for the coaches.",
@@ -380,7 +373,6 @@ export const PARENTS = {
   heading: "Message to the parents",
   hint: "Who's in, when, where and what to wear. No shape, no bench, no injuries.",
   previewLabel: "Preview",
-  group: (team: string) => (team.trim() ? `${team.trim()} parents` : "Parents' group"),
   namesHint: "Use initials for groups with people outside the club.",
   whatsapp: "Send on WhatsApp",
   copy: "Copy",
@@ -395,7 +387,6 @@ export const MESSAGE = {
   dateLabel: "Date",
   kickoffLabel: "Kick-off",
   meetLabel: "Meet",
-  kitLabel: "Kit",
   venueLabel: "Home or away",
   venues: [
     { key: "home", label: "Home" },
@@ -407,7 +398,6 @@ export const MESSAGE = {
   /** After the fixture in the message, and the kit line under it. */
   venueTag: (venue: "home" | "away") => ` (${venue})`,
   kitLine: (venue: "home" | "away", colour: string) => `${venue === "home" ? "Home" : "Away"} kit (${colour.toLowerCase()}).`,
-  kitPlaceholder: "e.g. Blue kit",
   addressLabel: "Address",
   addressPlaceholder: "Ground name, street, postcode",
   addressHint: "Parents get a Google Maps link with it.",
@@ -470,8 +460,6 @@ export const PICKER = {
 } as const;
 
 export const CONFIRM = {
-  newMatchday:
-    "Start a new matchday? Call-ups are cleared and you pick the squad again. Injuries and unavailability stay as they are.",
   deleteForGood: (name: string) => `Delete ${name} for good? This cannot be undone.`,
   replaceSquad: "Replace the squad on this board with the one in the file?",
   wipe: "Clear this board and start again? Everything on it is deleted. Export a file first if you want a copy.",

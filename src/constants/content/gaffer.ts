@@ -27,6 +27,9 @@ export interface GafferLines {
   /** The final whistle: the clock stops and the board moves on to sending. */
   readonly fullTime: string;
   readonly halfTime: string;
+  /** Undo: the change that can be taken back, when nothing else was said about it, and taking it back. */
+  readonly changed: string;
+  readonly undone: string;
   readonly secondHalf: string;
   /** Player of the match picked, or taken off. */
   readonly potm: (n: string) => string;
@@ -103,6 +106,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     subInjured: (on, off) => `Get well, ${off}. ${on}, you're on.`,
     fullTime: "Full time. Send the result.",
     halfTime: "Half time. Keep it short.",
+    changed: "Changed.",
+    undone: "Undone.",
     secondHalf: "Second half. Go again.",
     potm: (n) => `${n}. Deserved.`,
     potmNone: "Nobody this week. Fair enough.",
@@ -166,6 +171,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     subInjured: (on, off) => `${off}'s done for today. ${on}, this is your moment.`,
     fullTime: "Full time. Well played, everyone. Let's tell the parents.",
     halfTime: "Half time. Water, a word, and back out.",
+    changed: "Done that for you.",
+    undone: "No harm done. It's back as it was.",
     secondHalf: "Second half. Here we go again, team.",
     potm: (n) => `${n}. What a game they had.`,
     potmNone: "No award this week. That's fine too.",
@@ -198,7 +205,7 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     cantPickTraining: (n) => `${n} missed training this week. Pick someone else.`,
     loaded: (name) => `${name} loaded. Let's have a look.`,
     shapeReset: "Shape reset to 4-3-3 spacing.",
-    copied: "Team sheet copied. Go on, send it.",
+    copied: "Copied. Go on, send it.",
     copyFailed: "This browser won't let us copy. Not your fault. Try another browser.",
     pictureSaved: "Line-up picture downloaded. Ready for the parents' group.",
     pictureFailed: "This browser won't make the picture. Not your fault. Try another one.",

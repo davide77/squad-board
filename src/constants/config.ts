@@ -95,6 +95,9 @@ export const PICTURE_CONFIG = {
 // in components/_toast.scss uses the same duration: keep them in sync.
 export const TOAST_MS = 1800;
 
+/** How long Undo stays offered after a change to the team. Long enough to spot a mis-tap on the touchline. */
+export const UNDO_MS = 8000;
+
 // A longer line stays up long enough to read: this much per character, up to the cap.
 export const TOAST_MS_PER_CHAR = 55;
 export const TOAST_MAX_MS = 5000;

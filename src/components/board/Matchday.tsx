@@ -147,8 +147,8 @@ function candidates(d: BoardData): { bench: Player[]; pool: Player[] } {
 }
 
 /**
- * On a phone, the bench as a tray held under the pitch, above the step tabs: pick the player coming
- * off on the pitch, then "On for" is one tap away, with no scrolling in between.
+ * On a phone, the bench as a tray under the pitch. Pick the player coming off and it pins above the
+ * step tabs, so "On for" is one tap away with no scrolling in between.
  */
 export function BenchTray() {
   const { state, act } = useBoard();
@@ -156,7 +156,7 @@ export function BenchTray() {
   const off = comingOff(data, ui.offSlot);
   const { bench, pool } = candidates(data);
   return (
-    <div className="bench-tray is-md-hidden has-pt-3 has-pb-3">
+    <div className={cx("bench-tray is-md-hidden has-pt-3 has-pb-3", off && "bench-tray--pinned")}>
       <p className="has-font-headline has-font-bold text-xs tracking-caps uppercase is-dim has-mb-2" aria-live="polite">
         {off ? MATCH.trayFor(firstName(off.name)) : MATCH.trayHint}
       </p>

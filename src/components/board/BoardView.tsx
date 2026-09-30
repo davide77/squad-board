@@ -17,6 +17,7 @@ import { KeepSafe } from "./KeepSafe";
 import { GafferLine } from "./GafferLine";
 import { Picker } from "./Picker";
 import { PlayerDrawer } from "./PlayerDrawer";
+import { UndoBar } from "./UndoBar";
 import { ShapePanel } from "./ShapePanel";
 import { MatchDetailsPanel } from "./MatchDetailsPanel";
 import { SavedPanel } from "./SavedPanel";
@@ -135,6 +136,7 @@ export function BoardView({ top }: BoardViewProps) {
       </footer>
       <Picker />
       <PlayerDrawer />
+      <UndoBar />
       <Toast />
     </div>
   );
