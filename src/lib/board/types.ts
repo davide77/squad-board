@@ -74,6 +74,12 @@ export interface Minutes {
 /** Where the match is played. Empty until the coach says. */
 export type Venue = "" | "home" | "away";
 
+/** What kind of game it is. Empty until the coach says. */
+export type Competition = "" | "league" | "cup" | "friendly" | "tournament";
+
+/** What the match is played on, which decides the boots. Empty until the coach says. */
+export type Surface = "" | "grass" | "astro";
+
 /** Which of the club's two strips. */
 export type KitSide = Exclude<Venue, "">;
 
@@ -98,6 +104,8 @@ export interface MatchDetails {
   kit: string;
   address: string;
   venue: Venue;
+  surface: Surface;
+  competition: Competition;
   /** Goals for and against, from the Full time step. */
   us: number;
   them: number;

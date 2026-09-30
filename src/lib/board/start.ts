@@ -168,6 +168,7 @@ export function exampleBoard(newId: () => string): BoardData {
   const squad = [...DEMO_XI, ...DEMO_BENCH].map((p) => ({ num: String(p.num), name: p.name, pos: p.pos }));
   const d = buildBoard(EXAMPLE.team, squad, newId, EXAMPLE.age, DEMO_SHAPES[0]);
   d.fixture = EXAMPLE.fixture;
+  d.match.competition = EXAMPLE.competition;
   d.match = { ...d.match, ...EXAMPLE.match };
   d.colour = Math.max(0, KIT_COLOURS.findIndex((k) => k.name === EXAMPLE.kit));
   d.kits = defaultKits(stripOf(d.colour));

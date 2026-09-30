@@ -229,7 +229,8 @@ export const EXAMPLE = {
   team: "Ashford Juniors",
   /** Eleven players in the example, so an 11-a-side age group. */
   age: "U14",
-  fixture: "v Northgate, league",
+  fixture: "v Northgate",
+  competition: "league",
   /** Times and kit for the example's squad message. No address: a made-up team has no ground. */
   match: { kickoff: "10:30", meet: "09:45", kit: "Pink kit" },
   note: "This is an example team. Play with it as much as you like.",
@@ -391,12 +392,22 @@ export const PARENTS = {
   copy: "Copy",
 } as const;
 
+/** League, cup or friendly: the kind of game, after the opponent in the message. */
+export const COMPETITIONS = [
+  { key: "league", label: "League" },
+  { key: "cup", label: "Cup" },
+  { key: "friendly", label: "Friendly" },
+  { key: "tournament", label: "Tournament" },
+] as const;
+
 /** The call-up for the parents' group. It goes out in the coach's name, so it stays straight. */
 export const MESSAGE = {
   heading: "This week's match",
   hint: "All optional. What you fill in heads the call-up and the result. It clears when you start a new matchday.",
   opponentLabel: "Opponent",
-  opponentPlaceholder: "e.g. v City Select, friendly",
+  opponentPlaceholder: "e.g. v City Select",
+  competitionLabel: "League, cup or friendly",
+  competitionNone: "Not set",
   dateLabel: "Date",
   kickoffLabel: "Kick-off",
   meetLabel: "Meet",
@@ -408,10 +419,17 @@ export const MESSAGE = {
   /** "Change the kits under Your club", with Your club a link down to the panel. */
   venueHint: "Change the kits under",
   venueHintLink: "Your club",
-  /** After the fixture in the message, and the kit line under it. */
-  venueTag: (venue: "home" | "away") => ` (${venue})`,
+  /** After the fixture in the message: "v Northgate (away, league)". Then the kit line under it. */
+  fixtureTag: (parts: readonly string[]) => (parts.length ? ` (${parts.join(", ")})` : ""),
   /** "Home kit: black and yellow stripes, black shorts, black socks." */
   kitLine: (venue: "home" | "away", words: string) => `${venue === "home" ? "Home" : "Away"} kit: ${words}.`,
+  surfaceLabel: "Surface",
+  surfaces: [
+    { key: "grass", label: "Grass" },
+    { key: "astro", label: "Astro" },
+  ],
+  /** Under the kit in the message: the boots to bring. */
+  surfaceLine: { grass: "Grass pitch: studs or moulds.", astro: "Astro pitch: astro boots or trainers, no studs." },
   addressLabel: "Address",
   addressPlaceholder: "Ground name, street, postcode",
   addressHint: "Parents get a Google Maps link with it.",

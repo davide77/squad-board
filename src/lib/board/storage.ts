@@ -1,5 +1,5 @@
 import { KIT_COLOURS } from "@/constants/brand";
-import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
+import { COMPETITIONS, NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { BADGE_CONFIG, STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import {
@@ -20,7 +20,7 @@ import { captureLineup, elapsed } from "./queries";
 import type { BoardData, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyMatch(): MatchDetails {
-  return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
+  return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", surface: "", competition: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
 }
 
 export function emptyData(): BoardData {
@@ -133,6 +133,8 @@ function readMatch(v: unknown): MatchDetails {
     kit: str(v.kit),
     address: str(v.address),
     venue: v.venue === "home" || v.venue === "away" ? v.venue : "",
+    surface: v.surface === "grass" || v.surface === "astro" ? v.surface : "",
+    competition: COMPETITIONS.find((c) => c.key === v.competition)?.key ?? "",
     us: Math.max(0, Math.floor(num(v.us))),
     them: Math.max(0, Math.floor(num(v.them))),
     potm: str(v.potm),
