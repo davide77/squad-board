@@ -306,6 +306,33 @@ export const SHARE_URLS = {
   mail: "mailto:?subject=",
 } as const;
 
+/**
+ * The four questions that stop a coach starting, above the footer. The heading takes the site's
+ * Hairdryer voice; the answers stay straight, because two of them are about data.
+ * The same words go into the FAQPage structured data (seo.ts), so search and AI answers read them too.
+ */
+export const FAQ = {
+  heading: "Before you start.",
+  items: [
+    {
+      q: "Is it free?",
+      a: "Yes. Gafferboard is free for your team, with no adverts and nothing to install.",
+    },
+    {
+      q: "Do I need an account?",
+      a: "No. Open the board and pick your team. There is no sign-up and no email address.",
+    },
+    {
+      q: "Where is my data kept?",
+      a: "In the browser on your own phone or laptop, and nowhere else. Nothing about your players is sent to us. To move the board to another device, export a squad file and open it there.",
+    },
+    {
+      q: "Which formats does it support?",
+      a: "3-a-side, 5-a-side, 7-a-side, 9-a-side and 11-a-side, with the shapes for each. Pick the age group and the board sets the format the FA uses for it. You can change it if your league plays differently.",
+    },
+  ],
+} as const;
+
 export const PRIVATE_ROWS: readonly { readonly title: string; readonly body: string }[] = [
   {
     title: "Stays on your device",
