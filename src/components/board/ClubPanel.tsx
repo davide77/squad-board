@@ -2,19 +2,24 @@
 
 import { useId, useState, type CSSProperties } from "react";
 import { KIT_COLOURS } from "@/constants/brand";
-import { CLUB, CONFIRM } from "@/constants/content/board";
+import { CLUB, CONFIRM, KIT } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { VOICES, type VoiceKey } from "@/constants/content/landing";
 import { AGE_GROUPS, FORMAT_KEYS, FORMATS, type AgeKey, type FormatKey } from "@/constants/football";
 import { exportSquadFile } from "@/lib/board/files";
 import { clearStored, emptyData } from "@/lib/board/storage";
+import type { KitSide } from "@/lib/board/types";
 import { writeVoicePref } from "@/lib/voice";
 import { Button } from "../Button";
 import { BadgePicker } from "./BadgePicker";
 import { ConfirmBox } from "./ConfirmBox";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
+import { KitEditor } from "./KitEditor";
 import { ControlRow, Panel } from "./Panel";
+
+/** The home and away kits live here, so This week's match links down to it. */
+export const CLUB_PANEL_ID = "your-club";
 
 export function ClubPanel() {
   const { state, act, sandbox } = useBoard();
@@ -27,6 +32,9 @@ export function ClubPanel() {
     act({ type: "backedUp" });
     act({ type: "notify", text: GAFFER[data.voice].exported });
   }
+
+  // One strip open at a time, so the panel never runs to ten rows of swatches.
+  const [editingKit, setEditingKit] = useState<KitSide | null>(null);
 
   // Asked in place, under the button, before anything is deleted.
   const [confirmingWipe, setConfirmingWipe] = useState(false);
@@ -45,7 +53,7 @@ export function ClubPanel() {
   }
 
   return (
-    <Panel heading={CLUB.heading} className="has-mt-6">
+    <Panel heading={CLUB.heading} id={CLUB_PANEL_ID} className="has-mt-6">
       <ControlRow label={CLUB.ageLabel}>
         <label htmlFor={ageId} className="sr-only">
           {CLUB.ageLabel}
@@ -106,22 +114,16 @@ export function ClubPanel() {
           ))}
         </div>
       </ControlRow>
-      <ControlRow label={CLUB.awayLabel}>
-        <div className="is-flex is-flex-wrap has-gap-2">
-          {KIT_COLOURS.map((c, i) => (
-            <button
-              key={c.name}
-              type="button"
-              className="swatch has-radius-pill"
-              style={{ "--swatch": c.kit } as CSSProperties}
-              title={c.name}
-              aria-label={CLUB.swatchLabel(CLUB.awayLabel, c.name)}
-              aria-pressed={i === data.awayColour}
-              onClick={() => act({ type: "setAwayColour", index: i })}
-            />
-          ))}
-        </div>
-      </ControlRow>
+      <p className="text-sm is-dimmer has-mt-1">{CLUB.colourHint}</p>
+      {KIT.sides.map((k) => (
+        <KitEditor
+          key={k.key}
+          side={k.key}
+          label={k.label}
+          open={editingKit === k.key}
+          onToggle={() => setEditingKit(editingKit === k.key ? null : k.key)}
+        />
+      ))}
       <ControlRow label={CLUB.badgeLabel}>
         <BadgePicker team={data.team} badge={data.badge} onChange={(value) => act({ type: "setBadge", value })} />
       </ControlRow>

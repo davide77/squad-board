@@ -86,7 +86,13 @@ export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
         return e.clientY < b.top + b.height / 2;
       });
       const others = state.data.players.filter((p) => p.id !== s.id);
-      const to = before ? others.findIndex((p) => p.id === before.dataset.pid) : others.length;
+      // The list is one group of the squad. Past its last row, the row goes just after that one.
+      const last = rows.at(-1)?.dataset.pid;
+      const to = before
+        ? others.findIndex((p) => p.id === before.dataset.pid)
+        : last
+          ? others.findIndex((p) => p.id === last) + 1
+          : -1;
       if (to > -1) act({ type: "reorder", id: s.id, to });
       return;
     }

@@ -1,5 +1,16 @@
 // Positions, pitch roles and formations. Pure football data, no UI.
 
+/** How a shirt is made up. Plain wears one colour; the rest take a second. */
+export const KIT_PATTERNS = [
+  { key: "plain", label: "Plain" },
+  { key: "stripes", label: "Stripes" },
+  { key: "hoops", label: "Hoops" },
+  { key: "halves", label: "Halves" },
+  { key: "sleeves", label: "Sleeves" },
+] as const;
+
+export type KitPattern = (typeof KIT_PATTERNS)[number]["key"];
+
 export const POSITIONS = [
   { key: "GK", label: "Goalkeeper" },
   { key: "FB", label: "Full-back" },

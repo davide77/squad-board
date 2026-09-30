@@ -3,7 +3,8 @@
 import { useId, useRef, useState, type FormEvent } from "react";
 import { CONFIRM, GLYPHS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
-import { blocked, dupeNumbers, freeAt, slotById } from "@/lib/board/queries";
+import { blocked, dupeNumbers, freeAt, slotById, where } from "@/lib/board/queries";
+import type { Player } from "@/lib/board/types";
 import { useMediaQuery } from "@/lib/hooks";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
@@ -76,6 +77,15 @@ export function SquadPanel() {
   if (slot) for (const level of [2, 1, 0] as const) for (const p of freeAt(state.data, slot.role, level)) fits.set(p.id, level);
   // Who can go there comes first, best fit at the top; everyone else keeps their place below.
   const shown = slot ? [...players.filter((p) => fits.has(p.id)).sort((a, b) => (fits.get(b.id) ?? 0) - (fits.get(a.id) ?? 0)), ...players.filter((p) => !fits.has(p.id))] : players;
+  // Starting, then the bench, then the rest, each in squad order. While a position is picked the
+  // list is one run, sorted by who fits.
+  const groups = slot
+    ? [{ key: "fit", label: "", rows: shown }]
+    : SQUAD.groups.map((g) => ({ ...g, rows: players.filter((p) => groupOf(p) === g.key) }));
+  function groupOf(p: Player) {
+    const at = where(state.data, p.id);
+    return p.out || at === "pool" ? "rest" : at;
+  }
   const numRef = useRef<HTMLInputElement>(null);
   const numId = useId();
   const nameId = useId();
@@ -141,21 +151,39 @@ export function SquadPanel() {
       {manyNoPosition && <p className="text-sm is-dim has-mb-3">{SQUAD.noPositionCount(noPosition.length)}</p>}
       {warnings && <p className="warning text-sm is-out has-radius-field has-py-2 has-px-3 has-mb-3">{warnings}</p>}
 
-      <ul className="roster" data-roster>
-        {players.length ? (
-          shown.map((p) => (
-            <RosterRow
-              key={p.id}
-              player={p}
-              index={players.indexOf(p)}
-              dupe={!!p.num && dupes.has(p.num)}
-              place={slot && fits.has(p.id) ? { role: slot.role, fit: fits.get(p.id) ?? 0 } : undefined}
-            />
+      {players.length ? (
+        groups
+          .filter((g) => g.rows.length)
+          .map((g) => (
+            <section key={g.key} aria-label={g.label || undefined}>
+              {g.label && (
+                <h3 className="roster-divider is-flex is-align-center has-gap-2 has-font-headline text-xs tracking-caps uppercase is-dimmer has-pt-3 has-pb-1">
+                  {g.label}
+                  <span className="is-tabular">{g.rows.length}</span>
+                </h3>
+              )}
+              {/* Each group is its own list, so a dragged row stays in its group. */}
+              <ul className="roster" data-roster>
+                {g.rows.map((p, i) => (
+                  <RosterRow
+                    key={p.id}
+                    player={p}
+                    moves={{
+                      up: i > 0 ? players.indexOf(g.rows[i - 1]) : null,
+                      down: i < g.rows.length - 1 ? players.indexOf(g.rows[i + 1]) : null,
+                    }}
+                    dupe={!!p.num && dupes.has(p.num)}
+                    place={slot && fits.has(p.id) ? { role: slot.role, fit: fits.get(p.id) ?? 0 } : undefined}
+                  />
+                ))}
+              </ul>
+            </section>
           ))
-        ) : (
+      ) : (
+        <ul className="roster">
           <li className="text-base is-dimmer has-py-2">{SQUAD.empty}</li>
-        )}
-      </ul>
+        </ul>
+      )}
 
       <form className="is-flex is-flex-wrap has-gap-2 has-mt-3" onSubmit={addPlayer}>
         <label htmlFor={numId} className="sr-only">

@@ -11,13 +11,14 @@ import { useBoard } from "./BoardProvider";
 
 interface RosterRowProps {
   readonly player: Player;
-  readonly index: number;
+  /** Where the arrow keys move this row to in the squad order: the row above and below it in its group. Null at either end. */
+  readonly moves: { readonly up: number | null; readonly down: number | null };
   readonly dupe: boolean;
   /** A position is picked on the pitch and this player can go there: how well they fit it. */
   readonly place?: { readonly role: string; readonly fit: 0 | 1 | 2 };
 }
 
-export function RosterRow({ player: p, index, dupe, place }: RosterRowProps) {
+export function RosterRow({ player: p, moves, dupe, place }: RosterRowProps) {
   const { state, act } = useBoard();
   const { data, ui } = state;
   const status = reasonOf(p) ?? where(data, p.id);
@@ -42,11 +43,11 @@ export function RosterRow({ player: p, index, dupe, place }: RosterRowProps) {
   );
 
   function onGripKey(e: KeyboardEvent) {
-    const step = e.key === "ArrowUp" ? -1 : e.key === "ArrowDown" ? 1 : 0;
-    if (!step) return;
+    const to = e.key === "ArrowUp" ? moves.up : e.key === "ArrowDown" ? moves.down : undefined;
+    if (to === undefined) return;
     e.preventDefault();
-    const to = index + step;
-    if (to >= 0 && to < data.players.length) act({ type: "reorder", id: p.id, to });
+    // Taking the neighbour's place in the squad order puts this row just past it, either way.
+    if (to !== null) act({ type: "reorder", id: p.id, to });
   }
 
   return (

@@ -12,6 +12,7 @@ import {
   type PositionKey,
   type Side,
 } from "@/constants/football";
+import { defaultKits, stripOf } from "./kit";
 import { canonical, captureLineup, fitLevel, sideRank, slotOf, slots, teamSize } from "./queries";
 import { emptyData } from "./storage";
 import type { BoardData, Player } from "./types";
@@ -169,6 +170,7 @@ export function exampleBoard(newId: () => string): BoardData {
   d.fixture = EXAMPLE.fixture;
   d.match = { ...d.match, ...EXAMPLE.match };
   d.colour = Math.max(0, KIT_COLOURS.findIndex((k) => k.name === EXAMPLE.kit));
+  d.kits = defaultKits(stripOf(d.colour));
   d.example = true;
   return d;
 }

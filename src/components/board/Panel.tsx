@@ -3,14 +3,16 @@ import { cx } from "../cx";
 
 interface PanelProps {
   readonly heading: string;
+  /** For a link to jump to the panel. */
+  readonly id?: string;
   readonly count?: ReactNode;
   readonly className?: string;
   readonly children: ReactNode;
 }
 
-export function Panel({ heading, count, className, children }: PanelProps) {
+export function Panel({ heading, id, count, className, children }: PanelProps) {
   return (
-    <section className={cx("panel has-pt-3", className)}>
+    <section id={id} tabIndex={id ? -1 : undefined} className={cx("panel has-pt-3", className)}>
       <div className="is-flex is-align-baseline is-justify-between has-gap-3 has-mb-3">
         <h2 className="text-xl tracking-heading">{heading}</h2>
         {count != null && <span className="text-sm is-dim is-tabular">{count}</span>}

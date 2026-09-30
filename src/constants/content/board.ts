@@ -103,6 +103,12 @@ export const SQUAD = {
   heading: "Squad",
   /** With a position picked on the pitch, the list sorts itself by who plays there. */
   placeHint: (role: string) => `${role} picked. Players who play there are at the top. Tap one to put them in, or press Escape.`,
+  /** The list in three runs, each under a small divider: who starts, who is on the bench, and the rest. */
+  groups: [
+    { key: "xi", label: "Starting" },
+    { key: "bench", label: "Bench" },
+    { key: "rest", label: "Rest of squad" },
+  ],
   playsThere: "Plays there",
   atAPush: "At a push",
   putIn: (name: string, role: string) => `Put ${name} in at ${role}`,
@@ -399,12 +405,13 @@ export const MESSAGE = {
     { key: "home", label: "Home" },
     { key: "away", label: "Away" },
   ],
-  /** "Home · yellow" on the button, with the kit's swatch beside it. */
-  venueOption: (label: string, colour: string) => `${label} · ${colour.toLowerCase()}`,
-  venueHint: "Kit colours come from Your club.",
+  /** "Change the kits under Your club", with Your club a link down to the panel. */
+  venueHint: "Change the kits under",
+  venueHintLink: "Your club",
   /** After the fixture in the message, and the kit line under it. */
   venueTag: (venue: "home" | "away") => ` (${venue})`,
-  kitLine: (venue: "home" | "away", colour: string) => `${venue === "home" ? "Home" : "Away"} kit (${colour.toLowerCase()}).`,
+  /** "Home kit: black and yellow stripes, black shorts, black socks." */
+  kitLine: (venue: "home" | "away", words: string) => `${venue === "home" ? "Home" : "Away"} kit: ${words}.`,
   addressLabel: "Address",
   addressPlaceholder: "Ground name, street, postcode",
   addressHint: "Parents get a Google Maps link with it.",
@@ -419,14 +426,42 @@ export const MESSAGE = {
   confirm: "Please confirm availability.",
 } as const;
 
+/**
+ * The home and away strips, and how a parent hears them. Colours read lower case in a sentence:
+ * "red shirts with white sleeves, white shorts, red socks".
+ */
+export const KIT = {
+  sides: [
+    { key: "home", label: "Home kit" },
+    { key: "away", label: "Away kit" },
+  ],
+  edit: "Change",
+  done: "Done",
+  /** Labels for each part, in the order the editor shows them. */
+  parts: { shirt: "Shirt", pattern: "Pattern", second: "With", shorts: "Shorts", socks: "Socks" },
+  /** "Home kit, shirt: Black" for a swatch's name. */
+  swatchLabel: (side: string, part: string, colour: string) => `${side}, ${part}: ${colour}`,
+  /** The shirt, in the words a coach would say it. */
+  shirtWords: {
+    plain: (shirt: string) => `${shirt} shirts`,
+    stripes: (shirt: string, second: string) => `${shirt} and ${second} stripes`,
+    hoops: (shirt: string, second: string) => `${shirt} and ${second} hoops`,
+    halves: (shirt: string, second: string) => `${shirt} and ${second} halves`,
+    sleeves: (shirt: string, second: string) => `${shirt} shirts with ${second} sleeves`,
+  },
+  shortsWords: (colour: string) => `${colour} shorts`,
+  socksWords: (colour: string) => `${colour} socks`,
+  join: ", ",
+} as const;
+
 export const CLUB = {
   heading: "Your club",
   gaffer: "Gaffer",
   ageLabel: "Age group",
   formatLabel: "Format",
   ageNotSet: "Not set",
-  colourLabel: "Home kit",
-  awayLabel: "Away kit",
+  colourLabel: "Club colour",
+  colourHint: "Colours the board, the crest and the line-up picture. What the team wears is set below.",
   swatchLabel: (which: string, colour: string) => `${which}: ${colour}`,
   badgeLabel: "Badge",
   badgeAdd: "Add badge",

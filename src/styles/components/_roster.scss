@@ -1,5 +1,15 @@
 @use '../abstracts' as *;
 
+// Between Starting, Bench and Rest of squad: the label, its count, and a hairline to the edge.
+.roster-divider {
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: $edge;
+  }
+}
+
 .roster-row {
   position: relative;
   background-color: color(board);

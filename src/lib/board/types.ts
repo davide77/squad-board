@@ -1,6 +1,7 @@
 import type { NameStyle } from "@/constants/content/board";
 import type { VoiceKey } from "@/constants/content/landing";
-import type { AgeKey, FormatKey, PositionKey, Role, Side } from "@/constants/football";
+import type { StripColour } from "@/constants/brand";
+import type { AgeKey, FormatKey, KitPattern, PositionKey, Role, Side } from "@/constants/football";
 
 export interface Player {
   readonly id: string;
@@ -70,9 +71,21 @@ export interface Minutes {
   played: Record<string, number>;
 }
 
-/** What the parents need to get their child there. All optional, all plain text. */
 /** Where the match is played. Empty until the coach says. */
 export type Venue = "" | "home" | "away";
+
+/** Which of the club's two strips. */
+export type KitSide = Exclude<Venue, "">;
+
+/** A strip as a parent would describe it: "black and yellow stripes, black shorts, black socks". */
+export interface Kit {
+  shirt: StripColour;
+  pattern: KitPattern;
+  /** The stripes, hoops, other half or sleeves. Kept while the shirt is plain, so switching back finds it. */
+  second: StripColour;
+  shorts: StripColour;
+  socks: StripColour;
+}
 
 /** This week's match: the details the call-up goes out with, and the result it ends with. Cleared by New matchday. */
 export interface MatchDetails {
@@ -119,9 +132,10 @@ export interface BoardData {
   /** The last line-up saved with "Save line-up". */
   saved: Lineup | null;
   removed: Player[];
+  /** The club colour, as an index into KIT_COLOURS. It colours the board, the crest and the line-up picture, not what anyone wears. */
   colour: number;
-  /** The away kit, as an index into KIT_COLOURS. The home kit is `colour`, which also colours the board. */
-  awayColour: number;
+  /** What the team wears. The call-up names the one for this week's venue. */
+  kits: Record<KitSide, Kit>;
   /** The club badge as a small PNG data URL. Empty when the crest shows initials. */
   badge: string;
   clock: Clock;
