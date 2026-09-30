@@ -51,7 +51,7 @@ export const TONE_SLIDES: Readonly<Record<Tone, ToneSlides>> = {
     sideHeading: "Everyone finds a spot.",
     sideBody: "Tap anyone to swap them over. There are no wrong answers here.",
     matchHeading: "Everyone gets a go. I'll keep count.",
-    matchBody: "Start the clock and every minute is counted, so game time stays fair. Then send the team sheet to the parents.",
+    matchBody: "Start the clock and every minute is counted, so game time stays fair. Then send the result to the parents.",
     matchLine: "Isa's still waiting for a go. Shall we?",
     finish: "Let's do it",
     skip: "Skip the tour. We'll be fine.",

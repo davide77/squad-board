@@ -95,7 +95,7 @@ export const LANDING_COPY: VoiceCopy = {
   weekH: "Four taps. Every Saturday.",
   steps: ["Squad in", "Who's here?", "Pick a shape", "Make changes"],
   filmH: "Chalk. Magnets. Chaos.",
-  sheetH: "Send the team sheet",
+  sheetH: "Tell the parents",
   privH: "Your team. Nobody else's.",
   endH: "Matchday's coming. Pick your team.",
 };
@@ -113,7 +113,7 @@ export const NAV = {
   // Plain nouns, one per section below the hero. The hero is how it works, so it needs no link.
   links: [
     { href: "#try", label: "Demo" },
-    { href: "#sheet", label: "Team sheet" },
+    { href: "#sheet", label: "Parents" },
     { href: "#private", label: "Privacy" },
   ],
   /** The coach's own teams, in the rail at the top left or at the header's far end. They stand in for the button above. */
@@ -193,7 +193,7 @@ export const STORY: readonly StoryChapter[] = [
     kicker: "The Gaffer",
     // Says what it is first. On a phone this is all a coach sees before deciding to scroll.
     title: "Pick the team on the touchline.",
-    body: "A matchday board for grassroots coaches. Squad, shape, bench, subs and the team sheet, on your phone. I tell you what's next.",
+    body: "A matchday board for grassroots coaches. Squad, shape, bench, subs and the message to the parents, on your phone. I tell you what's next.",
     media: { webm: "/film/gafferboard-teaser.webm", mp4: "/film/gafferboard-teaser.mp4", poster: "/film/gafferboard-film-poster.jpg" },
   },
   {
@@ -245,7 +245,7 @@ export const STORY: readonly StoryChapter[] = [
     tab: "Parents",
     kicker: "Parents",
     title: "Send it to the parents.",
-    body: "The team sheet goes to the WhatsApp group or by email. Initials only if the group goes beyond the club. It goes out plain, in your name.",
+    body: "Who's in goes to the WhatsApp group or by email, and the result after the whistle. Never the shape or who's injured. It goes out plain, in your name.",
     media: {
       webm: "/story/gafferboard-story-share.webm",
       mp4: "/story/gafferboard-story-share.mp4",
@@ -283,7 +283,7 @@ export const WEEK_BODIES: readonly [string, string, string, string] = [
 ];
 
 export const SHEET_SECTION = {
-  body: "This is the team sheet from the board above, changes and all. Send it to the WhatsApp group, email it to parents, or copy it.",
+  body: "This is the squad from the board above, as the parents get it: who's in, by shirt number. No shape, no bench, no injuries. Send it to the WhatsApp group, email it, or copy it.",
   whatsapp: "WhatsApp",
   /** Read out after the WhatsApp link, which opens in a new tab. */
   newTab: "(opens in a new tab)",
@@ -291,19 +291,14 @@ export const SHEET_SECTION = {
   copy: "Copy",
   copied: "Copied",
   /** Read out when the copy lands. The button's own label change is not announced. */
-  copiedSpoken: "Team sheet copied",
-  copyFailed: "This browser won't copy. Select the sheet and copy it yourself.",
+  copiedSpoken: "Message copied",
+  copyFailed: "This browser won't copy. Select the message and copy it yourself.",
   initials: "Initials only, for groups with people outside the club",
   chat: "Under 14s parents",
-  mailSubject: "Team sheet: Ashford Juniors v Northgate",
-  /** Lines of the plain text sheet. It goes out in the coach's name, so it never takes a voice. */
-  title: "Ashford Juniors v Northgate (H)",
-  shape: (s: string) => `Shape: ${s}`,
-  xi: "XI: ",
-  benchLine: "Bench: ",
-  none: "none",
-  subs: "Subs: ",
-  subFor: "for",
+  mailSubject: "Squad: Ashford Juniors v Northgate",
+  /** Lines of the plain text message. It goes out in the coach's name, so it never takes a voice. */
+  title: "Ashford Juniors v Northgate (home)",
+  squad: "Squad:",
 } as const;
 
 export const SHARE_URLS = {

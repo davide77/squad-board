@@ -1,4 +1,4 @@
-import { NAME_STYLES, type NameStyle } from "@/constants/content/board";
+import type { NameStyle } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import type { VoiceKey } from "@/constants/content/landing";
 import { BOARD_CONFIG } from "@/constants/config";
@@ -98,13 +98,11 @@ export type Action =
   | { type: "toggleCallUps" }
   | { type: "newMatchday" }
   | { type: "setColour"; index: number }
-  | { type: "saveLineup" }
   | { type: "setStrongest" }
   | { type: "backToStrongest" }
   | { type: "saveNamed"; name: string }
   | { type: "loadNamed"; index: number }
   | { type: "deleteNamed"; index: number }
-  | { type: "cycleNameStyle" }
   | { type: "toggleCover" }
   | { type: "clearPitch" }
   | { type: "backedUp" }
@@ -116,12 +114,14 @@ export type Action =
   | { type: "toggleOffInjured" }
   | { type: "bringOn"; pid: string }
   | { type: "fullTime" }
-  | { type: "halfTime" };
+  | { type: "halfTime" }
+  | { type: "undo" };
 
 /** Every action is stamped with the time it happened, so the reducer stays pure. */
 export type StampedAction = Action & { readonly now: number };
 
 const INITIAL_UI: UiState = {
+  undo: null,
   step: "pick",
   offSlot: null,
   offInjured: false,
@@ -352,8 +352,55 @@ function numberOrder(a: Player, b: Player): number {
 
 /* ---------- reducer ---------- */
 
+/**
+ * Changes to the team that Undo can take back: who plays where, who is in the squad, the shape.
+ * Typing in a field is not one of them; it undoes itself.
+ */
+const UNDOABLE: ReadonlySet<Action["type"]> = new Set([
+  "drop",
+  "tapPlayer",
+  "tapSlot",
+  "tapZone",
+  "pickerPick",
+  "pickerOff",
+  "setCalledUp",
+  "toggleCallUps",
+  "setAvailability",
+  "toggleInjured",
+  "toggleUnavailable",
+  "toggleTraining",
+  "removePlayer",
+  "restorePlayer",
+  "deletePlayer",
+  "setFormat",
+  "setFormation",
+  "backToStrongest",
+  "clearPitch",
+  "newMatchday",
+  "bringOn",
+]);
+
 export function boardReducer(state: BoardState, action: StampedAction): BoardState {
+  if (action.type === "undo") {
+    const undo = state.ui.undo;
+    if (!undo) return state;
+    const back = structuredClone(undo.data);
+    syncMinutes(back, action.now);
+    const notice = { id: (state.ui.notice?.id ?? 0) + 1, text: GAFFER[back.voice].undone };
+    return { data: back, ui: { ...state.ui, undo: null, notice, selected: null, pickerSlot: null, offSlot: null } };
+  }
   const next = reduce(state, action);
+  // A change to the team can be undone for a moment. Any other change to the board ends that chance,
+  // so an undo never takes back something the coach did after it.
+  if (next !== state && next.data !== state.data) {
+    const changed = JSON.stringify(next.data) !== JSON.stringify(state.data);
+    if (changed && UNDOABLE.has(action.type)) {
+      const text = next.ui.notice && next.ui.notice.id !== state.ui.notice?.id ? next.ui.notice.text : GAFFER[next.data.voice].changed;
+      next.ui.undo = { id: (state.ui.undo?.id ?? 0) + 1, text, data: state.data };
+    } else if (changed) {
+      next.ui.undo = null;
+    }
+  }
   if (next !== state && next.data !== state.data) {
     syncMinutes(next.data, action.now);
     // The line-up saves itself, so the board reopens on the team the coach left. A new matchday
@@ -402,6 +449,10 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       ui.offInjured = false;
       closePicker();
       return next;
+
+    // Handled in boardReducer, which holds the board from before the change.
+    case "undo":
+      return state;
 
     case "setSendKind":
       ui.sendKind = action.kind;
@@ -870,11 +921,6 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       d.awayColour = action.index;
       return next;
 
-    case "saveLineup":
-      d.saved = captureLineup(d);
-      note(say.lineupSaved);
-      return next;
-
     case "setStrongest":
       d.preset = captureLineup(d);
       d.saved = captureLineup(d);
@@ -913,12 +959,6 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     case "deleteNamed":
       d.lineups.splice(action.index, 1);
       return next;
-
-    case "cycleNameStyle": {
-      const i = NAME_STYLES.findIndex((o) => o.key === d.nameStyle);
-      d.nameStyle = NAME_STYLES[(i + 1) % NAME_STYLES.length].key;
-      return next;
-    }
 
     case "toggleCover":
       d.showCover = !d.showCover;

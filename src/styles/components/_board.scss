@@ -95,9 +95,16 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
       color: color(chalk);
     }
 
+    // The step showing: lifted, with a kit underline and its number in kit colour. Yellow stays
+    // for the pitch and the one main action.
     &--on {
-      color: color(kit-ink);
-      background-color: color(kit);
+      color: color(chalk);
+      background-color: color(board-3);
+      box-shadow: inset 0 -2px 0 color(kit);
+    }
+
+    &--on .step-tabs__n {
+      color: color(kit);
     }
   }
 }
@@ -296,9 +303,9 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   &__disc {
     width: $hit-size;
     height: $hit-size;
-    color: color(kit);
+    color: color(chalk);
     background-color: color(board);
-    border: 2px solid color(kit);
+    border: 2px solid tint(chalk, 40%);
 
     // Called up but not on the bench: still free to come on, drawn a step quieter.
     &--pool {
@@ -352,8 +359,8 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   }
 
   &--on {
-    background-color: tint(kit, 8%);
-    border-color: color(kit);
+    background-color: color(board-3);
+    border-color: color(chalk);
   }
 }
 
@@ -533,23 +540,32 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 
 // ---------- The Gaffer's line ----------
 
-.gaffer-line__mark {
-  width: spacer(9);
-  height: spacer(9);
-  background-color: color(board-2);
-  border: 1px solid $edge;
+.gaffer-line {
+  // The visor mark beside the bubble, like a face beside a message.
+  &__mark {
+    width: $hit-size;
+    height: $hit-size;
+    background-color: color(board-2);
+    border: 1px solid $edge;
+  }
+
+  // A speech bubble, the corner nearest the mark squared off.
+  &__bubble {
+    max-width: 560px;
+    background-color: color(board-2);
+    border: 1px solid $edge;
+    border-radius: spacer(3) + spacer(1) * 0.5 spacer(3) + spacer(1) * 0.5 spacer(3) + spacer(1) * 0.5 spacer(1);
+  }
 }
 
-// With room for the Gaffer's line, the stepped board shows his words there instead of in a toast.
-// The toast stays in the page, out of sight, so a screen reader still hears each word once.
+// The stepped board says it in the Gaffer's bubble instead of a toast. The toast stays in the page,
+// out of sight, so a screen reader still hears each word once.
 .board--steps .toast-region {
-  @include min(bp(md)) {
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 // A choice among a few, such as home or away, or a name style. Chosen reads white-edged on a lighter
@@ -645,13 +661,18 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   }
 }
 
-// Sticks just above the docked step tabs, so "On for" stays in reach wherever the page is scrolled.
+// Sits in its place under the pitch while nothing is happening, so it never covers the clock on a
+// small phone. Once the player coming off is picked, it pins just above the docked step tabs, so
+// "On for" is in reach wherever the page is scrolled.
 .bench-tray {
-  position: sticky;
-  bottom: calc(var(--dock-height, 0px) + env(safe-area-inset-bottom));
-  z-index: z(raised);
   background-color: tint(board, 95%);
   border-top: 1px solid $edge;
+
+  &--pinned {
+    position: sticky;
+    bottom: calc(var(--dock-height, 0px) + env(safe-area-inset-bottom));
+    z-index: z(raised);
+  }
 
   &__list {
     overflow-x: auto;
@@ -677,5 +698,35 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
       background-color: color(kit);
       border-color: color(kit-edge);
     }
+  }
+}
+
+// ---------- Undo ----------
+
+// Chalk on the dark board, so it reads as the one thing to act on now. On a phone it sits at the top,
+// clear of the bench tray and the step tabs; on a bigger screen, at the foot of the page.
+.undo-bar {
+  position: fixed;
+  left: 50%;
+  top: calc(#{spacer(3)} + env(safe-area-inset-top));
+  z-index: z(toast);
+  max-width: calc(100vw - #{spacer(4) * 2});
+  color: color(board);
+  background-color: color(chalk);
+  box-shadow: 0 spacer(4) spacer(7) tint(black, 60%);
+  transform: translateX(-50%);
+
+  @include min(bp(md)) {
+    top: auto;
+    bottom: spacer(6);
+  }
+
+  &__button {
+    flex: none;
+    min-height: $hit-size;
+    color: color(chalk);
+    background-color: color(board);
+    border: 0;
+    cursor: pointer;
   }
 }

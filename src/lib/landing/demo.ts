@@ -97,21 +97,14 @@ function initials(name: string): string {
 }
 
 /** The plain text team sheet for the demo. Always straight, whatever the voice. */
+/**
+ * The message the demo board sends: who's in, by shirt number, the way the real board's call-up
+ * reads. Never the shape, the bench or who is injured: those stay with the coach.
+ */
 export function demoSheet(s: DemoState, useInitials: boolean): string {
   const nm = (n: string) => (useInitials ? initials(n) : n);
-  const list = (ps: readonly DemoPlayer[]) => ps.map((p) => `${p.num} ${nm(p.name)}`).join(", ");
-  const t = SHEET_SECTION;
-  const lines = [
-    t.title,
-    t.shape(s.shape),
-    "",
-    t.xi + list(s.xi),
-    t.benchLine + (s.bench.length ? list(s.bench) : t.none),
-  ];
-  if (s.subs.length) {
-    lines.push(t.subs + s.subs.map((u) => `${u.min}' ${nm(u.on)} ${t.subFor} ${nm(u.off)}`).join(", "));
-  }
-  return lines.join("\n");
+  const squad = [...s.xi, ...s.bench].sort((a, b) => a.num - b.num);
+  return [SHEET_SECTION.title, "", SHEET_SECTION.squad, ...squad.map((p) => `${p.num} ${nm(p.name)}`)].join("\n");
 }
 
 /** The Gaffer's line for what just happened, in the picked voice. */

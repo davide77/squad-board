@@ -163,7 +163,16 @@ export type Availability = "available" | "inj" | "una" | "trn";
 /** What goes out from Full time: the result for the parents, or the line-up picture for the coaches. */
 export type SendKind = "result" | "picture";
 
+/** The board as it was before the last change to the team, for Undo. */
+export interface UndoPoint {
+  readonly id: number;
+  readonly text: string;
+  readonly data: BoardData;
+}
+
 export interface UiState {
+  /** The last change to the team, for a few seconds, so it can be taken back. */
+  undo: UndoPoint | null;
   /** Which step is showing: picking the team, the match itself, or sending to the parents. */
   step: BoardStep;
   /** On Matchday, the pitch position whose player is coming off, and whether it is for an injury. */
