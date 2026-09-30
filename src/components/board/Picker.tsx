@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GLYPHS, NO_NUMBER, PICKER } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { MOTION } from "@/constants/motion";
-import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
+import { PHONE_QUERY } from "@/constants/config";
+import { useEscapeKey, useFocusTrap, useMediaQuery, useScrollLock } from "@/lib/hooks";
 import { firstName } from "@/lib/board/names";
 import { blocked, byId, freeAt, onBench, positionCodes, slotById, slotOf } from "@/lib/board/queries";
 import type { Player } from "@/lib/board/types";
@@ -129,13 +130,17 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
 /** Who can play in a position: a bottom sheet on a phone, a dialog on a wider screen. */
 export function Picker() {
   const { state, act } = useBoard();
-  const slotId = state.ui.pickerSlot;
+  // A phone picks from a sheet over the pitch. A wider screen picks from the squad list beside it,
+  // which sorts itself by who plays there (SquadPanel), so the sheet is not needed.
+  const phone = useMediaQuery(PHONE_QUERY);
+  const slotId = phone ? state.ui.pickerSlot : null;
   const open = !!slotId;
   const cardRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const close = useCallback(() => act({ type: "closePicker" }), [act]);
 
-  useEscapeKey(open, close);
+  // Escape lets go of a picked position at every size, sheet or not.
+  useEscapeKey(!!state.ui.pickerSlot, close);
   useScrollLock(open);
   useFocusTrap(open, cardRef);
 

@@ -194,3 +194,32 @@
   }
 }
 
+
+// With a position picked, the whole name is the button that puts the player in.
+.roster-row__place {
+  min-height: $hit-size;
+  padding: 0;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover .roster-row__name {
+    color: color(kit);
+  }
+}
+
+// A player who plays the picked position, lifted a touch so the best fits read first.
+.roster-row--fit {
+  background-color: tint(kit, 7%);
+}
+
+.fit-tag {
+  color: color(text-muted);
+  border: 1px solid tint(chalk, 20%);
+
+  &--there {
+    color: color(kit);
+    border-color: color(kit);
+  }
+}

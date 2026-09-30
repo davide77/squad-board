@@ -41,7 +41,7 @@ function PitchSlot({ slot, now }: PitchSlotProps) {
         "pitch-slot--keeper": !!p && slot.role === "GK",
         // No positions set yet is unknown, not wrong, so only a known misfit is marked.
         "pitch-slot--misfit": !!p && p.pos.length > 0 && fitLevel(p, slot.role) === 0,
-        "pitch-slot--selected": !!p && (matchday ? ui.offSlot === slot.id : ui.selected === p.id),
+        "pitch-slot--selected": matchday ? ui.offSlot === slot.id : ui.pickerSlot === slot.id || (!!p && ui.selected === p.id),
         "pitch-slot--wide": data.nameStyle === "full",
         "pitch-slot--movable": ui.posMode,
         "pitch-slot--drop": isDrop,

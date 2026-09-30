@@ -2,8 +2,9 @@
 
 import { useId, useRef, type FormEvent } from "react";
 import { CONFIRM, GLYPHS, SQUAD, ZONES } from "@/constants/content/board";
-import { BOARD_CONFIG } from "@/constants/config";
-import { blocked, dupeNumbers } from "@/lib/board/queries";
+import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
+import { blocked, dupeNumbers, freeAt, slotById } from "@/lib/board/queries";
+import { useMediaQuery } from "@/lib/hooks";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { ControlRow, Panel } from "./Panel";
@@ -52,6 +53,13 @@ function RemovedList() {
 export function SquadPanel() {
   const { state, act } = useBoard();
   const { players } = state.data;
+  // A position picked on the pitch, on a screen wide enough to pick from this list.
+  const phone = useMediaQuery(PHONE_QUERY);
+  const slot = !phone && state.ui.pickerSlot ? slotById(state.data, state.ui.pickerSlot) : null;
+  const fits = new Map<string, 0 | 1 | 2>();
+  if (slot) for (const level of [2, 1, 0] as const) for (const p of freeAt(state.data, slot.role, level)) fits.set(p.id, level);
+  // Who can go there comes first, best fit at the top; everyone else keeps their place below.
+  const shown = slot ? [...players.filter((p) => fits.has(p.id)).sort((a, b) => (fits.get(b.id) ?? 0) - (fits.get(a.id) ?? 0)), ...players.filter((p) => !fits.has(p.id))] : players;
   const numRef = useRef<HTMLInputElement>(null);
   const numId = useId();
   const nameId = useId();
@@ -111,13 +119,23 @@ export function SquadPanel() {
           {SQUAD.sortByNumber}
         </Button>
       </ControlRow>
-      <p className="text-sm is-dimmer has-mb-3">{SQUAD.hint}</p>
+      <p className="text-sm is-dimmer has-mb-3" aria-live="polite">
+        {slot ? SQUAD.placeHint(slot.role) : SQUAD.hint}
+      </p>
       {manyNoPosition && <p className="text-sm is-dim has-mb-3">{SQUAD.noPositionCount(noPosition.length)}</p>}
       {warnings && <p className="warning text-sm is-out has-radius-field has-py-2 has-px-3 has-mb-3">{warnings}</p>}
 
       <ul className="roster" data-roster>
         {players.length ? (
-          players.map((p, i) => <RosterRow key={p.id} player={p} index={i} dupe={!!p.num && dupes.has(p.num)} />)
+          shown.map((p) => (
+            <RosterRow
+              key={p.id}
+              player={p}
+              index={players.indexOf(p)}
+              dupe={!!p.num && dupes.has(p.num)}
+              place={slot && fits.has(p.id) ? { role: slot.role, fit: fits.get(p.id) ?? 0 } : undefined}
+            />
+          ))
         ) : (
           <li className="text-base is-dimmer has-py-2">{SQUAD.empty}</li>
         )}

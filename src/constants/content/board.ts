@@ -104,6 +104,11 @@ export const ZONES = {
 
 export const SQUAD = {
   heading: "Squad",
+  /** With a position picked on the pitch, the list sorts itself by who plays there. */
+  placeHint: (role: string) => `${role} picked. Players who play there are at the top. Tap one to put them in, or press Escape.`,
+  playsThere: "Plays there",
+  atAPush: "At a push",
+  putIn: (name: string, role: string) => `Put ${name} in at ${role}`,
   count: (n: number) => `${n} ${n === 1 ? "player" : "players"}`,
   startTitle: "Getting started",
   startSteps: [

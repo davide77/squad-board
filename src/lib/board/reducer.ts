@@ -541,6 +541,14 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       return next;
 
     case "tapPlayer":
+      // A position is picked: the player tapped goes there, as from the squad list.
+      if (ui.pickerSlot) {
+        const sid = ui.pickerSlot;
+        closePicker();
+        drop(d, action.pid, { kind: "slot", id: sid }, now, note);
+        ui.selected = null;
+        return next;
+      }
       if (ui.selected && ui.selected !== action.pid) {
         if (!drop(d, ui.selected, { kind: "chip", id: action.pid }, now, note)) return state;
         ui.selected = null;
