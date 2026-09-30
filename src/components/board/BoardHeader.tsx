@@ -4,6 +4,7 @@ import { useId } from "react";
 import { HEADER, SHEET } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
 import { matchDate } from "@/lib/board/message";
+import { started } from "@/lib/board/queries";
 import { useBoard } from "./BoardProvider";
 import { Crest } from "./Crest";
 import { MatchClock } from "./MatchClock";
@@ -46,8 +47,8 @@ export function BoardHeader() {
       <div className="board-header__steps">
         <StepTabs />
       </div>
-      {/* On Matchday the big clock takes over. */}
-      {state.ui.step !== "match" && <MatchClock />}
+      {/* On Matchday the big clock takes over. Before kick-off, Start the match is the one way to start it. */}
+      {state.ui.step !== "match" && (state.ui.step !== "pick" || started(state.data)) && <MatchClock />}
     </header>
   );
 }

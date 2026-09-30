@@ -27,6 +27,11 @@ export interface GafferLines {
   /** The final whistle: the clock stops and the board moves on to sending. */
   readonly fullTime: string;
   readonly halfTime: string;
+  /** The clock: kick-off, a stop, back on, and back to nothing. */
+  readonly kickOff: string;
+  readonly clockPaused: string;
+  readonly clockResumed: string;
+  readonly clockCleared: string;
   /** Undo: the change that can be taken back, when nothing else was said about it, and taking it back. */
   readonly changed: string;
   readonly undone: string;
@@ -106,6 +111,10 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     subInjured: (on, off) => `Get well, ${off}. ${on}, you're on.`,
     fullTime: "Full time. Send the result.",
     halfTime: "Half time. Keep it short.",
+    kickOff: "Clock's on. Get stuck in.",
+    clockPaused: "Clock stopped.",
+    clockResumed: "Back on.",
+    clockCleared: "Clock back to nothing.",
     changed: "Changed.",
     undone: "Undone.",
     secondHalf: "Second half. Go again.",
@@ -171,6 +180,10 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     subInjured: (on, off) => `${off}'s done for today. ${on}, this is your moment.`,
     fullTime: "Full time. Well played, everyone. Let's tell the parents.",
     halfTime: "Half time. Water, a word, and back out.",
+    kickOff: "And we're off. Enjoy it, Coach.",
+    clockPaused: "Clock paused. No rush.",
+    clockResumed: "Back under way.",
+    clockCleared: "Clock reset. A fresh start.",
     changed: "Done that for you.",
     undone: "No harm done. It's back as it was.",
     secondHalf: "Second half. Here we go again, team.",

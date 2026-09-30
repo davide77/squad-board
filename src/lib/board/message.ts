@@ -8,7 +8,7 @@ import type { BoardData } from "./types";
 export function matchDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   if (!y || !m || !d) return "";
-  return new Intl.DateTimeFormat(MESSAGE_CONFIG.dateLocale, MESSAGE_DATE_FORMAT).format(new Date(y, m - 1, d));
+  return new Intl.DateTimeFormat(MESSAGE_CONFIG.locale, MESSAGE_DATE_FORMAT).format(new Date(y, m - 1, d));
 }
 
 export function mapLink(address: string): string {
@@ -22,7 +22,7 @@ export function mapLink(address: string): string {
 export function matchHeader(d: BoardData): string[] {
   const { match } = d;
   const date = matchDate(match.date);
-  const title = (d.team || SHEET.fallbackTitle) + (d.season ? `  ${d.season}` : "");
+  const title = (d.team || SHEET.fallbackTitle) + (d.season ? SHEET.pictureJoin + d.season : "");
   const out: string[] = [date ? `${title} - ${date}` : title];
   if (d.fixture.trim()) out.push(d.fixture.trim() + (match.venue ? MESSAGE.venueTag(match.venue) : ""));
   // Home or away says which kit, from the club's colours. A board from before that keeps its own words.
@@ -48,7 +48,11 @@ export function matchHeader(d: BoardData): string[] {
  */
 export function squadMessage(d: BoardData): string {
   const out = matchHeader(d);
-  const squad = d.players.filter((p) => !p.out).map((p) => sentName(d, p.name));
+  // In alphabetical order of the name as it goes out, so a parent finds their child at a glance.
+  const squad = d.players
+    .filter((p) => !p.out)
+    .map((p) => sentName(d, p.name))
+    .sort((a, b) => a.localeCompare(b, MESSAGE_CONFIG.locale));
   out.push("", MESSAGE.squad, ...(squad.length ? squad : [MESSAGE.nobody]));
   out.push("", MESSAGE.confirm);
   if (d.sheetCredit) out.push("", SHEET.credit);
