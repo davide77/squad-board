@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
+import { FAQ, PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
 import { SITE } from "@/constants/site";
@@ -24,6 +24,25 @@ export function PrivateSection() {
           <Link href={ROUTES.privacy} className="hit-area is-inline-block has-mt-4 text-md has-font-semibold is-kit">
             {PRIVATE_MORE}
           </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Four questions, each a native details element: open and close with a tap, readable with no script. */
+export function FaqSection() {
+  return (
+    <section id="faq" className="landing-section">
+      <div className="container landing-split is-grid has-gap-8 landing-section__pad">
+        <h2 className="landing-display landing-display--section">{FAQ.heading}</h2>
+        <div className="faq">
+          {FAQ.items.map((item) => (
+            <details key={item.q} className="faq__item">
+              <summary className="faq__question is-flex is-align-center is-justify-between has-gap-4 has-py-4 has-font-semibold text-lg">{item.q}</summary>
+              <p className="text-md is-dim leading-relaxed has-pb-4 measure-62ch">{item.a}</p>
+            </details>
+          ))}
         </div>
       </div>
     </section>

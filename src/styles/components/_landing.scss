@@ -435,3 +435,39 @@
     border-bottom: 1px solid color(board-3);
   }
 }
+
+// The homepage questions: a rule between each, and a plus that turns to a minus when one is open.
+.faq__item {
+  border-top: 1px solid color(board-3);
+
+  &:last-child {
+    border-bottom: 1px solid color(board-3);
+  }
+}
+
+.faq__question {
+  min-height: $hit-size;
+  list-style: none;
+  cursor: pointer;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::after {
+    content: '+';
+    flex-shrink: 0;
+    color: color(kit);
+    font-family: $font-family-headline;
+    font-size: font-size(2xl);
+    line-height: 1;
+  }
+
+  [open] > &::after {
+    content: '\2212';
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

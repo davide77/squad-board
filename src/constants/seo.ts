@@ -1,3 +1,4 @@
+import { FAQ } from "@/constants/content/landing";
 import { MAKER } from "@/constants/content/pages";
 import { SITE } from "@/constants/site";
 
@@ -38,6 +39,18 @@ export const DEFINITION =
   "Gafferboard is a free web app for grassroots football coaches. It holds the squad, who is called up, the formation, the bench and every substitution on one screen, works on a phone, and needs no account.";
 
 /** Structured data for the homepage: the app, the site and who makes it. */
+/** The homepage FAQ as FAQPage structured data, from the same words as the page. */
+export const FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": `${SITE_URL}/#faq`,
+  mainEntity: FAQ.items.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+} as const;
+
 export const JSON_LD = {
   "@context": "https://schema.org",
   "@graph": [
