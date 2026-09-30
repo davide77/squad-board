@@ -61,6 +61,8 @@ export const VISOR_MARK = {
   size: 240,
   /** Drawn at this size in the site header from bp(md), spacer(11). .site-logo in _landing.scss takes it to 48px on a phone. */
   headerSize: 80,
+  /** Beside the Gaffer's line at the top of each board step. Mirrors .gaffer-line__mark in components/_board.scss. */
+  lineSize: 34,
 } as const;
 
 /**

@@ -13,6 +13,10 @@ export interface GafferLines {
   readonly welcome: string;
   /** After the coach picks this gaffer under Your club. */
   readonly hello: string;
+  /** What the Gaffer says at the top of each step until something happens. */
+  readonly stepPick: string;
+  readonly stepMatch: string;
+  readonly stepSend: string;
 
   // Toasts
   readonly teamPicked: string;
@@ -84,6 +88,9 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
   hairdryer: {
     welcome: "Right. Squad in first.",
     hello: "Right. I'll keep it short.",
+    stepPick: "Who's in? Tick them.",
+    stepMatch: "Tap a player. Bring the bench on.",
+    stepSend: "Pick it. Send it.",
 
     teamPicked: "Team's picked. Tap a position to change it.",
     exampleLoaded: "Example team. Tap a position.",
@@ -140,6 +147,9 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
   arm: {
     welcome: "Welcome, Coach. Let's get your squad in.",
     hello: "Lovely. I'm in your corner.",
+    stepPick: "Tick who's in this week, Coach.",
+    stepMatch: "Tap a player on the pitch to make a change. I'll keep the minutes.",
+    stepSend: "Choose what the parents need, and it's one tap from there.",
 
     teamPicked: "There's your team. Tap any position to change it.",
     exampleLoaded: "Here's an example team. Tap any position to try it.",

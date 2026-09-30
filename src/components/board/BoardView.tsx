@@ -14,6 +14,7 @@ import { useBoard } from "./BoardProvider";
 import { ClubPanel } from "./ClubPanel";
 import { ExampleBanner } from "./ExampleBanner";
 import { KeepSafe } from "./KeepSafe";
+import { GafferLine } from "./GafferLine";
 import { Picker } from "./Picker";
 import { PlayerDrawer } from "./PlayerDrawer";
 import { ShapePanel } from "./ShapePanel";
@@ -114,7 +115,10 @@ export function BoardView({ top }: BoardViewProps) {
         className={cx("board-step", `board-step--${step}`, !columns.left && "board-step--no-left")}
       >
         {columns.left && <div className="board-step__left">{columns.left}</div>}
-        <div className="board-step__centre">{columns.centre}</div>
+        <div className="board-step__centre">
+          <GafferLine />
+          {columns.centre}
+        </div>
         {columns.right && <div className="board-step__right">{columns.right}</div>}
       </div>
       <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dimmer">

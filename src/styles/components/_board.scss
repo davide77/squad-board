@@ -145,13 +145,6 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   }
 }
 
-// The squad message as it will go out. The map link is one long word, so it breaks anywhere.
-.message-preview {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  border: 1px solid $edge;
-}
-
 // 46px is mirrored in BADGE_CONFIG.crestPx in constants/config.ts.
 .crest {
   width: 46px;
@@ -187,15 +180,6 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 
 .control-label {
   min-width: 44px;
-}
-
-// A thin rule between list rows
-.list-rule {
-  border-bottom: 1px solid $rule;
-}
-
-.sub-minute {
-  min-width: 34px;
 }
 
 .warning {
@@ -544,5 +528,26 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     &:hover {
       color: color(out);
     }
+  }
+}
+
+// ---------- The Gaffer's line ----------
+
+.gaffer-line__mark {
+  width: spacer(9);
+  height: spacer(9);
+  background-color: color(board-2);
+  border: 1px solid $edge;
+}
+
+// With room for the Gaffer's line, the stepped board shows his words there instead of in a toast.
+// The toast stays in the page, out of sight, so a screen reader still hears each word once.
+.board--steps .toast-region {
+  @include min(bp(md)) {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 }

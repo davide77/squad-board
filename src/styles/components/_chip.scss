@@ -59,37 +59,6 @@
     border-color: color(chalk);
   }
 
-  // Removed from the squad, still visible so a mistake can be undone
-  &--gone {
-    padding-right: spacer(1);
-    border-style: dashed;
-    opacity: 0.6;
-    cursor: default;
-  }
-
-  &--gone &__name {
-    color: color(dim);
-    text-decoration: line-through;
-  }
-
-  &__bare {
-    padding: 0;
-    background: none;
-    border: 0;
-    color: inherit;
-    cursor: pointer;
-  }
-
-  &__delete {
-    @include icon-hit-area(32px, 0);
-
-    color: color(dimmer);
-
-    &:hover {
-      color: color(out);
-    }
-  }
-
   // Follows the pointer while a player is dragged.
   &--ghost {
     position: fixed;

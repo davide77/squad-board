@@ -18,6 +18,11 @@ export const GLYPHS = {
   grip: "\u22EE\u22EE",
 } as const;
 
+/** The Gaffer's line at the top of each step. */
+export const GAFFER_LINE = {
+  kicker: "The Gaffer",
+} as const;
+
 /** The three matchday steps along the top of the board. Numbered, so the order reads at a glance. */
 export const STEPS = {
   label: "Matchday steps",
@@ -113,8 +118,6 @@ export const SQUAD = {
   editLabel: (name: string) => `Edit ${name}`,
   numberLabel: "No.",
   nameLabel: "Name",
-  positionsLabel: "Positions this player can cover",
-  sideLabel: "Which side",
   sides: [
     { key: "L", label: "Left" },
     { key: null, label: "Either" },
@@ -122,16 +125,8 @@ export const SQUAD = {
   ],
   shirtLabelHint: "Shirt label, used when shirts are labelled by initials",
   shirtLabelPlaceholder: "Shirt label",
-  markInjured: "Mark injured",
-  markFit: "Mark fit again",
-  markUnavailable: "Mark unavailable",
-  markAvailable: "Mark available",
-  markTraining: "Missed training",
   /** Match time so far, after the positions, once the clock has started. */
   minutes: (m: number) => `${m} min`,
-  clearTraining: "Was at training",
-  remove: "Remove from squad",
-  done: "Done",
   addNumberLabel: "Shirt number",
   addNumberPlaceholder: "No.",
   addNameLabel: "Player name",
@@ -294,15 +289,9 @@ export const SAVED = {
 } as const;
 
 export const SHEET = {
-  heading: "Team sheet",
-  hint: "Copies the team with bench cover, the bench and any substitutions, ready to paste into a message.",
   /** The last line of the copied sheet, when the coach leaves it on. How other coaches find Gafferboard. */
   credit: "Made with gafferboard.com",
   creditLabel: "End with \u201cMade with gafferboard.com\u201d",
-  copy: "Copy team sheet",
-  whatsapp: "Send team sheet on WhatsApp",
-  sharePicture: "Share line-up picture",
-  pictureHint: "A picture of the pitch for the parents' group. Names show the way your shirts are labelled.",
   pictureFooter: "gafferboard.com",
   /** Between the fixture, the day and the kick-off on the line-up picture. */
   pictureJoin: " \u00b7 ",
@@ -353,7 +342,6 @@ export const SEND = {
 export const MESSAGE = {
   heading: "This week's match",
   hint: "All optional. What you fill in goes at the top of the squad message and the team sheet. It clears when you start a new matchday.",
-  squadHint: "The call-up for the parents' group. Only the players you called up are named.",
   opponentLabel: "Opponent",
   opponentPlaceholder: "e.g. v City Select, friendly",
   dateLabel: "Date",
@@ -365,9 +353,6 @@ export const MESSAGE = {
   addressPlaceholder: "Ground name, street, postcode",
   addressHint: "Parents get a Google Maps link with it.",
   mapCheck: "Check it on the map",
-  whatsapp: "Send squad on WhatsApp",
-  copy: "Copy squad message",
-  preview: "See the message",
   /** Lines of the message itself. */
   kickoff: "Kick-off: ",
   meet: "Meet: ",
