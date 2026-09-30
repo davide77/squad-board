@@ -23,7 +23,7 @@ import { SavedPanel } from "./SavedPanel";
 import { FullActions, FullKinds, FullPreview } from "./Full";
 import { ParentsMessage } from "./ParentsMessage";
 import { PickActions } from "./PickActions";
-import { ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
+import { BenchTray, ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
 import { Pitch } from "./Pitch";
 import { SquadPanel } from "./SquadPanel";
 import { STEP_PANEL_ID, stepTabId } from "./StepTabs";
@@ -72,6 +72,7 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
         <MatchClockCard />
         <Pitch />
         <ChangeBar />
+        <BenchTray />
       </>
     ),
     right: <MatchLog />,

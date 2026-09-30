@@ -92,6 +92,9 @@ export interface MatchDetails {
   potm: string;
   /** Full time has been called, so the board reopens on the result. */
   ended: boolean;
+  /** Which half is on, and whether it is the break between them. */
+  half: 1 | 2;
+  atBreak: boolean;
 }
 
 /** The text fields of the match, which the details form edits. */
