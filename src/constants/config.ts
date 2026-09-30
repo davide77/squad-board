@@ -135,7 +135,7 @@ export const STORY_DURATION_MS = 9000;
 // Page views work on every Vercel plan. Custom events (a board started, a sheet sent) need Pro,
 // which the team is on. Set `events` to false to stop them, and the privacy page follows.
 export const ANALYTICS_CONFIG = {
-  events: false,
+  events: true,
 } as const;
 
 /** Every custom event the board sends, and the one property each may carry. Never a name from the board. */
