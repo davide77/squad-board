@@ -2,7 +2,8 @@ import Link from "next/link";
 import { FAQ, PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
-import { SITE } from "@/constants/site";
+import { SITE, SOCIAL } from "@/constants/site";
+import { InstagramIcon } from "../InstagramIcon";
 import { ClubWaitlist } from "./ClubWaitlist";
 import { VoiceCta, VoiceText } from "./VoiceText";
 
@@ -80,6 +81,16 @@ export function LandingFooter() {
           </Link>
           <a href={`mailto:${MAKER.email}`} className="hit-area">
             {FOOTER_LINKS.contact}
+          </a>
+          <a
+            href={SOCIAL.instagram.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hit-area is-inline-flex is-align-center has-gap-2"
+          >
+            <InstagramIcon />
+            <span className="sr-only">{SOCIAL.instagram.label}</span>
+            <span translate="no">{SOCIAL.instagram.handle}</span>
           </a>
         </nav>
         <p>

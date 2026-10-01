@@ -5,3 +5,10 @@
 .hit-area {
   @include hit-overlay;
 }
+
+// A social mark in a footer link: the size of the text beside it, in its colour.
+.social-icon {
+  width: spacer(4);
+  height: spacer(4);
+  flex-shrink: 0;
+}
