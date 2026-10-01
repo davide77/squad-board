@@ -53,10 +53,10 @@ const EVENTS_COUNTED =
 export const PRIVACY = {
   title: "Privacy and safety",
   description:
-    "How Gafferboard looks after your squad: no accounts, no cookies, no advertising. The board stays in the browser on your device.",
-  updated: "Last updated 30 September 2026",
+    "How Gafferboard looks after your squad: no database, no advertising, and an account only if you want one. The board stays in the browser on your device.",
+  updated: "Last updated 1 October 2026",
   intro:
-    "Gafferboard has no accounts and no database. Your squad lives in the browser on your device, and nothing about your players is sent to us.",
+    "Gafferboard has no database. Your squad lives in the browser on your device, and nothing about your players is sent to us. Signing in is optional, and only tells us your email address.",
   sections: [
     {
       heading: "What is stored, and where",
@@ -68,7 +68,7 @@ export const PRIVACY = {
     {
       heading: "What we do not collect",
       body: [
-        "No account and no sign-up. No email address, unless you choose to join the club waitlist. No cookies, no advertising and no trackers that follow you to other sites. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
+        "You do not need an account. No email address, unless you choose to sign in or join the club waitlist. No advertising and no trackers that follow you to other sites. The only cookie is the one that keeps you signed in, and only if you sign in. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
         "Like any website, our host, Vercel, sees what every browser sends when a page loads, such as your IP address, and keeps it briefly in its logs for security. What is on your board is never part of that.",
       ],
     },
@@ -82,9 +82,17 @@ export const PRIVACY = {
       ],
     },
     {
+      heading: "Signing in",
+      body: [
+        "Signing in is optional. You give your email address and we email you a link through Brevo, the service we send email with. The link works for 15 minutes.",
+        "Tap it and this browser keeps one cookie that says which email address is signed in, for up to six months. It is needed to keep you signed in, so it needs no banner. It holds nothing else, and it is signed so it cannot be changed.",
+        "We keep no account database. Your squad is not sent anywhere when you sign in: it stays on this device. Sign out on the account page and the cookie is deleted.",
+      ],
+    },
+    {
       heading: "The club waitlist",
       body: [
-        "If you run a club and leave your email address in the footer, we keep that address and when you left it. It is stored with Brevo, the service we send email with, and only we can see it.",
+        "If you leave your email address for the club waitlist, in the footer or under Your club on the board, we keep that address and when you left it. It is stored with Brevo, the service we send email with, and only we can see it.",
         "We use it for one thing: to tell you when Gafferboard for clubs is ready. It is never shared or sold. To be taken off the list, get in touch and we delete it.",
       ],
     },

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FOOTER_SIGN_IN } from "@/constants/content/account";
 import { FAQ, PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
@@ -73,6 +74,9 @@ export function LandingFooter() {
       <div className="container is-flex is-flex-wrap is-justify-between has-gap-3 has-py-6 text-sm is-dimmer">
         <span translate="no">{SITE.name}</span>
         <nav aria-label={FOOTER_LINKS.label} className="is-flex is-flex-wrap has-gap-6">
+          <Link href={ROUTES.account} className="hit-area">
+            {FOOTER_SIGN_IN}
+          </Link>
           <Link href={ROUTES.privacy} className="hit-area">
             {FOOTER_LINKS.privacy}
           </Link>

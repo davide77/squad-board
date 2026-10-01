@@ -195,7 +195,7 @@ export const START = {
   lookHeading: "Just having a look?",
   example: "Try the example team",
   importHint: "Moving from another phone? Import the squad file you exported.",
-  privacy: "No account, no sign-up. Your squad stays on this device.",
+  privacy: "No account needed. Your squad stays on this device.",
 } as const;
 
 /** Asked once, the first time an unnamed team's sheet is about to go out. */

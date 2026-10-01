@@ -129,6 +129,29 @@ export const WAITLIST_CONFIG = {
   trapField: "website",
 } as const;
 
+/**
+ * Sign-in by email link. No password and no database: the link and the session are both signed with
+ * AUTH_SECRET, and the link is sent through Brevo's email API with BREVO_API_KEY from
+ * BREVO_SENDER_EMAIL (see .env.example). Only the coach's email address is ever involved.
+ */
+export const AUTH_CONFIG = {
+  emailEndpoint: "https://api.brevo.com/v3/smtp/email",
+  /** The name the sign-in email comes from. */
+  senderName: "Gafferboard",
+  /** How long the link in the email works. */
+  linkMinutes: 15,
+  /** How long a phone stays signed in. Roughly one season. */
+  sessionDays: 180,
+  /** The one cookie Gafferboard sets, and only once someone signs in. Strictly necessary, so no banner. */
+  cookie: "gb_session",
+  /** The query the link carries its token in. */
+  tokenParam: "token",
+  /** Back on the account page after a link, saying how it went. */
+  statusParam: "link",
+  maxEmail: 254,
+  trapField: "website",
+} as const;
+
 /** Screens laid out as a phone: below the md breakpoint (900px, see _breakpoints.scss). Change both together. */
 export const PHONE_QUERY = "(max-width: 899.98px)";
 
