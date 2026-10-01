@@ -42,7 +42,6 @@ export const SIGN_IN_EMAIL = {
   heading: "Your sign-in link",
   body: "Tap the button on the phone or computer you want to sign in on. The link works for 15 minutes.",
   button: "Sign in to Gafferboard",
-  fallback: "Or copy this into your browser:",
   ignore: "Didn't ask for this? Ignore it. Nobody can sign in without this email.",
 } as const;
 
