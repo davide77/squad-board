@@ -1,0 +1,73 @@
+{
+  "slug": "launch-01-the-story",
+  "format": "feed",
+  "type": "carousel",
+  "pin": true,
+  "slides": [
+    {
+      "layout": "cover",
+      "kicker": "The story",
+      "title": "Saturday. 9.40am.\nFifteen kids.\n*Eleven* can start.",
+      "alt": "Saturday, 9.40am. Fifteen kids. Eleven can start. The story behind Gafferboard."
+    },
+    {
+      "layout": "text",
+      "kicker": "The coach",
+      "title": "I'm Davide.",
+      "body": "I build websites for a living. I started coaching when my son was in the under 9s. He's in the under 15s now. I'm still on the touchline.",
+      "alt": "I'm Davide. I build websites for a living and started coaching when my son was in the under 9s. He's in the under 15s now."
+    },
+    {
+      "layout": "list",
+      "kicker": "Every week",
+      "title": "The same mess.",
+      "items": [
+        "The squad in a WhatsApp group",
+        "The shape on a magnet board",
+        "The subs on the back of a teamsheet",
+        "The minutes in my head"
+      ],
+      "alt": "Every week, the same mess: the squad in a WhatsApp group, the shape on a magnet board, the subs on the back of a teamsheet, the minutes in my head."
+    },
+    {
+      "layout": "text",
+      "kicker": "Then it rains",
+      "title": "The magnets slide.\nThe pen gives up.",
+      "body": "A parent asks who's starting. I'm still counting heads.",
+      "alt": "Then it rains. The magnets slide, the pen gives up, and a parent asks who's starting while I'm still counting heads."
+    },
+    {
+      "layout": "screen",
+      "kicker": "So I built one",
+      "title": "The board I *wanted*.",
+      "image": "story/gafferboard-story-shape.jpg",
+      "body": "Squad, who's in, shape, bench, every sub to the minute.",
+      "alt": "A phone showing the Gafferboard pitch: a 4-3-3 with eleven numbered yellow shirts and the goalkeeper in white."
+    },
+    {
+      "layout": "list",
+      "kicker": "Age group",
+      "title": "It knows the format.",
+      "items": [
+        "Up to under 11s: everyone gets a go",
+        "From under 12s: results count",
+        "3v3 up to 11v11, set by age"
+      ],
+      "alt": "It knows the format. Up to under 11s, everyone gets a go. From under 12s, results count. 3v3 up to 11v11, set by age."
+    },
+    {
+      "layout": "text",
+      "kicker": "Parents",
+      "title": "Who's in goes to the group.",
+      "body": "In your name. Never the shape. Never who's injured.",
+      "alt": "Who's in goes to the parents' group, in your name. Never the shape, never who's injured."
+    },
+    {
+      "layout": "end",
+      "title": "Free for your team.",
+      "body": "No account. Nothing to install.\nBuilt by a coach who needed it.",
+      "alt": "Gafferboard. Free for your team. No account, nothing to install. Built by a coach who needed it."
+    }
+  ],
+  "caption": "I've coached grassroots football since my son was in the under 9s. Every Saturday the same thing. The squad in one place, the shape on a magnet board, the subs on the back of a teamsheet and the minutes in my head.\n\nSo I built the board I wanted. Gafferboard. Squad, who's in, the shape, the bench and every sub to the minute, on your phone. Then who's in goes to the parents' group, in your name.\n\nIt's free for your team. No account, nothing to install.\n\nIf you coach, have a go before the weekend and tell me what's missing. I read every message.\n\n- Davide\n\ngafferboard.com, link in bio\n\n#grassrootsfootball #youthfootball #footballcoach #juniorfootball #grassrootscoach"
+}

@@ -1,0 +1,64 @@
+{
+  "slug": "launch-03-how-it-works",
+  "format": "feed",
+  "type": "carousel",
+  "pin": true,
+  "slides": [
+    {
+      "layout": "cover",
+      "kicker": "How it works",
+      "title": "Matchday.\nFour taps.\n*Every Saturday.*",
+      "alt": "How Gafferboard works. Matchday, four taps, every Saturday."
+    },
+    {
+      "layout": "list",
+      "kicker": "Age group",
+      "title": "How old are they?",
+      "items": [
+        "Pick the age group",
+        "I set the format and the shapes",
+        "Up to under 11s, everyone gets a go",
+        "From under 12s, it's about results"
+      ],
+      "alt": "How old are they? Pick the age group and Gafferboard sets the format and the shapes. Up to under 11s everyone gets a go, from under 12s it's about results."
+    },
+    {
+      "layout": "screen",
+      "kicker": "Squad",
+      "title": "Squad in. Then we talk.",
+      "image": "story/gafferboard-story-squad.jpg",
+      "body": "Paste the names from the parents' group. Once.",
+      "alt": "The squad list on Gafferboard with numbers and positions."
+    },
+    {
+      "layout": "screen",
+      "kicker": "Formation",
+      "title": "Pick your strongest side.",
+      "image": "story/gafferboard-story-shape.jpg",
+      "body": "Tap a shape. Drag players. I'll question it.",
+      "alt": "A 4-3-3 on the Gafferboard pitch with eleven players placed."
+    },
+    {
+      "layout": "screen",
+      "kicker": "Matchday",
+      "title": "Clock on. Make your changes.",
+      "image": "story/gafferboard-story-match-3.jpg",
+      "body": "Every sub logged to the minute.",
+      "alt": "A coach on a floodlit touchline checks the match clock on a phone while the team plays."
+    },
+    {
+      "layout": "text",
+      "kicker": "Parents",
+      "title": "Send it to the *parents*.",
+      "body": "Who's in goes to the WhatsApp group, in your name. Never the shape. Never who's injured.",
+      "alt": "Send it to the parents. Who's in goes to the WhatsApp group in your name, never the shape or who's injured."
+    },
+    {
+      "layout": "end",
+      "title": "Your team. Your call.",
+      "body": "Free for your team. No account.\ngafferboard.com",
+      "alt": "Gafferboard. Your team, your call. Free for your team, no account. gafferboard.com"
+    }
+  ],
+  "caption": "Four taps. Every Saturday.\n\nAge group. Squad in. Pick a shape. Make changes.\n\nThen copy the team sheet and send it. Plain text, in your name.\n\nSave this for Friday night.\n\ngafferboard.com, link in bio\n\n#grassrootsfootball #youthfootball #footballcoach #juniorfootball #grassrootscoach"
+}

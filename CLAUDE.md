@@ -241,6 +241,14 @@ Scan new or modified content for both characters before finishing an edit.
 - Same rule for `gh pr create --body`.
 - Use a plain HEREDOC with only the subject and body, nothing after.
 
+## Social: Instagram (@gafferboard)
+
+- Strategy, story, voice, rhythm and red lines: [docs/social/instagram-playbook.md](docs/social/instagram-playbook.md). Read it before drafting any post.
+- Daily routine: the `instagram-daily` skill. Claude drafts, Davide approves each post, then Claude deploys the images and publishes.
+- Posts are JSON specs in [docs/social/posts/](docs/social/posts/), rendered to `public/social/<slug>/` by `node tools/social/render.mjs <spec>`. What went out is in [docs/social/log.md](docs/social/log.md).
+- The Instagram MCP server is [tools/instagram-mcp/server.mjs](tools/instagram-mcp/server.mjs), registered in [.mcp.json](.mcp.json). The token lives in `~/.config/gafferboard/instagram.json`, never in the repo. Setup: [docs/social/instagram-setup.md](docs/social/instagram-setup.md).
+- Never publish without Davide's OK on that exact post. Never a real child, player name or team sheet.
+
 ## Repo
 
 - Default branch: `main`. Remote: https://github.com/davide77/squad-board. Hosted on Vercel at https://gafferboard.com.

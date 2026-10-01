@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "instagram": {
+      "command": "node",
+      "args": ["tools/instagram-mcp/server.mjs"]
+    }
+  }
+}

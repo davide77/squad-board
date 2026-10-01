@@ -1,0 +1,10 @@
+{
+  "slug": "launch-04-the-film",
+  "type": "reel",
+  "pin": true,
+  "post_from_app": true,
+  "note": "Post from the Instagram app, not the API, so the AI label can be switched on: the film is AI-made. Upload public/film/gafferboard-film.mp4, cover public/film/gafferboard-film-poster.jpg, share to feed.",
+  "video_url": "https://gafferboard.com/film/gafferboard-film.mp4",
+  "cover_url": "https://gafferboard.com/film/gafferboard-film-poster.jpg",
+  "caption": "Chalk. Magnets. Chaos.\n\nThen one phone. Squad, shape, bench, subs, and who's in goes to the parents.\n\nGafferboard. Pick the team on the touchline. Free for your team.\n\nLink in bio.\n\n#grassrootsfootball #youthfootball #footballcoach #juniorfootball #grassrootscoach"
+}
