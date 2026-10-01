@@ -162,7 +162,7 @@ async function main() {
   if (/[\u2013\u2014]/.test(text)) throw new Error("The spec has a long dash. Use a plain hyphen (brand.md, hard rule 1).");
 
   // The visor mark, the one the site header uses (VISOR_MARK in src/constants/brand.ts).
-  const logo = await readFile(join(ROOT, "public/brand/gafferboard-visor.svg"), "utf8");
+  const logo = await readFile(join(ROOT, "public/brand/Logo.svg"), "utf8");
   const outDir = join(ROOT, "public/social", spec.slug);
   const work = join(tmpdir(), `gb-social-${spec.slug}`);
   await rm(outDir, { recursive: true, force: true });

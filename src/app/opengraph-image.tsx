@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { BOARD_PALETTE, KIT_COLOURS, LOGO } from "@/constants/brand";
+import { BOARD_PALETTE, KIT_COLOURS, VISOR_MARK } from "@/constants/brand";
+import { SITE } from "@/constants/site";
 import { OG_IMAGE } from "@/constants/seo";
 
 // The share card every page inherits: what WhatsApp, iMessage and social networks show
@@ -14,7 +15,10 @@ export const alt = OG_IMAGE.alt;
 export const size = { width: OG_IMAGE.width, height: OG_IMAGE.height };
 export const contentType = "image/png";
 
-const LOGO_HEIGHT = 72;
+// The site header lockup: the visor mark, then the name.
+const MARK_PX = 104;
+const NAME_PX = 60;
+const LOCKUP_GAP = 20;
 const PAD = 80;
 const HEADLINE_PX = 112;
 const SUB_PX = 36;
@@ -36,7 +40,7 @@ async function headlineFont() {
 
 export default async function OpengraphImage() {
   const [logo, fonts] = await Promise.all([
-    readFile(join(process.cwd(), "public", LOGO.src)),
+    readFile(join(process.cwd(), "public", VISOR_MARK.src)),
     headlineFont(),
   ]);
   const logoSrc = `data:image/svg+xml;base64,${logo.toString("base64")}`;
@@ -56,7 +60,10 @@ export default async function OpengraphImage() {
           color: BOARD_PALETTE.chalk,
         }}
       >
-        <img src={logoSrc} height={LOGO_HEIGHT} width={(LOGO_HEIGHT * LOGO.width) / LOGO.height} alt="" />
+        <div style={{ display: "flex", alignItems: "center", gap: LOCKUP_GAP }}>
+          <img src={logoSrc} width={MARK_PX} height={MARK_PX} alt="" />
+          <div style={{ fontFamily: OG_IMAGE.fontName, fontSize: NAME_PX, fontWeight: 700 }}>{SITE.name}</div>
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div
             style={{
