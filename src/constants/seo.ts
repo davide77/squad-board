@@ -1,7 +1,7 @@
 import { FORMAT_PAGES } from "@/constants/content/formats";
 import { FAQ } from "@/constants/content/landing";
 import { MAKER } from "@/constants/content/pages";
-import { SITE } from "@/constants/site";
+import { SITE, SOCIAL } from "@/constants/site";
 
 // The live address. Used as the base for every absolute URL in the metadata.
 export const SITE_URL = "https://gafferboard.com";
@@ -61,6 +61,7 @@ export const JSON_LD = {
       name: SITE.name,
       url: SITE_URL,
       inLanguage: "en-GB",
+      sameAs: [SOCIAL.instagram.url],
       publisher: { "@id": `${SITE_URL}/#maker` },
     },
     {
