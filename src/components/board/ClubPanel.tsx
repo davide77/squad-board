@@ -2,6 +2,7 @@
 
 import { useId, useState, type CSSProperties } from "react";
 import { KIT_COLOURS } from "@/constants/brand";
+import { MORE_TEAMS } from "@/constants/content/account";
 import { CLUB, CONFIRM, KIT } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { VOICES, type VoiceKey } from "@/constants/content/landing";
@@ -10,6 +11,7 @@ import { exportSquadFile } from "@/lib/board/files";
 import { clearStored, emptyData } from "@/lib/board/storage";
 import type { KitSide } from "@/lib/board/types";
 import { writeVoicePref } from "@/lib/voice";
+import { ClubWaitlist } from "@/components/landing/ClubWaitlist";
 import { Button } from "../Button";
 import { BadgePicker } from "./BadgePicker";
 import { ConfirmBox } from "./ConfirmBox";
@@ -35,6 +37,10 @@ export function ClubPanel() {
 
   // One strip open at a time, so the panel never runs to ten rows of swatches.
   const [editingKit, setEditingKit] = useState<KitSide | null>(null);
+
+  // One team is free. A second is the club waitlist for now, opened in place under the button.
+  const [askingMoreTeams, setAskingMoreTeams] = useState(false);
+  const moreTeamsId = useId();
 
   // Asked in place, under the button, before anything is deleted.
   const [confirmingWipe, setConfirmingWipe] = useState(false);
@@ -130,6 +136,22 @@ export function ClubPanel() {
       {/* A made-up team has nothing worth keeping, and wiping it would reach the coach's own board. */}
       {!sandbox && (
         <>
+          <ControlRow label={MORE_TEAMS.label}>
+            <Button
+              size="tiny"
+              aria-expanded={askingMoreTeams}
+              aria-controls={moreTeamsId}
+              onClick={() => setAskingMoreTeams(!askingMoreTeams)}
+            >
+              {askingMoreTeams ? MORE_TEAMS.close : MORE_TEAMS.button}
+            </Button>
+          </ControlRow>
+          {askingMoreTeams && (
+            <div id={moreTeamsId} className="is-flex is-flex-column has-gap-3 has-mt-2 has-mb-3">
+              <p className="text-md is-chalk has-font-semibold">{MORE_TEAMS.line}</p>
+              <ClubWaitlist prompt={MORE_TEAMS.prompt} cta={MORE_TEAMS.cta} />
+            </div>
+          )}
           <ControlRow label={CLUB.backupLabel}>
             <Button size="tiny" onClick={exportFile}>
               {CLUB.export}

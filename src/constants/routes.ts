@@ -4,6 +4,9 @@ export const ROUTES = {
   board: "/board",
   privacy: "/privacy",
   credits: "/credits",
+  account: "/account",
+  /** Where the sign-in email's link lands. A route handler, not a page. */
+  signInLink: "/account/link",
 } as const;
 
 /** The board, opened on a format: /board?format=7v7. */

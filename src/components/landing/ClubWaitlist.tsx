@@ -7,8 +7,14 @@ import { joinWaitlist, type WaitlistState } from "@/lib/server/waitlist";
 
 const START: WaitlistState = { status: "idle" };
 
-/** One line in the footer for clubs: an email and a button, then a word from the Gaffer. No account. */
-export function ClubWaitlist() {
+interface ClubWaitlistProps {
+  /** The bold line before the field. The footer asks clubs; the board asks coaches with more than one team. */
+  readonly prompt?: string;
+  readonly cta?: string;
+}
+
+/** One line for clubs: an email and a button, then a word from the Gaffer. No account. */
+export function ClubWaitlist({ prompt = WAITLIST.prompt, cta = WAITLIST.cta }: ClubWaitlistProps) {
   const [state, action, pending] = useActionState(joinWaitlist, START);
   const id = useId();
 
@@ -23,7 +29,7 @@ export function ClubWaitlist() {
   return (
     <form action={action} className="is-flex is-flex-wrap is-align-center has-gap-3">
       <p className="text-md">
-        <span className="is-chalk has-font-semibold">{WAITLIST.prompt}</span> <span className="is-dim">{WAITLIST.cta}</span>
+        <span className="is-chalk has-font-semibold">{prompt}</span> <span className="is-dim">{cta}</span>
       </p>
       <div className="is-flex has-gap-2">
         <label htmlFor={id} className="sr-only">

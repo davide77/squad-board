@@ -320,7 +320,7 @@ export const FAQ = {
     },
     {
       q: "Do I need an account?",
-      a: "No. Open the board and pick your team. There is no sign-up and no email address.",
+      a: "No. Open the board and pick your team. Signing in is optional, and only needs an email address.",
     },
     {
       q: "Where is my data kept?",
@@ -336,7 +336,7 @@ export const FAQ = {
 export const PRIVATE_ROWS: readonly { readonly title: string; readonly body: string }[] = [
   {
     title: "Stays on your device",
-    body: "The board is saved in the browser on your phone. There's no account, and your squad is never sent to us.",
+    body: "The board is saved in the browser on your phone. You don't need an account, and your squad is never sent to us.",
   },
   {
     title: "Move it with a file",
