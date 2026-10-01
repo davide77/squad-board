@@ -104,7 +104,7 @@ All of brand.md's hard rules apply, plus these for Instagram:
   Free for your team. No account.
   ```
 - **Link:** `https://gafferboard.com`
-- **Profile picture:** `public/brand/gafferboard-icon-512.png` (the G on Board). Instagram crops to a circle; the mark sits well inside it.
+- **Profile picture:** `public/brand/gafferboard-avatar-1080.png`, the visor mark on Board. Instagram crops to a circle; the mark sits well inside it.
 - **Pinned posts (3):** the story, the film, how it works.
 - **Highlights** (cover: the G on Board, label in sentence case): `How it works`, `Age groups`, `Parents`, `Updates`.
 

@@ -70,31 +70,25 @@ export const BOARD_PALETTE = {
 /** Browser chrome colour, matches the board background. */
 export const THEME_COLOUR = "#0A0A0A";
 
-/** The horizontal logo, for dark backgrounds. Width and height match the SVG's viewBox ratio. */
-export const LOGO = {
-  src: "/brand/gafferboard-logo.svg",
-  width: 205,
-  height: 48,
-  /** Shown at this height in the footer. */
-  footerHeight: 24,
-} as const;
-
 /**
- * The G in a coach's visor, option F from the logo shortlist. Used on the
- * landing page. The art is square, drawn on a 240 box.
+ * The Gafferboard logo: the G in a coach's visor. Wherever the brand is signed it is this mark
+ * with "Gafferboard" set beside it in Saira Condensed Bold, as in the site header (SiteLogo.tsx).
+ * The art is square, drawn on a 240 box, for dark backgrounds. brand.md, "Logo".
  */
 export const VISOR_MARK = {
-  src: "/brand/gafferboard-visor.svg",
+  src: "/brand/Logo.svg",
   size: 240,
   /** Drawn at this size in the site header from bp(md), spacer(11). .site-logo in _landing.scss takes it to 48px on a phone. */
   headerSize: 80,
   /** Beside the Gaffer's line at the top of each board step. Mirrors .gaffer-line__mark in components/_board.scss. */
   lineSize: 34,
+  /** In the board's footer, beside the name. */
+  footerSize: 28,
 } as const;
 
 /**
- * The app icons for the web manifest, rendered from gafferboard-icon.svg. The maskable
- * one is the mark on a full-bleed Board square, inside the central safe zone.
+ * The app icons for the web manifest, rendered from Logo.svg on a Board square (gafferboard-icon.svg).
+ * The maskable one is the mark on a full-bleed Board square, inside the central safe zone.
  */
 export const APP_ICONS = [
   { src: "/brand/gafferboard-icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

@@ -182,25 +182,27 @@ Fallbacks: Saira Condensed -> Barlow -> system sans. Barlow -> system sans.
 
 ## Logo
 
-The mark is a G drawn the way a coach draws a run on a tactics board: one chalk stroke that sweeps round from the top right and turns in along the bar, stopping short of a disc in the kit colour. The disc is a player, placed where the coach wants them, at the centre of the board.
+The logo is the **visor mark**: the Gafferboard G wearing a coach's visor. The G is drawn the way a coach draws a run on a tactics board, one chalk stroke that sweeps round from the top right and turns in along the bar, stopping short of a disc in the kit colour. The disc is a player, placed where the coach wants them. The visor on top makes the G the Gaffer: the coach on the touchline who picks the team.
 
-- **Concept.** The coach decides, the board shows it. The stroke is the plan, the disc is the pick. The small gap between the bar and the disc is deliberate: the player is placed on the line, not part of it.
-- **Shapes.** A single round-capped stroke, the same weight all the way, like chalk or a marker pen. The disc is the same shape as a shirt on the pitch in the app. No ball, no whistle, no shield: every other football product already uses those.
-- **Colours.** Chalk `#F6F6F3` stroke and a Yellow `#F2D106` disc on Board `#0A0A0A`. The disc is the only colour, just as the kit colour is the only colour on the board.
-- **Wordmark.** "Gafferboard" in Saira Condensed Bold, converted to outlines. Cap height is 22/48 of the mark, so the G leads and the name follows.
+- **Concept.** The Gaffer decides, the board shows it. The stroke is the plan, the disc is the pick, the visor is the person making the call.
+- **Shapes.** A single round-capped stroke, the same weight all the way, like chalk or a marker pen. A white visor sitting on the G, with a stitched grey seam and a grey peak. No ball, no whistle, no shield: every other football product already uses those.
+- **Colours.** Chalk `#F6F6F3` stroke and visor, Dim `#96968F` seam and shading, a Board 2 `#141414` keyline round the visor, and a Yellow `#F2D106` disc, on Board `#0A0A0A`. The disc is the only colour.
+- **Lockup.** Wherever the brand is signed, the mark sits on the left with "Gafferboard" beside it in Saira Condensed Bold, vertically centred, as in the site header ([SiteLogo.tsx](src/components/SiteLogo.tsx)). There is no separate wordmark file: the name is set as live text in the brand font.
 
 Files in [public/brand/](public/brand/):
 
-- `gafferboard-logo.svg` - mark and wordmark, for dark backgrounds. The default.
-- `gafferboard-logo-mono.svg` - one colour, for light backgrounds and print.
-- `gafferboard-mark.svg`, `gafferboard-mark-mono.svg` - the G on its own.
-- `gafferboard-icon.svg` - the G on a Board rounded square: app icon and favicon.
+- `Logo.svg` - the visor mark, on a 240 square, for dark backgrounds. **The source for everything else.** `VISOR_MARK` in [src/constants/brand.ts](src/constants/brand.ts) points here.
+- `gafferboard-icon.svg` - the mark on a Board rounded square. Also `src/app/icon.svg` (the favicon).
+- `gafferboard-icon-192.png`, `gafferboard-icon-512.png`, `gafferboard-icon-maskable-512.png` - web app icons. `src/app/apple-icon.png` is the iPhone home screen icon.
+- `gafferboard-avatar-1080.png` - the mark on a full Board square, sized for social profile pictures, which crop to a circle.
+
+All of these are rendered from `Logo.svg`. Change the mark there first, then render the others again.
 
 Rules:
 
-- Use the colour version on Board only. On any other background use the mono version, in Board or Chalk.
+- The mark is drawn for Board. There is no light-background version yet: on any other background, put the mark on a Board panel.
 - Never recolour the disc to a club colour. The club's colour belongs to the board inside the app, not to the logo.
-- Clear space: half the mark's height on every side. Minimum size: 16px for the mark, 96px wide for the full logo.
+- Clear space: half the mark's height on every side. Minimum size: 16px for the mark on its own, 28px when set beside the name.
 - The crest in the app header is the coach's own club: their badge when they add one, otherwise their initials. It is never the Gafferboard logo, and the Gafferboard logo stays in the site header above it. Keep the two apart.
 
 ## Design direction

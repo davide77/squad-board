@@ -4,7 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import type { BoardStep } from "@/lib/board/types";
 import { cx } from "../cx";
 import Image from "next/image";
-import { LOGO } from "@/constants/brand";
+import { VISOR_MARK } from "@/constants/brand";
 import { CLUB } from "@/constants/content/board";
 import { SITE } from "@/constants/site";
 import { kitColours } from "@/lib/board/kit";
@@ -126,12 +126,10 @@ export function BoardView({ top }: BoardViewProps) {
         {columns.right && <div className="board-step__right">{columns.right}</div>}
       </div>
       <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dimmer">
-        <Image
-          src={LOGO.src}
-          alt={SITE.name}
-          width={Math.round((LOGO.width / LOGO.height) * LOGO.footerHeight)}
-          height={LOGO.footerHeight}
-        />
+        <span className="is-inline-flex is-align-center has-gap-2 is-chalk text-md has-font-headline has-font-bold tracking-number">
+          <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.footerSize} height={VISOR_MARK.footerSize} />
+          <span translate="no">{SITE.name}</span>
+        </span>
         <span>{state.ui.storageOK ? CLUB.stored : CLUB.noStorage}</span>
       </footer>
       <Picker />
