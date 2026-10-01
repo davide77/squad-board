@@ -32,26 +32,26 @@ The team sheet is the loop. Instagram feeds the top of it.
 
 ## 2. The background story
 
-This is the story every launch post tells, and the one the bio and pinned posts keep telling to anyone who arrives later.
+This is the story every launch post tells, and the one the bio and pinned posts keep telling to anyone who arrives later. Since 1 October 2026 the Gaffer tells it, not Davide (see section 4).
 
-**In one paragraph.** Davide builds websites for a living and has coached grassroots football since his son was in the under 9s. He's still on the touchline with the under 15s. Every Saturday was the same: the squad in a WhatsApp group, the shape on a magnet board, the subs on the back of a teamsheet and the minutes in his head. Then it rains and the magnets slide. So he built the board he wanted: squad, who's in, the shape, the bench and every sub to the minute, on the phone already in his pocket, with the team sheet going to the parents in the coach's own name. It knows the age group, so under 11s get equal minutes and from under 12s it's about results. It's free for your team. No account, nothing to install.
+**In one paragraph.** Gafferboard was built by a grassroots coach who was sick of the same Saturday: the squad in a WhatsApp group, the shape on a magnet board, the subs on the back of a teamsheet and the minutes in his head. Then it rains and the magnets slide. So he built the board he wanted: squad, who's in, the shape, the bench and every sub to the minute, on the phone already in his pocket, with the team sheet going to the parents in the coach's own name. It knows the age group, so under 11s get equal minutes and from under 12s it's about results. It's free for your team. No account, nothing to install.
 
 **The beats, in order** (the story carousel follows them):
 
 1. The moment: Saturday morning, more kids than shirts.
-2. The coach: Davide, a web developer and a parent who coaches.
+2. The coach: built by someone who stands on the touchline every weekend. A coach, not a company.
 3. The mess: WhatsApp, magnets, the back of a teamsheet, the head.
 4. The weather: it rains, the kit fails. The weather and the tech are the only fair jokes.
-5. The fix: the board he wanted.
-6. The detail that proves he coaches: age group sets the format and fair minutes.
+5. The fix: the board a coach wanted.
+6. The detail that proves a coach made it: age group sets the format and fair minutes.
 7. The parents: who's in goes out in the coach's name. Never the shape, never who's injured.
 8. The offer: free for your team, no account.
 
 **Facts to keep straight.**
 
-- Do not print a number of years or seasons. "Since my son was in the under 9s" is true and safe.
-- Never name his son, any player, or a child at the club.
-- Ayat is in the background. If it comes up: "I coach an under 15s side. Gafferboard is my own project, not the club's."
+- The account never names Davide or speaks as him. "Built by a coach" is the credential. If someone asks who made it, the reply says "a grassroots coach" and points to the credits page.
+- Never name his son, any player, or a child at the club. Ayat stays out of it.
+- Do not print a number of years or seasons.
 - Do not claim "nothing else like it". Say it plainly: other apps run the club, Gafferboard is for the 90 minutes on the touchline.
 
 ---
@@ -71,22 +71,31 @@ The coach is the customer. Parents are how coaches hear about it.
 
 ## 4. Voice on Instagram
 
-Two speakers, never mixed in one post.
+**One speaker: the Gaffer.** @gafferboard is the Gaffer talking, always. Not Davide, not "the team", not a company. The Gaffer is the guide: the coach on your staff who has done a hundred wet Saturdays and tells you what's next. Davide stays behind the scenes, as he asked on 1 October 2026: this is about the Gaffer, not about him.
 
-**The Gaffer (most posts).** The account speaks Hairdryer, like the website: short, flat, dry, on your side. "Four taps. Every Saturday." "Who's in? Tick them." Marketing and social posts are where brand.md says to "turn it up", so the best lines go here.
+The Gaffer has the two ways from brand.md, and **the age group decides which**:
 
-**Davide (the maker's notes, about one post in six).** First person, plain, practical, signed "- Davide". Contractions, short paragraphs, `really` as his intensifier, no polish. He asks coaches what's missing and means it. Read `~/.claude/email-voice.md` for how he actually writes.
+| Post is about | Way | Sounds like |
+| --- | --- | --- |
+| Under 12s and up, adults, or every age at once | **Hairdryer** (the default) | Short, flat, dry. "Four taps. Every Saturday." "Who's in? Tick them." No exclamation marks. Tough on the job, never on people. |
+| Under 7s to under 11s only | **Pat on the back** | Very soft and warm. The relentless optimist who believes in every player before they do. "Everyone gets a go. That's the whole point." "Lovely stuff, Coach." |
 
-**Pat on the back** shows up only in posts about the youngest age groups (under 7s to under 11s), and then for the whole post, because that's the voice those coaches' boards use. Rule 11 of brand.md: one way per line.
+The soft way is inspired by the kind, endlessly encouraging coach archetype everyone knows from football and television. We take the warmth, never the character: no names, no catchphrases, no quotes, no impressions (brand.md hard rule 10).
+
+Two things that never change, whichever way:
+
+- **The Gaffer always talks to the coach,** never to children. Posts about under 11s are soft because those coaches' Saturdays are about fun and fair minutes, not because a child is reading.
+- **One way per post.** A post is Hairdryer or Pat on the back from the first line to the hashtags (brand.md rule 11).
 
 All of brand.md's hard rules apply, plus these for Instagram:
 
 - **No long dashes**, anywhere, ever. The server refuses a caption that has one.
 - **Five hashtags at most.** Instagram caps posts at five. Use them at the end, from the bank below.
 - **First line carries the post.** Only about 125 characters show before "more". Put the hook there.
-- **One call to action per post.** "Link in bio", "Save this for Friday", or "Tell me what's missing". Never all three.
+- **One call to action per post.** "Link in bio", "Save this for Friday", or "Tell us what's missing". Never all three.
 - **No engagement bait.** No "tag a coach who...", no "comment YES". Ask real questions only.
-- **Emojis:** none in the Gaffer's posts. Davide may use one where he would in a message.
+- **Emojis:** none. The Gaffer doesn't do emojis, either way.
+- **Replies and DMs** are typed by Davide but signed by nobody: they are the Gaffer too, in the way that fits the person's age group.
 
 **Hashtag bank.** Core: `#grassrootsfootball #youthfootball #footballcoach #juniorfootball #grassrootscoach`. Rotate in: `#minisoccer` `#u9football` `#u11football` `#u12football` `#girlsfootball` `#sundayleague` `#footballmanager` `#coachinglife` `#ukfootball`. Pick the five that fit the post.
 
@@ -117,7 +126,7 @@ All of brand.md's hard rules apply, plus these for Instagram:
 | **Matchday** | 40% | One feature, one job, shown on the board. Saveable. | "Bench player in, minute logged." "Injured stays flagged for next week." "Copy the team sheet in one tap." |
 | **The touchline** | 25% | The grassroots coach's week, recognised. Humour on the weather and the tech only. | "Clocks go back. Training under one floodlight." "The kit bag nobody else will carry." "Cones: started with 40." |
 | **Fair go** | 20% | Useful, true, sourced football knowledge, mostly for under 7s to under 11s. | FA formats by age (3v3 to 11v11). Equal minutes and how to track them. Rolling subs explained. |
-| **Maker's notes** | 15% | Davide building it in public. | "You asked for X, it's in." "Why there's no account." What's next. |
+| **From the dugout** | 15% | The Gaffer on what's new on the board and why it works the way it does. | "You asked for X. It's in." "No account. Your squad stays on your phone." What's next. |
 
 Every post must still be useful with the attitude taken out (brand.md rule 7).
 
@@ -131,11 +140,11 @@ Built around the grassroots week. Youth football is mostly Saturday or Sunday mo
 | --- | --- | --- |
 | Mon | **Fair go** or **Touchline** carousel, 18:30 | "How did it go?" one frame |
 | Tue | - | Training night, one tip frame |
-| Wed | - | Maker's note or a feature frame |
+| Wed | - | From the dugout, or a feature frame |
 | Thu | **Matchday** how-to (carousel or Reel), 19:00 | "Team picked yet?" |
 | Fri | **Reel** when we have one, otherwise a short carousel, 19:30 | Two or three frames: pick the team tonight |
 | Sat | - | 07:30 "Matchday. Who's in?" |
-| Sun | Maker's note every other week, 18:00 | 07:30 matchday frame for Sunday leagues |
+| Sun | From the dugout every other week, 18:00 | 07:30 matchday frame for Sunday leagues |
 
 That is **three feed posts and daily stories**. Fewer, better posts beat a daily grid that runs out of things to say. If a week is busy, the Thursday post is the one that must go out.
 
@@ -182,7 +191,7 @@ Content is ready in [posts/](posts/) and rendered in `public/social/`.
 **Days 1 to 14.**
 
 - Follow the weekly rhythm from the first Monday.
-- Davide follows 50 to 100 accounts that matter: County FAs, the leagues already emailed, grassroots coaching accounts, coaching podcasts from the press list. Then 15 minutes a day replying to their posts as a coach. That reply time is what gets a new account noticed, and it has to be him.
+- Davide follows 50 to 100 accounts that matter: County FAs, the leagues already emailed, grassroots coaching accounts, coaching podcasts from the press list. Then 15 minutes a day replying to their posts in the Gaffer's voice. That reply time is what gets a new account noticed, and it has to be a person typing.
 - Send the link to the leagues that replied to the 30 September email, so they can share it.
 - Add "Instagram: @gafferboard" to the footer of the site and to Davide's email signature.
 
@@ -192,7 +201,7 @@ Content is ready in [posts/](posts/) and rendered in `public/social/`.
 2. Fair go: "Under 7s to under 11s: how to share the minutes" (carousel).
 3. Touchline: "Clocks go back on 25 October. One floodlight. Bring the board." (post on Thursday 22 October)
 4. Matchday Reel: screen recording, bench player on, minute logged.
-5. Maker's note: "Why there's no account" (privacy, everything stays on your phone).
+5. From the dugout: "No account. Your squad stays on your phone." (privacy)
 6. Fair go: "The FA formats by age, 3v3 to 11v11" (carousel, check every number against englandfootball.com first).
 7. Matchday: "Copy. Paste in the group. Done." (the team sheet).
 8. Touchline: half term, a week off, a week to sort the squad list.
@@ -221,7 +230,7 @@ What works for a small, useful account in 2026, in order of effort to reward:
 1. **Shares and saves over likes.** Instagram ranks posts that get sent in DMs and saved. Make posts worth forwarding to the assistant coach: a how-to, a format table, a fair minutes plan.
 2. **Reels from week 3.** Screen recordings of the board. Short, one action, captioned.
 3. **Collab posts.** Invite a grassroots coaching account or a County FA to a joint post on something useful to their followers (formats, fair minutes). The post shows on both profiles.
-4. **Davide's replies.** Fifteen minutes a day on other coaches' posts, as a coach, not as an advert.
+4. **Replies from @gafferboard.** Fifteen minutes a day on other coaches' posts, typed by Davide in the Gaffer's voice. Useful and kind, never an advert.
 5. **The team sheet loop.** Every sheet sent carries the name. Instagram should mention "it's on the bottom of the sheet" now and then, so parents who see it know where it comes from.
 6. **No paid promotion** until organic posts show which messages work. Then a small boost on the best Friday post, in August, aimed at coaches. Never at parents of young children.
 
