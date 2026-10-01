@@ -44,7 +44,9 @@ const fmt = (s = "") => esc(s).replace(/\*(.+?)\*/g, `<span class="kit">$1</span
 function slideHtml(slide, i, total, f, logo) {
   const counter = total > 1 ? `<div class="count">${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</div>` : "";
   const top = `<header>${slide.kicker ? `<div class="kicker">${esc(slide.kicker)}</div>` : "<div></div>"}${counter}</header>`;
-  const foot = `<footer><div class="logo">${logo}</div><div class="url">gafferboard.com</div></footer>`;
+  // The site header's lockup (SiteLogo.tsx): the visor mark, then the name set in Saira Condensed.
+  const lockup = `<span class="mark">${logo}</span><span class="name">Gafferboard</span>`;
+  const foot = `<footer><div class="logo">${lockup}</div><div class="url">gafferboard.com</div></footer>`;
 
   let main = "";
   switch (slide.layout) {
@@ -63,7 +65,7 @@ function slideHtml(slide, i, total, f, logo) {
       break;
     }
     case "end":
-      main = `<main class="center end"><div class="biglogo">${logo}</div><h2>${fmt(slide.title)}</h2>${slide.body ? `<p>${fmt(slide.body)}</p>` : ""}</main>`;
+      main = `<main class="center end"><div class="biglogo">${lockup}</div><h2>${fmt(slide.title)}</h2>${slide.body ? `<p>${fmt(slide.body)}</p>` : ""}</main>`;
       break;
     default:
       throw new Error(`Unknown layout "${slide.layout}" on slide ${i + 1}`);
@@ -99,10 +101,15 @@ main.screen{justify-content:center;align-items:flex-start;gap:36px;padding-top:3
 .phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 p.caption{font-size:40px;max-width:none}
 footer{display:flex;justify-content:space-between;align-items:center;padding-top:36px;border-top:2px solid ${C.rule}}
-.logo svg{height:52px;width:auto;display:block}
+.logo,.biglogo{display:flex;align-items:center;gap:18px;font-family:"Saira Condensed";font-weight:700;letter-spacing:.01em;color:${C.chalk}}
+.mark svg{display:block;width:100%!important;height:100%!important}
+.logo .mark{width:76px;height:76px}
+.logo .name{font-size:44px}
 .url{font-family:"Saira Condensed";font-weight:600;font-size:32px;letter-spacing:.06em;color:${C.dim}}
 .end{align-items:flex-start}
-.biglogo svg{height:120px;width:auto;display:block;margin-bottom:24px}
+.biglogo{gap:26px;margin-bottom:24px}
+.biglogo .mark{width:160px;height:160px}
+.biglogo .name{font-size:88px}
 </style></head><body>${top}${main}${showFoot ? foot : ""}</body></html>`;
 }
 
@@ -154,7 +161,8 @@ async function main() {
   const text = JSON.stringify(spec);
   if (/[\u2013\u2014]/.test(text)) throw new Error("The spec has a long dash. Use a plain hyphen (brand.md, hard rule 1).");
 
-  const logo = await readFile(join(ROOT, "public/brand/gafferboard-logo.svg"), "utf8");
+  // The visor mark, the one the site header uses (VISOR_MARK in src/constants/brand.ts).
+  const logo = await readFile(join(ROOT, "public/brand/gafferboard-visor.svg"), "utf8");
   const outDir = join(ROOT, "public/social", spec.slug);
   const work = join(tmpdir(), `gb-social-${spec.slug}`);
   await rm(outDir, { recursive: true, force: true });
