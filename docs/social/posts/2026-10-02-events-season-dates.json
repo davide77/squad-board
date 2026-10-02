@@ -1,0 +1,42 @@
+{
+  "slug": "2026-10-02-events-season-dates",
+  "format": "story",
+  "type": "stories",
+  "pillar": "Events",
+  "highlight": "Events",
+  "voice": "hairdryer",
+  "when": "Saturday 3 October 2026, 18:00, after the morning games. The first frames of the Events highlight.",
+  "slides": [
+    {
+      "layout": "cover",
+      "kicker": "Events",
+      "title": "October to Christmas.\nMark the *dates*.",
+      "alt": "Events. October to Christmas. Mark the dates."
+    },
+    {
+      "layout": "list",
+      "kicker": "This half of the season",
+      "title": "Four dates.",
+      "items": [
+        "25 October: clocks go back",
+        "Late October: half term",
+        "November: wet pitches, cold hands",
+        "December: last games before the break"
+      ],
+      "alt": "This half of the season, four dates: 25 October, the clocks go back. Late October, half term. November, wet pitches and cold hands. December, the last games before the break."
+    },
+    {
+      "layout": "text",
+      "kicker": "25 October",
+      "title": "Clocks go back.\nTraining goes *dark*.",
+      "body": "Pick the team before the session, not in the car park after it.",
+      "alt": "25 October, the clocks go back and training goes dark. Pick the team before the session, not in the car park after it."
+    },
+    {
+      "layout": "end",
+      "title": "One at a time.",
+      "body": "Each date gets its own story.\nThey all live in Events.",
+      "alt": "Gafferboard. One at a time. Each date gets its own story, and they all live in the Events highlight."
+    }
+  ]
+}
