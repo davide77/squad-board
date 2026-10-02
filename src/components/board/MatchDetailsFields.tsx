@@ -9,7 +9,7 @@ import type { Competition, MatchTextField } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
 import { KitIcon } from "./KitIcon";
 
-const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
+const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1";
 // py-3 keeps every field at least 44px tall for a thumb.
 const FIELD = "field is-w-full has-radius-field has-py-3 has-px-3 text-base";
 
@@ -24,7 +24,7 @@ export function MatchDetailsFields() {
 
   return (
     <div>
-      <p className="text-sm is-dimmer has-mb-4">{MESSAGE.hint}</p>
+      <p className="text-sm is-dim has-mb-4">{MESSAGE.hint}</p>
       <div className="is-grid has-gap-3">
         <div>
           <label htmlFor={`${id}-opp`} className={LABEL}>
@@ -98,7 +98,7 @@ export function MatchDetailsFields() {
             ))}
           </div>
           {match.venue && <p className="kit-editor__words text-sm is-dim has-mt-2">{kitWords(kits[match.venue])}</p>}
-          <p className="text-sm is-dimmer has-mt-1">
+          <p className="text-sm is-dim has-mt-1">
             {MESSAGE.venueHint}{" "}
             <button
               type="button"
@@ -147,7 +147,7 @@ export function MatchDetailsFields() {
             value={match.address}
             onChange={set("address")}
           />
-          <p id={`${id}-address-hint`} className="is-flex is-flex-wrap is-align-center has-gap-3 has-mt-1 text-sm is-dimmer">
+          <p id={`${id}-address-hint`} className="is-flex is-flex-wrap is-align-center has-gap-3 has-mt-1 text-sm is-dim">
             <span>{MESSAGE.addressHint}</span>
             {address && (
               <a href={mapLink(address)} target="_blank" rel="noopener" className="hit-area is-kit">

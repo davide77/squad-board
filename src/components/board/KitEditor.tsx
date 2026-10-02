@@ -53,7 +53,7 @@ export function KitEditor({ side, label, open, onToggle }: KitEditorProps) {
       <div className="is-flex is-align-center has-gap-3">
         <KitIcon kit={kit} className="kit-icon--md is-shrink-0" />
         <div className="is-flex-1 is-min-w-0">
-          <p className="has-font-headline text-xs tracking-caps uppercase is-dimmer">{label}</p>
+          <p className="has-font-headline text-xs tracking-caps uppercase is-dim">{label}</p>
           <p className="kit-editor__words text-base">{kitWords(kit)}</p>
         </div>
         <Button size="tiny" aria-expanded={open} onClick={onToggle}>

@@ -1,6 +1,8 @@
 export const SITE = {
   name: "Gafferboard",
   skipLink: "Skip to main content",
+  /** The empty spot at the far end of the header on the board. The board fills it with Customise your club. */
+  headerSlotId: "site-header-slot",
   description:
     "A matchday board for grassroots coaches: the squad, who is called up, the shape, the bench and every substitution, on one screen.",
 } as const;

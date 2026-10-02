@@ -30,7 +30,7 @@ export function SavedLineups() {
           mine.map(({ l, i }) => (
             <div key={`${l.name}-${i}`} className="is-flex is-align-center has-gap-2">
               <span className="is-flex-1 is-min-w-0 is-truncate">{l.name}</span>
-              <span className="has-font-headline text-sm is-dimmer">{l.formation}</span>
+              <span className="has-font-headline text-sm is-dim">{l.formation}</span>
               <Button size="tiny" onClick={() => act({ type: "loadNamed", index: i })}>
                 {SAVED.load}
               </Button>
@@ -40,7 +40,7 @@ export function SavedLineups() {
             </div>
           ))
         ) : (
-          <p className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].savedEmpty}</p>
+          <p className="text-base is-dim has-py-2">{GAFFER[state.data.voice].savedEmpty}</p>
         )}
       </div>
       <form className="is-flex is-flex-wrap has-gap-2 has-mt-3" onSubmit={save}>

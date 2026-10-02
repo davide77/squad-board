@@ -12,6 +12,7 @@ import { kitColours } from "@/lib/board/kit";
 import { useStickyTop } from "@/lib/hooks";
 import { BoardHeader } from "./BoardHeader";
 import { useBoard } from "./BoardProvider";
+import { ClubButton } from "./ClubButton";
 import { ClubSheet } from "./ClubSheet";
 import { ExampleBanner } from "./ExampleBanner";
 import { KeepSafe } from "./KeepSafe";
@@ -79,7 +80,7 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
 
 /** A loaded board, for whichever BoardProvider it sits in. */
 export function BoardView({ top }: BoardViewProps) {
-  const { state } = useBoard();
+  const { state, sandbox } = useBoard();
   const rootRef = useRef<HTMLDivElement>(null);
   const { onPointerDown, onClickCapture } = useBoardDrag(rootRef);
   const { step } = state.ui;
@@ -116,20 +117,22 @@ export function BoardView({ top }: BoardViewProps) {
       >
         {columns.left && <div className="board-step__left">{columns.left}</div>}
         <div ref={centreRef} className="board-step__centre">
-          <GafferLine />
+          {/* On Pick the team the Gaffer speaks from the bar along the foot, beside the buttons. */}
+          {step !== "pick" && <GafferLine />}
           {columns.centre}
         </div>
         {columns.right && <div className="board-step__right">{columns.right}</div>}
       </div>
       {/* Pinned along the foot while the coach picks: where the team stands, and the two ways on. */}
       {step === "pick" && <PickBar ref={barRef} />}
-      <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dimmer">
+      <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dim">
         <span className="is-inline-flex is-align-center has-gap-2 is-chalk text-md has-font-headline has-font-bold tracking-number">
           <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.footerSize} height={VISOR_MARK.footerSize} />
           <span translate="no">{SITE.name}</span>
         </span>
         <span>{state.ui.storageOK ? CLUB.stored : CLUB.noStorage}</span>
       </footer>
+      {!sandbox && <ClubButton />}
       <Picker />
       <ClubSheet />
       <CallUpSheet />

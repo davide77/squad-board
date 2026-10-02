@@ -33,7 +33,7 @@ function Option({ player: p, disabled = false }: OptionProps) {
         {p.num || NO_NUMBER}
       </span>
       <span className="is-flex-1 is-min-w-0 is-truncate">{p.name}</span>
-      <span className="has-font-headline text-xs tracking-tag is-dimmer">{positionCodes(p).join(" ")}</span>
+      <span className="has-font-headline text-xs tracking-tag is-dim">{positionCodes(p).join(" ")}</span>
       {badge && (
         <span className="picker-option__badge has-font-headline text-xs tracking-heading is-kit has-radius-pill has-px-2">
           {badge}
@@ -107,7 +107,7 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
         {greyed.map((g) => (
           <Group key={g.title} title={g.title} players={g.players} disabled />
         ))}
-        {nobody && <p className="text-base is-dimmer has-py-2">{GAFFER[data.voice].nobody}</p>}
+        {nobody && <p className="text-base is-dim has-py-2">{GAFFER[data.voice].nobody}</p>}
       </div>
       <div className="picker__actions is-flex is-flex-wrap has-gap-2 has-pt-3 has-mt-1">
         {current ? (

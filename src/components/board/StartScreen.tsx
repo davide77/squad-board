@@ -84,7 +84,7 @@ export function StartScreen({ format }: StartScreenProps) {
       <form onSubmit={pickTeam}>
         {group && !ageOpen ? (
           <div className="has-mb-4">
-            <p className="has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">{START.ageLabel}</p>
+            <p className="has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1">{START.ageLabel}</p>
             <p className="is-flex is-align-center is-flex-wrap has-gap-3 text-md">
               <span className="has-font-semibold">{START.ageOption(group.label, FORMATS[group.format].label)}</span>
               <button
@@ -103,7 +103,7 @@ export function StartScreen({ format }: StartScreenProps) {
           </div>
         ) : (
           <>
-            <label htmlFor={ageId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
+            <label htmlFor={ageId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1">
               {START.ageLabel}
             </label>
             <select
@@ -124,11 +124,11 @@ export function StartScreen({ format }: StartScreenProps) {
                 </option>
               ))}
             </select>
-            <p className="text-sm is-dimmer has-mt-1 has-mb-4">{START.ageHint}</p>
+            <p className="text-sm is-dim has-mt-1 has-mb-4">{START.ageHint}</p>
           </>
         )}
 
-        <label htmlFor={squadId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
+        <label htmlFor={squadId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1">
           {START.squadLabel}
         </label>
         <textarea
@@ -143,7 +143,7 @@ export function StartScreen({ format }: StartScreenProps) {
           value={squadText}
           onChange={(e) => setSquadText(e.target.value)}
         />
-        <p className="text-sm is-dimmer has-mt-1">{START.squadHint}</p>
+        <p className="text-sm is-dim has-mt-1">{START.squadHint}</p>
         <p id={countId} className="text-base is-tabular has-mt-3 has-mb-3" aria-live="polite">
           {count}
         </p>
@@ -151,7 +151,7 @@ export function StartScreen({ format }: StartScreenProps) {
         <Button type="submit" variant="primary" disabled={!squad.length || !group}>
           {START.submit}
         </Button>
-        <p className="text-sm is-dimmer has-mt-2">{START.afterSubmit}</p>
+        <p className="text-sm is-dim has-mt-2">{START.afterSubmit}</p>
       </form>
 
       <div className="has-mt-7">
@@ -166,7 +166,7 @@ export function StartScreen({ format }: StartScreenProps) {
         <ImportSquadButton size="regular" />
       </div>
 
-      <p className="text-sm is-dimmer has-mt-7">{START.privacy}</p>
+      <p className="text-sm is-dim has-mt-7">{START.privacy}</p>
       <ExampleSheet open={showExample} onClose={() => setShowExample(false)} voice={voice} />
     </section>
   );

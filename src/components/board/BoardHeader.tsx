@@ -5,17 +5,16 @@ import { HEADER, SHEET } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
 import { matchSummary } from "@/lib/board/message";
 import { started } from "@/lib/board/queries";
-import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
+import { ClubButton } from "./ClubButton";
 import { Crest } from "./Crest";
 import { MatchClock } from "./MatchClock";
 import { TEAM_NAME_MARK } from "./NameFirst";
-import { SendToPhone } from "./SendSquad";
 import { StepTabs } from "./StepTabs";
 
 export function BoardHeader() {
-  const { state, act } = useBoard();
+  const { state, act, sandbox } = useBoard();
   const teamId = useId();
   // This week's match on one line. A tap opens Send call-up, where it is filled in beside the message it heads.
   const summary = matchSummary(state.data);
@@ -35,7 +34,7 @@ export function BoardHeader() {
             <input
               id={teamId}
               {...TEAM_NAME_MARK}
-              className="board-header__team is-w-full has-font-headline has-font-bold leading-tight tracking-number is-kit"
+              className="board-header__team is-w-full has-font-headline has-font-bold leading-tight tracking-number is-chalk"
               placeholder={HEADER.teamPlaceholder}
               autoComplete="off"
               value={state.data.team}
@@ -46,11 +45,8 @@ export function BoardHeader() {
         {/* The age group and format are set in the club sheet, so the way in sits beside them. */}
         <div className="is-flex is-align-center has-gap-3 has-mt-1">
           <p className="is-min-w-0 text-base is-dim is-truncate">{squadLine}</p>
-          <Button size="tiny" className="is-shrink-0" aria-haspopup="dialog" onClick={() => act({ type: "openClub" })}>
-            {HEADER.club}
-          </Button>
-          {/* On a phone it lives under Customise your club: the board is already where it needs to be. */}
-          <SendToPhone className="is-hidden is-md-flex is-shrink-0" />
+          {/* On the real board, Customise your club is at the far end of the site header. The example team's sheet covers that, so it keeps the button here. */}
+          {sandbox && <ClubButton inline />}
         </div>
         <button
           type="button"

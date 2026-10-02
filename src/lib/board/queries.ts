@@ -1,4 +1,3 @@
-import { BOARD_CONFIG } from "@/constants/config";
 import {
   AGE_GROUPS,
   CUSTOM_BANDS,
@@ -168,17 +167,12 @@ export function bestFree(d: BoardData, role: Role): Player | null {
   return freeAt(d, role, 2)[0] ?? freeAt(d, role, 1)[0] ?? null;
 }
 
-/**
- * What is worth checking before the call-up goes: shirt numbers on two players, and players with no
- * position. A freshly pasted squad often has no positions at all; past a few names that is a next
- * step, not a fault, so it is counted apart and not flagged.
- */
+/** What is worth checking before the call-up goes: shirt numbers on two players, and players with no position. */
 export function squadChecks(d: BoardData) {
   const dupes = [...dupeNumbers(d)].sort((a, b) => Number(a) - Number(b));
-  const noPosition = d.players.filter((p) => !p.pos.length).map((p) => p.name);
-  const manyNoPosition = noPosition.length > BOARD_CONFIG.noPositionNamesMax;
-  const flagged = (dupes.length ? 1 : 0) + (noPosition.length && !manyNoPosition ? 1 : 0);
-  return { dupes, noPosition, manyNoPosition, flagged };
+  const noPosition = d.players.filter((p) => !p.pos.length);
+  const flagged = (dupes.length ? 1 : 0) + (noPosition.length ? 1 : 0);
+  return { dupes, noPosition, flagged };
 }
 
 export function dupeNumbers(d: BoardData): Set<string> {

@@ -3,7 +3,7 @@
 import type { CSSProperties } from "react";
 import { MATCH, NO_NUMBER, SHAPE } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
-import { firstName, shirtName } from "@/lib/board/names";
+import { firstName, monogram, shirtName } from "@/lib/board/names";
 import { byId, coverFor, dupeNumbers, fitLevel, playedMinutes, slots } from "@/lib/board/queries";
 import { useNow } from "@/lib/hooks";
 import type { Slot } from "@/lib/board/types";
@@ -57,19 +57,20 @@ function PitchSlot({ slot, now, dupes }: PitchSlotProps) {
       onClick={() => act(matchday ? { type: "selectOff", slotId: slot.id } : { type: "tapSlot", slotId: slot.id })}
     >
       <span className="pitch-slot__disc is-flex is-align-center is-justify-center has-radius-pill has-font-headline has-font-bold text-xl leading-tight is-tabular">
-        {p ? p.num || NO_NUMBER : ""}
+        {/* No shirt number yet: the player's initials, which say who it is, rather than a dash. */}
+        {p ? p.num || monogram(p.name) : ""}
       </span>
       {p ? (
         <span className="pitch-slot__name text-2xs leading-snug text-center has-radius-sm">
           {shirtName(p, data.nameStyle, data.players)}
         </span>
       ) : (
-        <span className="has-font-headline text-2xs tracking-group is-dim">{slot.role}</span>
+        <span className="has-font-headline text-xs tracking-group is-dim">{slot.role}</span>
       )}
       {matchday && p ? (
-        <span className="text-2xs is-dim is-tabular">{MATCH.played(playedMinutes(data, p.id, now))}</span>
+        <span className="text-xs is-dim is-tabular">{MATCH.played(playedMinutes(data, p.id, now))}</span>
       ) : (
-        cover && <span className="pitch-slot__cover text-2xs is-dim is-truncate">({cover})</span>
+        cover && <span className="pitch-slot__cover text-xs is-dim is-truncate">({cover})</span>
       )}
     </button>
   );

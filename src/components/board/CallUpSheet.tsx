@@ -13,7 +13,7 @@ import { NameStyles } from "./NameStyles";
 import { SideSheet } from "./SideSheet";
 import { useCopySheet } from "./useCopySheet";
 
-const SECTION_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-3";
+const SECTION_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dim has-mb-3";
 
 /** The team name, asked for here when the board has none, so the call-up never goes out headed "Matchday". */
 function TeamNameField() {
@@ -24,7 +24,7 @@ function TeamNameField() {
   if (!unnamed) return null;
   return (
     <div className="has-mb-3">
-      <label htmlFor={id} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
+      <label htmlFor={id} className="is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1">
         {HEADER.teamLabel}
       </label>
       <input

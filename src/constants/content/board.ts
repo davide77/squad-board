@@ -16,8 +16,6 @@ export const NO_NUMBER = "-";
 export const GLYPHS = {
   close: "\u00D7",
   grip: "\u22EE\u22EE",
-  /** After a toolbar button that opens a menu. */
-  menu: "\u25BE",
   more: "\u00B7\u00B7\u00B7",
 } as const;
 
@@ -27,7 +25,8 @@ export const UNDO = {
 
 /** The Gaffer's line at the top of each step. */
 export const GAFFER_LINE = {
-  kicker: "The Gaffer",
+  /** Names his avatar for a screen reader, as the line beside it is unlabelled. */
+  label: "The Gaffer",
 } as const;
 
 /** The three matchday steps along the top of the board. Numbered, so the order reads at a glance. */
@@ -50,6 +49,8 @@ export const HEADER = {
   clockLabel: "Match clock",
   /** Opens the club sheet: the settings set once a season, out of the weekly column. */
   club: "Customise your club",
+  /** The same button on a phone, where the header has room for one word. */
+  clubShort: "Club",
   /** The match line under the team name opens the call-up sheet. Empty, it asks for the match. */
   addMatch: "Add this week's match",
   editMatch: "Edit",
@@ -59,14 +60,14 @@ export const HEADER = {
 } as const;
 
 export const SHAPE = {
-  heading: "Shape",
-  xiCount: (n: number, size: number) => `${n} of ${size} on`,
   formationLabel: "Formation",
   movePositions: "Move positions",
   doneMoving: "Done moving",
   resetShape: "Reset shape",
   hint: "Tap a position to see who can play there and swap them in. Drag works too.",
   moveHint: "Drag the markers anywhere on the pitch. Each one takes its role from where it sits.",
+  /** Names the area round the pitch for a screen reader, as it has no visible heading. */
+  label: "Shape",
   hideCover: "Hide bench cover",
   showCover: "Show bench cover",
   slotEmpty: (role: string) => `${role}, empty`,
@@ -102,6 +103,8 @@ export const PICK_BAR = {
   label: "Ready to go",
   ready: (called: number, on: number, size: number, bench: number) =>
     `${called} called up \u00b7 ${on} of ${size} starting \u00b7 ${bench} on the bench`,
+  /** On a phone, where the full line does not fit beside the Gaffer: "11 of 11 starting". */
+  short: (on: number, size: number) => `${on} of ${size} starting`,
   checks: (n: number) => (n === 1 ? "1 thing to check" : `${n} things to check`),
   sendCallUp: "Send call-up",
 } as const;
@@ -151,8 +154,6 @@ export const SQUAD = {
     (away ? `, ${away} unavailable` : ""),
   callUpEveryone: "Call up everyone",
   clearCallUps: "Clear call-ups",
-  sortByNumber: "Sort by number",
-  hint: "Tick who is called up this week. Tap any shirt number to change it. Injured and unavailable are set under Edit.",
   empty: "No players yet. Add the squad below.",
   noPosition: "no position set",
   status: {
@@ -187,10 +188,18 @@ export const SQUAD = {
   add: "Add",
   warnDupes: (nums: readonly string[]) =>
     `Shirt ${nums.join(" and ")} ${nums.length > 1 ? "are each on two players." : "is on two players."}`,
-  warnNoPosition: (names: readonly string[]) =>
-    `${names.join(", ")} ${names.length > 1 ? "have" : "has"} no position set.`,
-  /** Replaces the list of names when most of a fresh squad has no positions yet. */
-  noPositionCount: (n: number) => `${n} players have no position yet. Add them under Edit and the bench cover fills in.`,
+} as const;
+
+/** One note above the squad for everyone without a position, and the quick sheet that works through them. */
+export const SET_POSITIONS = {
+  note: (n: number) => (n === 1 ? "1 player needs a position" : `${n} players need positions`),
+  open: "Set positions",
+  heading: "Set positions",
+  progress: (at: number, of: number) => `${at} of ${of}`,
+  back: "Back",
+  next: "Next player",
+  done: "Done",
+  close: "Close",
 } as const;
 
 /** The first screen on an empty board. */
@@ -534,8 +543,8 @@ export const CLUB = {
 export const HANDOFF = {
   label: "Other device",
   open: "Send the squad",
-  /** Beside Customise your club in the board header, on a laptop or tablet. */
-  toPhone: "Send to phone",
+  /** Beside Customise your club at the far end of the header, on a laptop or tablet. */
+  toPhone: "Open on your phone",
   sheetTitle: "Open it on your phone",
   close: "Close",
   making: "Making the code.",

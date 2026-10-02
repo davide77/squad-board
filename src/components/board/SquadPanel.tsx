@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent } from "react";
-import { CONFIRM, GLYPHS, SQUAD, ZONES } from "@/constants/content/board";
+import { CONFIRM, GLYPHS, SET_POSITIONS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
 import { GAFFER } from "@/constants/content/gaffer";
 import { blocked, freeAt, slotById, squadChecks, where } from "@/lib/board/queries";
@@ -11,7 +11,7 @@ import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { cx } from "../cx";
 import { ConfirmBox } from "./ConfirmBox";
-import { ControlRow, Panel } from "./Panel";
+import { SetPositionsSheet } from "./SetPositionsSheet";
 import { RosterRow } from "./RosterRow";
 
 /**
@@ -27,7 +27,7 @@ function RemovedList() {
   const doomed = removed.find((p) => p.id === asking);
   return (
     <div className="has-mt-5">
-      <h3 className="has-font-headline text-sm tracking-caps uppercase is-dimmer has-mb-2">{ZONES.removed}</h3>
+      <h3 className="has-font-headline text-sm tracking-caps uppercase is-dim has-mb-2">{ZONES.removed}</h3>
       <ul className="is-flex is-flex-wrap has-gap-2">
         {removed.map((p) => (
           <li key={p.id} className="removed-chip is-flex is-align-center has-radius-field">
@@ -42,7 +42,7 @@ function RemovedList() {
             </button>
             <button
               type="button"
-              className="removed-chip__delete is-flex is-align-center is-justify-center is-dimmer"
+              className="removed-chip__delete is-flex is-align-center is-justify-center is-dim"
               aria-label={ZONES.deleteForGood(p.name)}
               aria-expanded={asking === p.id}
               onClick={() => setAsking(p.id)}
@@ -94,16 +94,12 @@ export function SquadPanel() {
   const numRef = useRef<HTMLInputElement>(null);
   const numId = useId();
   const nameId = useId();
+  const headingId = useId();
 
-  const { dupes: dupeList, noPosition, manyNoPosition } = squadChecks(state.data);
+  const { dupes: dupeList, noPosition } = squadChecks(state.data);
   const dupes = new Set(dupeList);
-  // Past a few names, no positions is a quiet hint rather than a list in red.
-  const warnings = [
-    dupeList.length ? SQUAD.warnDupes(dupeList) : "",
-    noPosition.length && !manyNoPosition ? SQUAD.warnNoPosition(noPosition) : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  // Who to work through in Set positions, fixed as it opens.
+  const [positioning, setPositioning] = useState<readonly string[] | null>(null);
 
   const picked = players.filter((p) => !p.out).length;
   const injured = players.filter((p) => p.inj).length;
@@ -125,7 +121,18 @@ export function SquadPanel() {
   }
 
   return (
-    <Panel heading={SQUAD.heading} count={SQUAD.count(players.length)}>
+    <section className="panel has-pt-3" aria-labelledby={headingId}>
+      <div className="is-flex is-align-center is-justify-between has-gap-3 has-mb-3">
+        <div className="is-min-w-0">
+          <h2 id={headingId} className="text-xl tracking-heading">
+            {SQUAD.heading}
+          </h2>
+          <p className="text-sm is-dim">{SQUAD.pickedCount(picked, players.length, injured, away)}</p>
+        </div>
+        <Button className="is-shrink-0 has-py-3" onClick={() => act({ type: "toggleCallUps" })}>
+          {anyOut ? SQUAD.callUpEveryone : SQUAD.clearCallUps}
+        </Button>
+      </div>
       {players.length <= BOARD_CONFIG.startCardUntil && (
         <div className="start-card has-radius-panel has-p-4 has-mb-3">
           <h3 className="text-lg tracking-tag has-mb-2">{SQUAD.startTitle}</h3>
@@ -137,22 +144,22 @@ export function SquadPanel() {
         </div>
       )}
 
-      <ControlRow className="has-mt-0 has-mb-3">
-        <span className="has-font-headline text-xs tracking-caps uppercase is-dimmer">
-          {SQUAD.pickedCount(picked, players.length, injured, away)}
-        </span>
-        <Button size="tiny" variant="quiet" onClick={() => act({ type: "toggleCallUps" })}>
-          {anyOut ? SQUAD.callUpEveryone : SQUAD.clearCallUps}
-        </Button>
-        <Button size="tiny" variant="quiet" onClick={() => act({ type: "sortByNumber" })}>
-          {SQUAD.sortByNumber}
-        </Button>
-      </ControlRow>
-      <p className="text-sm is-dimmer has-mb-3" aria-live="polite">
-        {slot ? SQUAD.placeHint(slot.role) : SQUAD.hint}
+      {/* Only while a position is picked on the pitch: then the list is sorted by who fits it. */}
+      <p className="text-sm is-dim" aria-live="polite">
+        {slot && <span className="is-block has-mb-3">{SQUAD.placeHint(slot.role)}</span>}
       </p>
-      {manyNoPosition && <p className="text-sm is-dim has-mb-3">{SQUAD.noPositionCount(noPosition.length)}</p>}
-      {warnings && <p className="warning text-sm is-out has-radius-field has-py-2 has-px-3 has-mb-3">{warnings}</p>}
+      {/* One note for everyone without a position, instead of a "no position" on every row. */}
+      {noPosition.length > 0 && (
+        <div className="position-note is-flex is-flex-wrap is-align-center is-justify-between has-gap-2 has-radius-field has-py-2 has-px-3 has-mb-3">
+          <span className="text-base">{SET_POSITIONS.note(noPosition.length)}</span>
+          <Button variant="chalk" onClick={() => setPositioning(noPosition.map((p) => p.id))}>
+            {SET_POSITIONS.open}
+          </Button>
+        </div>
+      )}
+      {dupeList.length > 0 && (
+        <p className="warning text-sm is-out has-radius-field has-py-2 has-px-3 has-mb-3">{SQUAD.warnDupes(dupeList)}</p>
+      )}
 
       {players.length ? (
         groups
@@ -166,12 +173,12 @@ export function SquadPanel() {
               className={cx(DROP_ZONE[g.key] && state.ui.dropTarget?.kind === DROP_ZONE[g.key] && "roster-group--drop")}
             >
               {g.label && (
-                <h3 className="roster-divider is-flex is-align-center has-gap-2 has-font-headline text-xs tracking-caps uppercase is-dimmer has-pt-3 has-pb-1">
+                <h3 className="roster-divider is-flex is-align-center has-gap-2 has-font-headline text-xs tracking-caps uppercase is-dim has-pt-3 has-pb-1">
                   {g.label}
                   <span className="is-tabular">{g.rows.length}</span>
                 </h3>
               )}
-              {!g.rows.length && <p className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].benchEmpty}</p>}
+              {!g.rows.length && <p className="text-base is-dim has-py-2">{GAFFER[state.data.voice].benchEmpty}</p>}
               {/* Each group is its own list, so a dragged row stays in its group. */}
               <ul className="roster" data-roster>
                 {g.rows.map((p, i) => (
@@ -192,7 +199,7 @@ export function SquadPanel() {
           ))
       ) : (
         <ul className="roster">
-          <li className="text-base is-dimmer has-py-2">{SQUAD.empty}</li>
+          <li className="text-base is-dim has-py-2">{SQUAD.empty}</li>
         </ul>
       )}
 
@@ -224,6 +231,7 @@ export function SquadPanel() {
         </Button>
       </form>
       <RemovedList />
-    </Panel>
+      <SetPositionsSheet open={positioning !== null} ids={positioning ?? []} close={() => setPositioning(null)} />
+    </section>
   );
 }

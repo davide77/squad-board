@@ -87,6 +87,7 @@ export type Action =
   | { type: "openCallUp" }
   | { type: "closeCallUp" }
   | { type: "togglePos"; pos: PositionKey }
+  | { type: "togglePlayerPos"; id: string; pos: PositionKey }
   | { type: "setSide"; side: Side | null }
   | { type: "setVoice"; voice: VoiceKey }
   | { type: "setAge"; age: AgeKey }
@@ -748,6 +749,14 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
 
     case "togglePos": {
       const p = ui.editing ? player(ui.editing) : null;
+      if (!p) return state;
+      p.pos = p.pos.includes(action.pos) ? p.pos.filter((k) => k !== action.pos) : [...p.pos, action.pos];
+      return next;
+    }
+
+    // The same, for any player, from the Set positions sheet, which works through the squad without the drawer.
+    case "togglePlayerPos": {
+      const p = player(action.id);
       if (!p) return state;
       p.pos = p.pos.includes(action.pos) ? p.pos.filter((k) => k !== action.pos) : [...p.pos, action.pos];
       return next;

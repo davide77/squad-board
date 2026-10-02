@@ -1,5 +1,6 @@
 import { NAV } from "@/constants/content/landing";
 import { ROUTES } from "@/constants/routes";
+import { SITE } from "@/constants/site";
 import { BoardCta } from "./BoardCta";
 import { cx } from "./cx";
 import { SiteLogo } from "./SiteLogo";
@@ -22,11 +23,13 @@ interface SiteHeaderProps {
 export function SiteHeader({ onBoard = false, onHome = false, sticky = true }: SiteHeaderProps) {
   return (
     <>
-      <header className={cx("landing-header", !sticky && "landing-header--static")}>
+      <header className={cx("landing-header", !sticky && "landing-header--static", onBoard && "landing-header--board")}>
         {/* The board runs wider than the other pages, for its three columns, and the header lines up with it. */}
         <div className={onBoard ? "container-lg" : "container"}>
           <div className="landing-header__bar is-flex is-align-center is-justify-between has-gap-3 has-radius-sheet">
             <SiteLogo label={NAV.home} />
+            {/* The board, which loads in the browser, puts Customise your club here. */}
+            {onBoard && <div id={SITE.headerSlotId} className="is-flex is-align-center has-gap-2" />}
             {!onBoard && (
               <nav aria-label={NAV.label} className="is-flex is-align-center has-gap-5 text-md">
                 {/* The jump links wait for room. On a phone the logo is the way home. */}

@@ -32,7 +32,7 @@ export function FullKinds() {
           return (
             <label key={k.key} className={cx("send-kind is-flex is-flex-column has-gap-1 has-p-4 has-radius-panel", on && "send-kind--on")}>
               <input type="radio" name={name} className="sr-only" checked={on} onChange={() => act({ type: "setSendKind", kind: k.key })} />
-              <span className={cx("has-font-headline has-font-bold text-sm tracking-caps uppercase", on ? "is-kit" : "is-dimmer")}>{k.when}</span>
+              <span className={cx("has-font-headline has-font-bold text-sm tracking-caps uppercase", on ? "is-kit" : "is-dim")}>{k.when}</span>
               <span className="text-lg has-font-bold">{k.title}</span>
               <span className="text-base is-dim leading-snug">{k.body}</span>
             </label>
@@ -114,7 +114,7 @@ export function FullPreview() {
         ) : (
           <span />
         )}
-        {data.sheetCredit && <span className="text-sm is-dimmer">{SHEET.pictureFooter}</span>}
+        {data.sheetCredit && <span className="text-sm is-dim">{SHEET.pictureFooter}</span>}
       </div>
     </div>
   );
@@ -157,7 +157,7 @@ export function FullActions() {
         <Button variant="chalk" className="is-w-full has-py-4 text-lg" onClick={nameFirst.guard("picture", share)} disabled={making} aria-busy={making}>
           {FULL.share}
         </Button>
-        <p className="text-sm is-dimmer has-mt-2">{FULL.shareHint}</p>
+        <p className="text-sm is-dim has-mt-2">{FULL.shareHint}</p>
         <NameFirst {...nameFirst} />
       </Panel>
     );
@@ -186,7 +186,7 @@ export function FullActions() {
           </div>
         ))}
       </div>
-      <label htmlFor={potmId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1">
+      <label htmlFor={potmId} className="is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1">
         {FULL.potmLabel}
       </label>
       <select id={potmId} className="formation-select is-w-full has-radius-field has-py-3 text-md has-mb-4" value={data.match.potm} onChange={(e) => act({ type: "setPotm", pid: e.target.value })}>

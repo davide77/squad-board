@@ -28,6 +28,8 @@ $theme-colors: (
 
   // Accent
   out:          #E0766A,
+  // The yellow disc in the logo (brand.md, Logo). Fixed, unlike the kit: the Hairdryer Gaffer's ring.
+  visor:        #F2D106,
 
   // Kit, live values from the board
   kit:          var(--kit),

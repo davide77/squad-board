@@ -120,7 +120,7 @@ function ClubSettings() {
           ))}
         </div>
       </ControlRow>
-      <p className="text-sm is-dimmer has-mt-1">{CLUB.colourHint}</p>
+      <p className="text-sm is-dim has-mt-1">{CLUB.colourHint}</p>
       {KIT.sides.map((k) => (
         <KitEditor
           key={k.key}
@@ -172,7 +172,7 @@ function ClubSettings() {
               onKeep={() => setConfirmingWipe(false)}
             />
           )}
-          <p className="text-sm is-dimmer has-mt-3">{CLUB.hint}</p>
+          <p className="text-sm is-dim has-mt-3">{CLUB.hint}</p>
         </>
       )}
     </section>
