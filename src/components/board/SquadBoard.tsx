@@ -8,6 +8,7 @@ import { trackBoardOpened } from "@/lib/analytics";
 import { BoardProvider, useBoard } from "./BoardProvider";
 import { kitColours } from "@/lib/board/kit";
 import { BoardView } from "./BoardView";
+import { IncomingSquad } from "./IncomingSquad";
 import { StartScreen } from "./StartScreen";
 import { Toast } from "./Toast";
 
@@ -41,13 +42,19 @@ function Board() {
   if (!state.data.players.length) {
     return (
       <div className="board container has-pt-4 has-pb-11" style={kitColours(state.data.colour)}>
+        <IncomingSquad />
         <StartScreen format={asked} />
         <Toast />
       </div>
     );
   }
 
-  return <BoardView />;
+  return (
+    <>
+      <IncomingSquad />
+      <BoardView />
+    </>
+  );
 }
 
 export function SquadBoard() {

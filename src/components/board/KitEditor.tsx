@@ -21,7 +21,7 @@ interface KitEditorProps {
 }
 
 /**
- * One strip under Your club: drawn, then said in words, as the call-up will say it. Change opens
+ * One strip under Customise your club: drawn, then said in words, as the call-up will say it. Change opens
  * the parts: shirt, pattern and its second colour, shorts, socks.
  */
 export function KitEditor({ side, label, open, onToggle }: KitEditorProps) {

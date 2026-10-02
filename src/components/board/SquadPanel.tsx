@@ -3,11 +3,13 @@
 import { useId, useRef, useState, type FormEvent } from "react";
 import { CONFIRM, GLYPHS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
-import { blocked, dupeNumbers, freeAt, slotById, where } from "@/lib/board/queries";
+import { GAFFER } from "@/constants/content/gaffer";
+import { blocked, freeAt, slotById, squadChecks, where } from "@/lib/board/queries";
 import type { Player } from "@/lib/board/types";
 import { useMediaQuery } from "@/lib/hooks";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
+import { cx } from "../cx";
 import { ConfirmBox } from "./ConfirmBox";
 import { ControlRow, Panel } from "./Panel";
 import { RosterRow } from "./RosterRow";
@@ -67,6 +69,9 @@ function RemovedList() {
   );
 }
 
+// A player dragged off the pitch onto the Bench group goes to the bench; onto Rest of squad, off the team.
+const DROP_ZONE: Readonly<Record<string, "bench" | "pool" | undefined>> = { bench: "bench", rest: "pool" };
+
 export function SquadPanel() {
   const { state, act } = useBoard();
   const { players } = state.data;
@@ -90,13 +95,11 @@ export function SquadPanel() {
   const numId = useId();
   const nameId = useId();
 
-  const dupes = dupeNumbers(state.data);
-  const noPosition = players.filter((p) => !p.pos.length).map((p) => p.name);
-  // A freshly pasted squad often has no positions at all. That is a next step, not a
-  // fault, so past a few names it becomes a quiet hint rather than a list in red.
-  const manyNoPosition = noPosition.length > BOARD_CONFIG.noPositionNamesMax;
+  const { dupes: dupeList, noPosition, manyNoPosition } = squadChecks(state.data);
+  const dupes = new Set(dupeList);
+  // Past a few names, no positions is a quiet hint rather than a list in red.
   const warnings = [
-    dupes.size ? SQUAD.warnDupes([...dupes].sort((a, b) => Number(a) - Number(b))) : "",
+    dupeList.length ? SQUAD.warnDupes(dupeList) : "",
     noPosition.length && !manyNoPosition ? SQUAD.warnNoPosition(noPosition) : "",
   ]
     .filter(Boolean)
@@ -153,15 +156,22 @@ export function SquadPanel() {
 
       {players.length ? (
         groups
-          .filter((g) => g.rows.length)
+          // The bench shows even when empty: it is where a player dragged off the pitch goes.
+          .filter((g) => g.rows.length || g.key === "bench")
           .map((g) => (
-            <section key={g.key} aria-label={g.label || undefined}>
+            <section
+              key={g.key}
+              aria-label={g.label || undefined}
+              data-zone={DROP_ZONE[g.key]}
+              className={cx(DROP_ZONE[g.key] && state.ui.dropTarget?.kind === DROP_ZONE[g.key] && "roster-group--drop")}
+            >
               {g.label && (
                 <h3 className="roster-divider is-flex is-align-center has-gap-2 has-font-headline text-xs tracking-caps uppercase is-dimmer has-pt-3 has-pb-1">
                   {g.label}
                   <span className="is-tabular">{g.rows.length}</span>
                 </h3>
               )}
+              {!g.rows.length && <p className="text-base is-dimmer has-py-2">{GAFFER[state.data.voice].benchEmpty}</p>}
               {/* Each group is its own list, so a dragged row stays in its group. */}
               <ul className="roster" data-roster>
                 {g.rows.map((p, i) => (
@@ -174,6 +184,7 @@ export function SquadPanel() {
                     }}
                     dupe={!!p.num && dupes.has(p.num)}
                     place={slot && fits.has(p.id) ? { role: slot.role, fit: fits.get(p.id) ?? 0 } : undefined}
+                    grouped={!!g.label}
                   />
                 ))}
               </ul>

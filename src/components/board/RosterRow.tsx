@@ -16,9 +16,14 @@ interface RosterRowProps {
   readonly dupe: boolean;
   /** A position is picked on the pitch and this player can go there: how well they fit it. */
   readonly place?: { readonly role: string; readonly fit: 0 | 1 | 2 };
+  /** Shown under a Starting, Bench or Rest of squad divider, which already says where the player is. */
+  readonly grouped?: boolean;
 }
 
-export function RosterRow({ player: p, moves, dupe, place }: RosterRowProps) {
+// Where a player sits, which a group's divider already says. Only the exceptions keep their pill.
+const SAID_BY_GROUP = new Set(["xi", "bench", "pool"]);
+
+export function RosterRow({ player: p, moves, dupe, place, grouped = false }: RosterRowProps) {
   const { state, act } = useBoard();
   const { data, ui } = state;
   const status = reasonOf(p) ?? where(data, p.id);
@@ -105,14 +110,16 @@ export function RosterRow({ player: p, moves, dupe, place }: RosterRowProps) {
       ) : (
         <span className="is-flex-1 is-min-w-0">{body}</span>
       )}
-      <span
-        className={cx(
-          "status-pill has-font-headline text-2xs tracking-heading text-center has-radius-pill has-px-2 is-shrink-0",
-          `status-pill--${status}`,
-        )}
-      >
-        {SQUAD.status[status]}
-      </span>
+      {!(grouped && SAID_BY_GROUP.has(status)) && (
+        <span
+          className={cx(
+            "status-pill has-font-headline text-2xs tracking-heading text-center has-radius-pill has-px-2 is-shrink-0",
+            `status-pill--${status}`,
+          )}
+        >
+          {SQUAD.status[status]}
+        </span>
+      )}
       <button
         type="button"
         className="roster-row__edit text-md is-dimmer"

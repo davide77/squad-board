@@ -11,6 +11,11 @@ import { useBoard } from "./BoardProvider";
 export const TEAM_NAME_MARK = { "data-team-name": "" } as const;
 const TEAM_NAME_SELECTOR = "[data-team-name]";
 
+/** The team name field to fill: the one in an open sheet when there is one, as the header sits behind it. */
+function teamNameField() {
+  return document.querySelector<HTMLInputElement>(`[role=dialog] ${TEAM_NAME_SELECTOR}`) ?? document.querySelector<HTMLInputElement>(TEAM_NAME_SELECTOR);
+}
+
 type Send = () => void | Promise<void>;
 
 /** Asking; off naming the team with the send held; named, with the send waiting under Send. */
@@ -62,7 +67,7 @@ export function useNameFirst() {
   const nameIt = () => {
     markAsked();
     setStage("naming");
-    const field = document.querySelector<HTMLInputElement>(TEAM_NAME_SELECTOR);
+    const field = teamNameField();
     field?.scrollIntoView({ block: "center" });
     field?.focus();
   };
@@ -70,7 +75,7 @@ export function useNameFirst() {
   // Leaving the name field with a name in it turns the prompt into "Named. Send it."
   useEffect(() => {
     if (stage !== "naming") return;
-    const field = document.querySelector<HTMLInputElement>(TEAM_NAME_SELECTOR);
+    const field = teamNameField();
     if (!field) return;
     const left = () => {
       if (field.value.trim()) setStage("named");

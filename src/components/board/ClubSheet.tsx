@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type CSSProperties } from "react";
+import { useCallback, useId, useState, type CSSProperties } from "react";
 import { KIT_COLOURS } from "@/constants/brand";
 import { MORE_TEAMS } from "@/constants/content/account";
 import { CLUB, CONFIRM, KIT } from "@/constants/content/board";
@@ -18,12 +18,12 @@ import { ConfirmBox } from "./ConfirmBox";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
 import { KitEditor } from "./KitEditor";
-import { ControlRow, Panel } from "./Panel";
+import { SendSquad } from "./SendSquad";
+import { ControlRow } from "./Panel";
+import { SideSheet } from "./SideSheet";
 
-/** The home and away kits live here, so This week's match links down to it. */
-export const CLUB_PANEL_ID = "your-club";
-
-export function ClubPanel() {
+/** What is set once a season: age group, gaffer, colours, kits, badge, more teams and the backup. */
+function ClubSettings() {
   const { state, act, sandbox } = useBoard();
   const { data } = state;
   const ageId = useId();
@@ -59,7 +59,7 @@ export function ClubPanel() {
   }
 
   return (
-    <Panel heading={CLUB.heading} id={CLUB_PANEL_ID} className="has-mt-6">
+    <section>
       <ControlRow label={CLUB.ageLabel}>
         <label htmlFor={ageId} className="sr-only">
           {CLUB.ageLabel}
@@ -152,6 +152,7 @@ export function ClubPanel() {
               <ClubWaitlist prompt={MORE_TEAMS.prompt} cta={MORE_TEAMS.cta} />
             </div>
           )}
+          <SendSquad />
           <ControlRow label={CLUB.backupLabel}>
             <Button size="tiny" onClick={exportFile}>
               {CLUB.export}
@@ -174,6 +175,18 @@ export function ClubPanel() {
           <p className="text-sm is-dimmer has-mt-3">{CLUB.hint}</p>
         </>
       )}
-    </Panel>
+    </section>
+  );
+}
+
+/** The club sheet, opened from the board header and from the kit hint in Send call-up: the once-a-season settings. */
+export function ClubSheet() {
+  const { state, act } = useBoard();
+  const close = useCallback(() => act({ type: "closeClub" }), [act]);
+
+  return (
+    <SideSheet open={state.ui.clubOpen} onClose={close} title={CLUB.heading} closeLabel={CLUB.close}>
+      <ClubSettings />
+    </SideSheet>
   );
 }

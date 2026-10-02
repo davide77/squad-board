@@ -22,7 +22,7 @@ export function stripOf(index: number): StripColour {
 
 /**
  * A new board's strips. Home is the club colour with black shorts; away is white with black shorts,
- * the change strip most clubs have. The coach changes either under Your club.
+ * the change strip most clubs have. The coach changes either under Customise your club.
  */
 export function defaultKits(home: StripColour): Record<KitSide, Kit> {
   return {

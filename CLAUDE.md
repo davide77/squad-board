@@ -219,6 +219,17 @@ Target React 19.2 and Next 16. Write current React, not 2022 React.
 - Honour `prefers-reduced-motion` in both layers: the CSS query and `usePrefersReducedMotion()` where a timer or animation runs in JS.
 - Contrast pairings are set in `brand.md`. Do not invent a new text-on-surface combination without checking it there.
 
+## Language: UK English only
+
+**Everything is written in UK English. Never American English.** Gafferboard is a British grassroots football product and we speak British, not American. This covers every string a coach or parent reads, plus metadata, alt text, emails, social posts, docs, code comments, commit messages and PR descriptions.
+
+- **Spelling:** customise, organise, colour, centre, defence, favourite, licence (noun), practise (verb), programme, cancelled, travelling, grey, behaviour, analyse. `-ise`, never `-ize`.
+- **Words:** football, never soccer. Boots, not cleats. Pitch, not field. Kit, not uniform. Fixture, not game schedule. Autumn, not fall. Mum, not mom. Holiday, not vacation.
+- **Dates and times:** 4 October, not October 4th. 24-hour times on the board, as the call-up uses them.
+- **Exceptions:** names fixed by code or a standard keep their spelling: CSS (`color`, `center`), API fields, and schema.org types such as `Organization`. Those are not prose.
+
+Before finishing any change that adds or edits copy, scan it for American spellings and words.
+
 ## Writing style: no long dashes
 
 **Never use em-dashes (U+2014) or en-dashes (U+2013) in any file you write or edit.** Regular hyphens (`-`) are fine and encouraged.

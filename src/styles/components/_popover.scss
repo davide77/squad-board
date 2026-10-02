@@ -1,0 +1,48 @@
+@use '../abstracts' as *;
+
+// A small panel under a toolbar button: Line-ups and starting over above the pitch. Popover.tsx fixes it
+// to the trigger's place on screen through --pop-top and --pop-left or --pop-right, so a scrolling column
+// never clips it. On a phone it rises from the bottom edge as a sheet over a dimmed board instead.
+$popover-width: 340px;
+
+.popover__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: z(overlay);
+
+  @include max(bp(md)) {
+    background-color: tint(board, 66%);
+  }
+}
+
+.popover__panel {
+  position: fixed;
+  top: calc(var(--pop-top) + #{spacer(2)});
+  z-index: z(overlay);
+  width: $popover-width;
+  max-width: calc(100vw - #{spacer(4) * 2});
+  max-height: calc(100dvh - var(--pop-top) - #{spacer(6)});
+  overflow-y: auto;
+  background-color: color(board-2);
+  border: 1px solid $edge;
+  border-radius: $radius-sheet;
+  box-shadow: 0 spacer(2) spacer(2) tint(black, 50%);
+
+  &--start {
+    left: var(--pop-left);
+  }
+
+  &--end {
+    right: var(--pop-right);
+  }
+
+  @include max(bp(md)) {
+    inset: auto 0 0;
+    width: auto;
+    max-width: none;
+    max-height: 85dvh;
+    padding-bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
+    border-width: 1px 0 0;
+    border-radius: $radius-sheet $radius-sheet 0 0;
+  }
+}

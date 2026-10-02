@@ -47,6 +47,13 @@ export interface NamedLineup extends Lineup {
   name: string;
 }
 
+/** The team as it stood at kick-off, so the coach can take the match back to before it started. */
+export interface Kickoff {
+  lineup: Lineup;
+  /** Who was injured, unavailable, out of training or not called up, by player id. A change for an injury sets these. */
+  flags: Record<string, Pick<Player, "out" | "inj" | "una" | "trn">>;
+}
+
 export interface Sub {
   min: number;
   onName: string;
@@ -139,6 +146,8 @@ export interface BoardData {
   preset: Lineup | null;
   /** The last line-up saved with "Save line-up". */
   saved: Lineup | null;
+  /** The team at kick-off. Null before kick-off and on boards from before it was kept. */
+  kickoff: Kickoff | null;
   removed: Player[];
   /** The club colour, as an index into KIT_COLOURS. It colours the board, the crest and the line-up picture, not what anyone wears. */
   colour: number;
@@ -153,6 +162,8 @@ export interface BoardData {
   createdAt: number;
   /** When a squad file was last exported or imported. 0 when never. */
   backedUpAt: number;
+  /** When the board last changed, on whichever device changed it. Travels in a squad link, so the newer board can be told apart. 0 when not known. */
+  updatedAt: number;
   /** Which gaffer talks on this board. */
   voice: VoiceKey;
   /** The age group, which sets the format and the phase. Null on boards made before it existed. */
@@ -206,6 +217,10 @@ export interface UiState {
   sendKind: SendKind;
   selected: string | null;
   editing: string | null;
+  /** The club sheet: age group, gaffer, colours, kits, badge, backup and starting over. */
+  clubOpen: boolean;
+  /** The Send call-up sheet: this week's match, the message as the parents read it, and the send buttons. */
+  callUpOpen: boolean;
   pickerSlot: string | null;
   posMode: boolean;
   dropTarget: DropTarget | null;

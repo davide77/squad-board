@@ -161,7 +161,8 @@ export function StartScreen({ format }: StartScreenProps) {
             {START.example}
           </Button>
         </div>
-        <p className="text-sm is-dim has-mt-5 has-mb-2">{START.importHint}</p>
+        <p className="text-sm is-dim has-mt-5">{START.handoffHint}</p>
+        <p className="text-sm is-dim has-mt-2 has-mb-2">{START.importHint}</p>
         <ImportSquadButton size="regular" />
       </div>
 

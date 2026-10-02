@@ -6,9 +6,9 @@ import { GAFFER } from "@/constants/content/gaffer";
 import { fitsFormat } from "@/lib/board/queries";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
-import { Panel } from "./Panel";
 
-export function SavedPanel() {
+/** The saved plans, under the strongest side in the Line-ups menu. */
+export function SavedLineups() {
   const { state, act } = useBoard();
   const { lineups, formation } = state.data;
   // Plans made for another format stay saved, and come back if the format does.
@@ -24,7 +24,7 @@ export function SavedPanel() {
   }
 
   return (
-    <Panel heading={SAVED.heading}>
+    <>
       <div className="is-flex is-flex-column has-gap-2">
         {mine.length ? (
           mine.map(({ l, i }) => (
@@ -47,9 +47,14 @@ export function SavedPanel() {
         <label htmlFor={nameId} className="sr-only">
           {SAVED.nameLabel}
         </label>
-        <input id={nameId} name="name" className="field field--grow has-radius-field has-py-2 has-px-3" placeholder={SAVED.namePlaceholder} />
+        <input
+          id={nameId}
+          name="name"
+          className="field field--grow has-radius-field has-py-2 has-px-3"
+          placeholder={SAVED.namePlaceholder}
+        />
         <Button type="submit">{SAVED.save}</Button>
       </form>
-    </Panel>
+    </>
   );
 }

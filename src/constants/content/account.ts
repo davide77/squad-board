@@ -45,7 +45,7 @@ export const SIGN_IN_EMAIL = {
   ignore: "Didn't ask for this? Ignore it. Nobody can sign in without this email.",
 } as const;
 
-/** "Add another team" on the board, under Your club. One team is free; more is the club waitlist for now. */
+/** "Add another team" on the board, under Customise your club. One team is free; more is the club waitlist for now. */
 export const MORE_TEAMS = {
   label: "Teams",
   button: "Add another team",

@@ -22,7 +22,7 @@ export function useClockToggle() {
 }
 
 export function MatchClock() {
-  const { state, act } = useBoard();
+  const { state } = useBoard();
   const { clock } = state.data;
   const now = useNow(clock.running, BOARD_CONFIG.clockTickMs);
   useWakeLock(clock.running);
@@ -37,7 +37,7 @@ export function MatchClock() {
         role="timer"
         aria-label={HEADER.clockLabel}
         className={cx(
-          "match-clock has-font-headline has-font-semibold text-3xl leading-tight text-right is-tabular",
+          "match-clock has-font-headline has-font-semibold text-3xl leading-tight is-tabular",
           isOn ? "is-chalk" : "is-dimmer",
         )}
       >
@@ -45,9 +45,6 @@ export function MatchClock() {
       </span>
       <Button onClick={toggle}>
         {clock.running ? HEADER.pause : isOn ? HEADER.resume : HEADER.start}
-      </Button>
-      <Button variant="quiet" size="tiny" onClick={() => act({ type: "clockReset" })}>
-        {HEADER.reset}
       </Button>
     </div>
   );

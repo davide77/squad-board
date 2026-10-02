@@ -91,6 +91,23 @@ $pitch-tight: 300px;
     box-shadow: 0 0 0 3px color(chalk);
   }
 
+  // A shirt number on two players: a dot on the shirt, matching the number marked in the squad list.
+  &--clash &__disc {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -(spacer(1));
+      right: -(spacer(1));
+      width: spacer(3);
+      height: spacer(3);
+      border-radius: 50%;
+      background-color: color(out);
+      border: 2px solid color(board);
+    }
+  }
+
   &--movable {
     cursor: grab;
   }

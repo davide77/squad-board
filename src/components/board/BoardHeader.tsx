@@ -3,20 +3,22 @@
 import { useId } from "react";
 import { HEADER, SHEET } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
-import { matchDate } from "@/lib/board/message";
+import { matchSummary } from "@/lib/board/message";
 import { started } from "@/lib/board/queries";
+import { Button } from "../Button";
+import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { Crest } from "./Crest";
 import { MatchClock } from "./MatchClock";
 import { TEAM_NAME_MARK } from "./NameFirst";
+import { SendToPhone } from "./SendSquad";
 import { StepTabs } from "./StepTabs";
 
 export function BoardHeader() {
   const { state, act } = useBoard();
   const teamId = useId();
-  const { fixture, match } = state.data;
-  // Filled in under This week's match. Here it is only a reminder on the touchline.
-  const summary = [fixture.trim(), matchDate(match.date), match.kickoff].filter(Boolean).join(SHEET.pictureJoin);
+  // This week's match on one line. A tap opens Send call-up, where it is filled in beside the message it heads.
+  const summary = matchSummary(state.data);
   // "Under 15s · 11-a-side": who this board is for, under the name.
   const group = AGE_GROUPS.find((a) => a.key === state.data.age);
   const squadLine = [group?.label, FORMATS[state.data.format].label].filter(Boolean).join(SHEET.pictureJoin);
@@ -41,8 +43,24 @@ export function BoardHeader() {
             />
           </div>
         </div>
-        <p className="has-mt-1 text-base is-dim is-truncate">{squadLine}</p>
-        {summary && <p className="text-sm is-dimmer is-truncate">{summary}</p>}
+        {/* The age group and format are set in the club sheet, so the way in sits beside them. */}
+        <div className="is-flex is-align-center has-gap-3 has-mt-1">
+          <p className="is-min-w-0 text-base is-dim is-truncate">{squadLine}</p>
+          <Button size="tiny" className="is-shrink-0" aria-haspopup="dialog" onClick={() => act({ type: "openClub" })}>
+            {HEADER.club}
+          </Button>
+          {/* On a phone it lives under Customise your club: the board is already where it needs to be. */}
+          <SendToPhone className="is-hidden is-md-flex is-shrink-0" />
+        </div>
+        <button
+          type="button"
+          className="board-header__match is-flex is-align-baseline has-gap-2 text-left text-md hit-area"
+          aria-haspopup="dialog"
+          onClick={() => act({ type: "openCallUp" })}
+        >
+          <span className={cx("is-min-w-0 is-truncate", summary ? "is-chalk" : "is-dim")}>{summary || HEADER.addMatch}</span>
+          <span className="board-header__edit text-sm is-dim is-shrink-0">{HEADER.editMatch}</span>
+        </button>
       </div>
       <div className="board-header__steps">
         <StepTabs />

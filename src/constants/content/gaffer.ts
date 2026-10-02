@@ -11,7 +11,7 @@ import type { VoiceKey } from "./landing";
 export interface GafferLines {
   /** Above the squad box on the start screen. */
   readonly welcome: string;
-  /** After the coach picks this gaffer under Your club. */
+  /** After the coach picks this gaffer under Customise your club. */
   readonly hello: string;
   /** What the Gaffer says at the top of each step until something happens. */
   readonly stepPick: string;
@@ -27,7 +27,7 @@ export interface GafferLines {
   /** The final whistle: the clock stops and the board moves on to sending. */
   readonly fullTime: string;
   readonly halfTime: string;
-  /** The clock: kick-off, a stop, back on, and back to nothing. */
+  /** The clock: kick-off, a stop, back on, and back to before kick-off. */
   readonly kickOff: string;
   readonly clockPaused: string;
   readonly clockResumed: string;
@@ -75,6 +75,9 @@ export interface GafferLines {
   readonly imported: string;
   readonly unreadable: string;
   readonly notASquad: string;
+  /** A squad opened from a link sent from another device. */
+  readonly arrived: string;
+  readonly linkBroken: string;
 
   // Fair time, under 11s and younger, once the clock has started
   readonly waiting: (first: string, more: number) => string;
@@ -114,7 +117,7 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     kickOff: "Clock's on. Get stuck in.",
     clockPaused: "Clock stopped.",
     clockResumed: "Back on.",
-    clockCleared: "Clock back to nothing.",
+    clockCleared: "Back to before kick-off. Same team.",
     changed: "Changed.",
     undone: "Undone.",
     secondHalf: "Second half. Go again.",
@@ -155,6 +158,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     imported: "Squad loaded. Good.",
     unreadable: "Can't read that file. Try another.",
     notASquad: "Wrong file. You want the one ending in -board.json.",
+    arrived: "Squad's here. Good.",
+    linkBroken: "Link's cut short. Send it again.",
 
     waiting: (first, more) => (more ? `${first} and ${more} more haven't been on.` : `${first} hasn't been on yet.`),
     everyonePlayed: "Everyone's played. Good.",
@@ -183,7 +188,7 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     kickOff: "And we're off. Enjoy it, Coach.",
     clockPaused: "Clock paused. No rush.",
     clockResumed: "Back under way.",
-    clockCleared: "Clock reset. A fresh start.",
+    clockCleared: "Back to the team you started with. A fresh start.",
     changed: "Done that for you.",
     undone: "No harm done. It's back as it was.",
     secondHalf: "Second half. Here we go again, team.",
@@ -226,6 +231,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     imported: "Squad file loaded. Everyone's here.",
     unreadable: "That file wouldn't open. Try another one.",
     notASquad: "That's not a squad file. Happens to the best of us. Look for the one ending in -board.json.",
+    arrived: "Your squad's arrived. Everyone made the trip.",
+    linkBroken: "That link didn't come through in one piece. Send it again from the other device.",
 
     waiting: (first, more) =>
       more ? `${first} and ${more} more are still waiting for a go.` : `${first}'s still waiting for a go.`,

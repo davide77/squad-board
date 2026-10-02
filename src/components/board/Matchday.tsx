@@ -40,10 +40,10 @@ export function MatchClockCard() {
       : on
         ? MATCH.stopped
         : MATCH.notStarted;
-  // Offered while the clock is stopped or just started, as after a false start. Past a couple of
-  // minutes a reset would lose real minutes, so it asks first.
-  const canReset = on && (!data.clock.running || ms < BOARD_CONFIG.resetAskAfterMs);
-  const askFirst = ms >= BOARD_CONFIG.resetAskAfterMs;
+  // Always there once the match is under way, so the coach can get back to the team they started with.
+  // A false start goes straight back. Past a couple of minutes, or with a change or a goal in, it asks first.
+  const canReset = on || data.subs.length > 0;
+  const askFirst = ms >= BOARD_CONFIG.resetAskAfterMs || data.subs.length > 0 || data.match.us + data.match.them > 0;
 
   function fullTime() {
     trackBoard(ANALYTICS_EVENTS.fullTime, data);

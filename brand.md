@@ -90,7 +90,7 @@ The more often a line is seen, the shorter it is. A toast that pops every matchd
 ### Hard rules
 
 1. **No em-dashes or en-dashes anywhere.** Use plain hyphens with spaces around them. This is enforced project-wide by [CLAUDE.md](CLAUDE.md).
-2. **British English only.** Colour, organise, centre, defence.
+2. **UK English only, never American.** Customise, colour, organise, centre, defence, favourite, programme. Football, never soccer; boots, never cleats; pitch, never field; kit, never uniform. The full list is in [CLAUDE.md](CLAUDE.md).
 3. **Sentence case for UI and headings.** The product name is always written Gafferboard.
 4. **One core message at a time.** One kind word, one dry line or one joke per moment, not two.
 5. **Filler ban list:** revolutionise, game-changer, synergy, unleash, elevate, leverage, cutting-edge, robust, seamless, intuitive, empower, world-class.

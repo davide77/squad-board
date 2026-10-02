@@ -1,5 +1,12 @@
 @use '../abstracts' as *;
 
+// The Bench or Rest of squad group under a player dragged off the pitch: it takes them when dropped.
+.roster-group--drop {
+  border-radius: $radius-panel;
+  background-color: tint(kit, 8%);
+  box-shadow: 0 0 0 1px color(kit);
+}
+
 // Between Starting, Bench and Rest of squad: the label, its count, and a hairline to the edge.
 .roster-divider {
   &::after {

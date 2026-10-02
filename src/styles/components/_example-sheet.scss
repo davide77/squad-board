@@ -39,4 +39,10 @@
     background-color: color(board);
     border-bottom: 1px solid $edge;
   }
+
+  // The sheet scrolls, not the page, and its bar would cover a pinned pitch. Here the centre
+  // column scrolls with the rest, as it does on a phone.
+  .board-step__centre {
+    position: static;
+  }
 }

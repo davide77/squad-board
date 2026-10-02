@@ -11,6 +11,28 @@ export function matchDate(iso: string): string {
   return new Intl.DateTimeFormat(MESSAGE_CONFIG.locale, MESSAGE_DATE_FORMAT).format(new Date(y, m - 1, d));
 }
 
+/** "v City Select · Friendly · Away · Sunday 4 October · KO 10:00", for the board header. Empty when nothing is in. */
+export function matchSummary(d: BoardData): string {
+  const { match } = d;
+  return [
+    d.fixture.trim(),
+    COMPETITIONS.find((c) => c.key === match.competition)?.label,
+    MESSAGE.venues.find((v) => v.key === match.venue)?.label,
+    matchDate(match.date),
+    match.kickoff && MESSAGE.kickoffShort + match.kickoff,
+  ]
+    .filter(Boolean)
+    .join(SHEET.pictureJoin);
+}
+
+/** Whether this week's match is on the day of `now`, read as local dates. */
+export function matchIsToday(d: BoardData, now: number): boolean {
+  const [y, m, day] = d.match.date.split("-").map(Number);
+  if (!y || !m || !day) return false;
+  const today = new Date(now);
+  return today.getFullYear() === y && today.getMonth() === m - 1 && today.getDate() === day;
+}
+
 export function mapLink(address: string): string {
   return MESSAGE_CONFIG.mapUrl + encodeURIComponent(address.replace(/\s+/g, " ").trim());
 }

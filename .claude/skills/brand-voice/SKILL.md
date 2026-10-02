@@ -27,7 +27,7 @@ Defer to [brand.md](../../../brand.md). The "Voice in one paragraph" section is 
 ## Hard rules
 
 1. **No em-dashes (`—`) or en-dashes (`–`) anywhere.** Use plain hyphens with spaces around them. This is enforced project-wide by [CLAUDE.md](../../../CLAUDE.md).
-2. **Language variant** as specified in [brand.md](../../../brand.md). Be consistent.
+2. **UK English only, never American.** Customise, colour, organise, centre, favourite, programme; football not soccer, boots not cleats, pitch not field, kit not uniform. Full list in [CLAUDE.md](../../../CLAUDE.md) and [brand.md](../../../brand.md).
 3. **Sentence case for UI and headings by default.** Title Case is reserved for product/brand names and the logo wordmark.
 4. **One core message at a time.** If a headline needs a subclause to make sense, cut the subclause and rewrite.
 5. **No em-dash substitutes either** - do not use slash `/`, tilde `~`, colon `:`, or parenthesis combos to simulate one. Rewrite.
@@ -86,7 +86,7 @@ Defer to [brand.md](../../../brand.md). The "Voice in one paragraph" section is 
 When reviewing existing copy, flag any of these:
 
 1. Em-dashes, en-dashes, or the substitutes listed above.
-2. Language-variant violations (e.g. American spelling in a British project).
+2. American spelling or words anywhere (customize, color, soccer, cleats, field for pitch). Gafferboard is UK English only.
 3. Banned words from the filler list.
 4. Banned framings (especially "It's not just X, it's Y" in hero / marketing slots).
 5. Lazy headline tricks, empty phrases.

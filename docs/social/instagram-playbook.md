@@ -173,6 +173,7 @@ Children play this game. These are not up for debate:
 - **No betting, alcohol or junk food** anywhere near the account, including sponsors and collabs.
 - **No mocking anyone:** players, refs, parents, other teams or other apps. Weather and tech only.
 - **Nothing published without Davide's OK on that exact post.** Claude drafts, Davide approves, then it goes out.
+- **UK English only, never American.** Customise, colour, favourite; football not soccer, boots not cleats, pitch not field. Captions, images, alt text and replies alike.
 
 ---
 
