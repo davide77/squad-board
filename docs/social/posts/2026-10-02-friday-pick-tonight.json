@@ -1,0 +1,28 @@
+{
+  "slug": "2026-10-02-friday-pick-tonight",
+  "format": "story",
+  "type": "stories",
+  "voice": "hairdryer",
+  "when": "Friday 2 October 2026, 19:00, just before the film Reel at 19:30",
+  "slides": [
+    {
+      "layout": "cover",
+      "kicker": "Friday",
+      "title": "Team picked?\n*Not yet.*",
+      "alt": "Friday. Team picked? Not yet."
+    },
+    {
+      "layout": "list",
+      "kicker": "Tonight",
+      "title": "Four jobs.",
+      "items": ["Tick who's in", "Injured stay flagged", "Pick a shape", "Send the sheet to the parents"],
+      "alt": "Tonight, four jobs: tick who's in, injured players stay flagged, pick a shape, send the sheet to the parents."
+    },
+    {
+      "layout": "end",
+      "title": "Sorted. Bed.",
+      "body": "Free for your team.\nLink in bio.",
+      "alt": "Gafferboard. Sorted, bed. Free for your team, link in bio."
+    }
+  ]
+}
