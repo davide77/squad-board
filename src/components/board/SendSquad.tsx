@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ANALYTICS_EVENTS, SENT_HOW, type SentHow } from "@/constants/config";
 import { GLYPHS, HANDOFF } from "@/constants/content/board";
@@ -18,7 +19,12 @@ import { ControlRow } from "./Panel";
 function SquadCode({ link }: { readonly link: string }) {
   const { size, path } = qrPath(link);
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label={HANDOFF.codeLabel} className="handoff__code is-w-full bg-chalk is-black has-radius-sm">
+    <svg
+      viewBox={`0 0 ${size} ${size}`}
+      role="img"
+      aria-label={HANDOFF.codeLabel}
+      className="handoff__code is-w-full bg-chalk is-black has-radius-sm"
+    >
       <path d={path} fill="currentColor" />
     </svg>
   );
@@ -158,47 +164,51 @@ export function SendToPhone({ className }: { readonly className?: string }) {
       >
         {HANDOFF.toPhone}
       </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="drawer is-flex is-justify-end"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={MOTION.fade}
-            onClick={(e) => {
-              if (e.target === e.currentTarget) close();
-            }}
-          >
+      {/* Onto the page itself: the header it sits in blurs what is behind it, which would box a fixed sheet into the bar. */}
+      {createPortal(
+        <AnimatePresence>
+          {open && (
             <motion.div
-              ref={panelRef}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={titleId}
-              className="drawer__panel is-flex is-flex-column has-gap-6 is-w-full has-p-5"
-              initial={{ x: MOTION.drawerX }}
-              animate={{ x: 0 }}
-              exit={{ x: MOTION.drawerX }}
-              transition={MOTION.sheet}
+              className="drawer is-flex is-justify-end"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={MOTION.fade}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) close();
+              }}
             >
-              <div className="is-flex is-align-center is-justify-between has-gap-3">
-                <h2 id={titleId} className="text-3xl">
-                  {HANDOFF.sheetTitle}
-                </h2>
-                <button
-                  type="button"
-                  className="drawer__close is-flex is-align-center is-justify-center text-2xl has-radius-field"
-                  aria-label={HANDOFF.close}
-                  onClick={close}
-                >
-                  {GLYPHS.close}
-                </button>
-              </div>
-              <SquadLinkPanel link={link} />
+              <motion.div
+                ref={panelRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
+                className="drawer__panel is-flex is-flex-column has-gap-6 is-w-full has-p-5"
+                initial={{ x: MOTION.drawerX }}
+                animate={{ x: 0 }}
+                exit={{ x: MOTION.drawerX }}
+                transition={MOTION.sheet}
+              >
+                <div className="is-flex is-align-center is-justify-between has-gap-3">
+                  <h2 id={titleId} className="text-3xl">
+                    {HANDOFF.sheetTitle}
+                  </h2>
+                  <button
+                    type="button"
+                    className="drawer__close is-flex is-align-center is-justify-center text-2xl has-radius-field"
+                    aria-label={HANDOFF.close}
+                    onClick={close}
+                  >
+                    {GLYPHS.close}
+                  </button>
+                </div>
+                <SquadLinkPanel link={link} />
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }
