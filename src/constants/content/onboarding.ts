@@ -16,7 +16,7 @@ export const VOICE_FOR_TONE: Readonly<Record<Tone, VoiceKey>> = { soft: "arm", r
 export const ONBOARDING = {
   label: "Meet the Gaffer",
   question: "Before we start, Coach. Who are we looking after?",
-  questionHint: "One tap sets the format and how I talk to you. You can change it later under Your club.",
+  questionHint: "One tap sets the format and how I talk to you. You can change it later under Customise your club.",
   ageGroupLabel: "Age group",
   /** Before an age is picked there is no tone yet, so the skip link is plain. */
   skip: "Skip the tour",

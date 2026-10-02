@@ -1,91 +1,221 @@
 "use client";
 
-import { useState } from "react";
-import { PICK, STEPS } from "@/constants/content/board";
+import { useState, type Ref } from "react";
+import { BOARD_CONFIG } from "@/constants/config";
+import { GLYPHS, PICK, PICK_BAR, SAVED, STEPS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
-import { changedFromStrongest, matchUnderway, planName, started } from "@/lib/board/queries";
+import { matchIsToday } from "@/lib/board/message";
+import { changedFromStrongest, matchUnderway, planName, squadChecks, started, teamSize, where } from "@/lib/board/queries";
+import { useNow } from "@/lib/hooks";
 import { Button } from "../Button";
+import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ConfirmBox } from "./ConfirmBox";
 import { useClockToggle } from "./MatchClock";
-import { Panel } from "./Panel";
+import { Popover } from "./Popover";
+import { SavedLineups } from "./SavedLineups";
 
-type Confirming = "new" | "clear" | "back" | null;
+const MENU_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-2";
+const TOOLBAR_BUTTON = "button button--default is-inline-flex is-align-center has-gap-2 has-py-3 has-px-3 text-base has-radius-field";
 
-/**
- * The end of Pick the team: the strongest side to save or go back to, kick-off, and starting over.
- * Starting over asks first, in place, rather than with a browser dialog.
- */
-export function PickActions() {
+/** The strongest side to save or go back to, and the saved plans under it, in a menu above the pitch. */
+export function LineupsMenu() {
   const { state, act } = useBoard();
   const { data } = state;
-  const kickOff = useClockToggle();
-  const [confirming, setConfirming] = useState<Confirming>(null);
+  const [confirming, setConfirming] = useState(false);
   const plan = planName(data);
-  const underway = started(data);
   const changed = changedFromStrongest(data);
 
   // During a match, going back to the strongest side undoes the changes made on the day, so it asks first.
-  function backToStrongest() {
-    if (data.preset && matchUnderway(data)) setConfirming("back");
-    else act({ type: "backToStrongest" });
+  function backToStrongest(close: () => void) {
+    if (data.preset && matchUnderway(data)) setConfirming(true);
+    else {
+      act({ type: "backToStrongest" });
+      close();
+    }
   }
-
-  function confirm() {
-    act(confirming === "new" ? { type: "newMatchday" } : confirming === "clear" ? { type: "clearPitch" } : { type: "backToStrongest" });
-    setConfirming(null);
-  }
-
-  // The in-place check, the same for each of the three.
-  const ask = (text: string, yes: string, variant: "out" | "default") => (
-    <ConfirmBox className="has-mt-3" text={text} yes={yes} keep={PICK.keep} variant={variant} onYes={confirm} onKeep={() => setConfirming(null)} />
-  );
 
   return (
-    <>
-      <Panel heading={PICK.strongestHeading(plan)}>
-        <p className="text-base is-dim has-mb-3">
-          {!data.preset ? PICK.planNone(plan) : changed ? PICK.planChanged(plan) : PICK.planSame(plan, data.preset.formation)}
-        </p>
-        <div className="is-flex has-gap-2">
-          <Button className="is-flex-1 has-py-3" onClick={() => act({ type: "setStrongest" })}>
-            {PICK.saveStrongest}
-          </Button>
-          <Button className="is-flex-1 has-py-3" disabled={!data.preset || !changed} onClick={backToStrongest}>
-            {PICK.backToStrongest}
-          </Button>
-        </div>
-        {confirming === "back" && ask(GAFFER[data.voice].matchUnderway(plan), PICK.backConfirm, "default")}
-      </Panel>
+    <Popover
+      label={SAVED.button}
+      triggerClassName={TOOLBAR_BUTTON}
+      trigger={
+        <>
+          {SAVED.button}
+          <span className="text-2xs is-dim" aria-hidden="true">
+            {GLYPHS.menu}
+          </span>
+        </>
+      }
+    >
+      {(close) => (
+        <>
+          <section>
+            <h3 className={MENU_HEADING}>{PICK.strongestHeading(plan)}</h3>
+            <p className="text-sm is-dim has-mb-3">
+              {!data.preset ? PICK.planNone(plan) : changed ? PICK.planChanged(plan) : PICK.planSame(plan, data.preset.formation)}
+            </p>
+            <div className="is-flex has-gap-2">
+              <Button className="is-flex-1" onClick={() => act({ type: "setStrongest" })}>
+                {PICK.saveStrongest}
+              </Button>
+              <Button className="is-flex-1" disabled={!data.preset || !changed} onClick={() => backToStrongest(close)}>
+                {PICK.backToStrongest}
+              </Button>
+            </div>
+            {confirming && (
+              <ConfirmBox
+                className="has-mt-3"
+                text={GAFFER[data.voice].matchUnderway(plan)}
+                yes={PICK.backConfirm}
+                keep={PICK.keep}
+                onYes={() => {
+                  act({ type: "backToStrongest" });
+                  setConfirming(false);
+                  close();
+                }}
+                onKeep={() => setConfirming(false)}
+              />
+            )}
+          </section>
+          <section className="drawer__section has-pt-4">
+            <h3 className={MENU_HEADING}>{SAVED.heading}</h3>
+            <SavedLineups />
+          </section>
+        </>
+      )}
+    </Popover>
+  );
+}
 
-      <Button
-        variant="primary"
-        className="is-w-full has-py-4 text-lg has-mt-5"
-        onClick={() => {
-          if (!underway) kickOff();
-          act({ type: "setStep", step: "match" });
-        }}
-      >
-        {underway ? STEPS.backToMatch : STEPS.startMatch}
-      </Button>
+type Confirming = "new" | "clear" | null;
 
-      <section className="start-over has-mt-6 has-pt-5">
-        <h3 className="has-font-headline has-font-bold text-sm tracking-caps uppercase is-out has-mb-3">{PICK.startOver}</h3>
-        {confirming === "new" ? (
-          ask(PICK.newMatchdayText, PICK.newMatchdayConfirm, "out")
-        ) : confirming === "clear" ? (
-          ask(PICK.clearPitchText, PICK.clearPitchConfirm, "out")
-        ) : (
-          <div className="is-flex has-gap-2">
-            <Button variant="out" className="is-flex-1 has-py-3" onClick={() => setConfirming("new")}>
-              {PICK.newMatchday}
-            </Button>
-            <Button variant="out" className="is-flex-1 has-py-3" onClick={() => setConfirming("clear")}>
-              {PICK.clearPitch}
-            </Button>
-          </div>
-        )}
-      </section>
-    </>
+/** New matchday and Clear the pitch, behind the menu at the end of the shape toolbar. Each asks first, in place. */
+export function MoreMenu() {
+  const { act } = useBoard();
+  const [confirming, setConfirming] = useState<Confirming>(null);
+
+  return (
+    <Popover
+      label={PICK.startOver}
+      align="end"
+      triggerClassName={`${TOOLBAR_BUTTON} is-justify-center`}
+      triggerLabel={PICK.more}
+      trigger={GLYPHS.more}
+    >
+      {(close) => (
+        <section>
+          <h3 className="has-font-headline has-font-bold text-sm tracking-caps uppercase is-out has-mb-3">{PICK.startOver}</h3>
+          {confirming ? (
+            <ConfirmBox
+              text={confirming === "new" ? PICK.newMatchdayText : PICK.clearPitchText}
+              yes={confirming === "new" ? PICK.newMatchdayConfirm : PICK.clearPitchConfirm}
+              keep={PICK.keep}
+              variant="out"
+              onYes={() => {
+                act(confirming === "new" ? { type: "newMatchday" } : { type: "clearPitch" });
+                setConfirming(null);
+                close();
+              }}
+              onKeep={() => setConfirming(null)}
+            />
+          ) : (
+            <div className="is-flex is-flex-column has-gap-2">
+              <Button variant="out" className="has-py-3 text-left" onClick={() => setConfirming("new")}>
+                {PICK.newMatchday}
+              </Button>
+              <Button variant="out" className="has-py-3 text-left" onClick={() => setConfirming("clear")}>
+                {PICK.clearPitch}
+              </Button>
+            </div>
+          )}
+        </section>
+      )}
+    </Popover>
+  );
+}
+
+/** New matchday on its own, at the foot of Full time: once the result is sent, next week starts here. */
+export function NewMatchday() {
+  const { act } = useBoard();
+  const [confirming, setConfirming] = useState(false);
+
+  return (
+    <section className="start-over has-mt-6 has-pt-5">
+      {confirming ? (
+        <ConfirmBox
+          text={PICK.newMatchdayText}
+          yes={PICK.newMatchdayConfirm}
+          keep={PICK.keep}
+          variant="out"
+          onYes={() => {
+            act({ type: "newMatchday" });
+            setConfirming(false);
+          }}
+          onKeep={() => setConfirming(false)}
+        />
+      ) : (
+        <Button variant="out" className="is-w-full has-py-3" onClick={() => setConfirming(true)}>
+          {PICK.newMatchday}
+        </Button>
+      )}
+    </section>
+  );
+}
+
+/**
+ * The foot of Pick the team: where the team stands, what is worth checking, and the two ways on. Send call-up
+ * leads in the week; on the day, or with the match started, Start the match does.
+ */
+interface PickBarProps {
+  /** The board measures the bar, so the pinned pitch above it keeps clear. */
+  readonly ref?: Ref<HTMLDivElement>;
+}
+
+export function PickBar({ ref }: PickBarProps) {
+  const { state, act } = useBoard();
+  const { data } = state;
+  const kickOff = useClockToggle();
+  const now = useNow(true, BOARD_CONFIG.minutesTickMs);
+  const underway = started(data);
+  const matchFirst = underway || matchIsToday(data, now);
+  const called = data.players.filter((p) => !p.out).length;
+  const onPitch = Object.keys(data.xi).length;
+  const bench = data.players.filter((p) => !p.out && where(data, p.id) === "bench").length;
+  const { flagged } = squadChecks(data);
+
+  return (
+    <div
+      ref={ref}
+      className="pick-bar is-flex is-flex-wrap is-align-center is-justify-between has-gap-2 has-py-2 has-py-md-3"
+      role="region"
+      aria-label={PICK_BAR.label}
+    >
+      {/* On a phone the counts give way to the buttons: the Squad and Shape headings already say them. */}
+      <p className={cx("is-flex-wrap is-align-center has-gap-3 text-base", flagged ? "is-flex" : "is-hidden is-md-flex")}>
+        <span className="is-hidden is-md-inline">{PICK_BAR.ready(called, onPitch, teamSize(data), bench)}</span>
+        {flagged > 0 && <span className="pick-bar__check text-sm">{PICK_BAR.checks(flagged)}</span>}
+      </p>
+      <div className="pick-bar__actions is-flex has-gap-2">
+        <Button
+          variant={matchFirst ? "primary" : "outline"}
+          className="is-flex-1 has-py-3 has-px-5 text-md"
+          onClick={() => {
+            if (!underway) kickOff();
+            act({ type: "setStep", step: "match" });
+          }}
+        >
+          {underway ? STEPS.backToMatch : STEPS.startMatch}
+        </Button>
+        <Button
+          variant={matchFirst ? "outline" : "primary"}
+          className="is-flex-1 has-py-3 has-px-5 text-md"
+          aria-haspopup="dialog"
+          onClick={() => act({ type: "openCallUp" })}
+        >
+          {PICK_BAR.sendCallUp}
+        </Button>
+      </div>
+    </div>
   );
 }

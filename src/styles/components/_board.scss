@@ -13,6 +13,12 @@
 // the tab list's inset and the dock's own padding. The toast and the board's foot read it.
 $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 
+// What sits above the pitch in the pinned centre column: the Gaffer's line and the shape controls.
+$pitch-headroom: spacer(11) * 3;
+
+// The room the bar along the foot of Pick the team takes: its buttons and their padding.
+$pick-bar-room: spacer(11) + spacer(4);
+
 .board {
   // Pitch lines take a faint wash of the kit colour.
   --line: #{tint(kit, 24%)};
@@ -64,12 +70,50 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     }
   }
 
+  // Pick the team: the squad and the pitch, nothing else. The way on is the bar along the foot.
+  &--no-right {
+    grid-template-areas: 'centre' 'left';
+
+    @include min(bp(md)) {
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      grid-template-areas: 'left centre';
+    }
+
+    @include min(bp(lg)) {
+      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      gap: spacer(8);
+    }
+  }
+
   &__left {
     grid-area: left;
   }
 
   &__centre {
     grid-area: centre;
+
+    // Beside the lists, the pitch stays in view while they scroll, so the coach always sees the shape
+    // as they change it. The page has one scroll: a centre taller than the screen scrolls with it until
+    // its foot is in view, then pins. useStickyTop writes --sticky-top; spacer(4) is BOARD_CONFIG.stickyGapPx.
+    @include min(bp(md)) {
+      position: sticky;
+      top: var(--sticky-top, #{spacer(4)});
+
+      // The whole shape fits the screen, keeper included, with the Gaffer and the shape controls above it.
+      .pitch {
+        max-width: calc((100dvh - #{$pitch-headroom}) * 3 / 4);
+        margin-inline: auto;
+      }
+    }
+  }
+
+  // Pick the team keeps the bar along the foot, so the pitch is sized to fit above it.
+  @include min(bp(md)) {
+    &--pick &__centre {
+      .pitch {
+        max-width: calc((100dvh - #{$pitch-headroom + $pick-bar-room}) * 3 / 4);
+      }
+    }
   }
 
   &__right {
@@ -173,8 +217,13 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   }
 }
 
+// Right-aligned in a fixed width beside the step tabs, so it never shifts as it counts. On a phone it
+// starts its own row, so it lines up with the edge instead.
 .match-clock {
-  min-width: 74px;
+  @include min(bp(md)) {
+    min-width: 74px;
+    text-align: right;
+  }
 }
 
 .panel {
@@ -184,7 +233,7 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
     margin-top: spacer(5);
   }
 
-  // Jumped to from a link, as Your club is from the kit hint.
+  // A panel jumped to from a link takes focus without a ring.
   &:focus {
     outline: none;
   }
@@ -430,6 +479,14 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   }
 }
 
+// The squad link as a QR code. Big enough to scan off a laptop screen, square, and with
+// hard edges between modules so the camera reads it first time.
+.handoff__code {
+  max-width: 360px;
+  aspect-ratio: 1;
+  shape-rendering: crispEdges;
+}
+
 // Two name styles to a row, so four fit without crowding the column.
 .send-names {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -487,6 +544,17 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   // Done and remove sit at the foot, however short the drawer's content.
   &__foot {
     margin-top: auto;
+  }
+
+  // A sheet's own buttons, pinned to its foot while the body scrolls under them.
+  &__dock {
+    position: sticky;
+    bottom: calc(-1 * (#{spacer(5)} + env(safe-area-inset-bottom)));
+    margin-top: auto;
+    padding-bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
+    margin-bottom: calc(-1 * (#{spacer(5)} + env(safe-area-inset-bottom)));
+    background-color: color(board-2);
+    border-top: 1px solid $edge;
   }
 
   &__confirm {
@@ -568,20 +636,9 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 // ---------- The Gaffer's line ----------
 
 .gaffer-line {
-  // The visor mark beside the bubble, like a face beside a message.
-  &__mark {
-    width: $hit-size;
-    height: $hit-size;
-    background-color: color(board-2);
-    border: 1px solid $edge;
-  }
-
-  // A speech bubble, the corner nearest the mark squared off.
+  // The line sits straight beside the mark, no box around either.
   &__bubble {
     max-width: 560px;
-    background-color: color(board-2);
-    border: 1px solid $edge;
-    border-radius: spacer(3) + spacer(1) * 0.5 spacer(3) + spacer(1) * 0.5 spacer(3) + spacer(1) * 0.5 spacer(1);
   }
 }
 
@@ -647,7 +704,7 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   }
 }
 
-// One strip under Your club.
+// One strip in the club sheet.
 .kit-editor {
   border-top: 1px solid $edge;
 
@@ -711,6 +768,76 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
   border-top: 1px solid $edge;
 }
 
+// Along the foot of Pick the team, above the docked step tabs on a phone: where the team stands, what to
+// check, and the two ways on. Solid, so nothing scrolling under it shows through.
+.pick-bar {
+  position: sticky;
+  bottom: calc(var(--dock-height, 0px) + env(safe-area-inset-bottom));
+  z-index: z(raised);
+  margin-top: spacer(6);
+  background-color: color(board);
+  border-top: 1px solid $edge;
+
+  &__check {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    color: color(out);
+
+    &::before {
+      content: '';
+      width: spacer(2);
+      height: spacer(2);
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+  }
+
+  // On a phone the two buttons share the width, within reach of a thumb.
+  &__actions {
+    @include max(bp(md)) {
+      width: 100%;
+    }
+  }
+}
+
+// The shape toolbar's last item, the menu that holds starting over, sits at the far end.
+.shape-toolbar__end {
+  margin-inline-start: auto;
+}
+
+// Format and Formation say what their dropdowns are. On a phone the words are for screen readers only,
+// so both dropdowns share one row above the pitch: the values, 11-a-side and 4-3-3, speak for themselves.
+.shape-toolbar__label {
+  @include max(bp(md)) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+// The match line under the team name: the details, and Edit, underlined, so it reads as the way in.
+.board-header__match {
+  max-width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover .board-header__edit {
+    color: color(chalk);
+  }
+}
+
+.board-header__edit {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 // ---------- The bench tray, on a phone ----------
 
 // Matchday on a phone: the clock first, then the Gaffer and the pitch, and the bench list gives way
@@ -736,7 +863,7 @@ $step-dock-height: $hit-size + spacer(1) * 2 + spacer(2) * 2;
 // small phone. Once the player coming off is picked, it pins just above the docked step tabs, so
 // "On for" is in reach wherever the page is scrolled.
 .bench-tray {
-  background-color: tint(board, 95%);
+  background-color: color(board);
   border-top: 1px solid $edge;
 
   &--pinned {

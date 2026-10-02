@@ -39,6 +39,7 @@ import type {
   BoardStep,
   Competition,
   DropTarget,
+  Kickoff,
   Kit,
   KitSide,
   Lineup,
@@ -81,6 +82,10 @@ export type Action =
   | { type: "pickerOff"; to: "bench" | "pool" }
   | { type: "toggleEdit"; id: string }
   | { type: "editDone" }
+  | { type: "openClub" }
+  | { type: "closeClub" }
+  | { type: "openCallUp" }
+  | { type: "closeCallUp" }
   | { type: "togglePos"; pos: PositionKey }
   | { type: "setSide"; side: Side | null }
   | { type: "setVoice"; voice: VoiceKey }
@@ -134,6 +139,8 @@ const INITIAL_UI: UiState = {
   sendKind: "result",
   selected: null,
   editing: null,
+  clubOpen: false,
+  callUpOpen: false,
   pickerSlot: null,
   posMode: false,
   dropTarget: null,
@@ -173,6 +180,12 @@ function applyLineup(d: BoardData, l: Lineup, fillGaps = true): number {
     changes++;
   }
   return changes;
+}
+
+function keepKickoff(d: BoardData): Kickoff {
+  const flags: Kickoff["flags"] = {};
+  for (const { id, out, inj, una, trn } of d.players) flags[id] = { out, inj, una, trn };
+  return { lineup: captureLineup(d), flags };
 }
 
 function opened(d: BoardData): BoardData {
@@ -396,6 +409,7 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
     if (!undo) return state;
     const back = structuredClone(undo.data);
     syncMinutes(back, action.now);
+    back.updatedAt = action.now;
     const notice = { id: (state.ui.notice?.id ?? 0) + 1, text: GAFFER[back.voice].undone };
     return { data: back, ui: { ...state.ui, undo: null, notice, step: undo.step, selected: null, pickerSlot: null, offSlot: null } };
   }
@@ -404,6 +418,8 @@ export function boardReducer(state: BoardState, action: StampedAction): BoardSta
   // so an undo never takes back something the coach did after it.
   if (next !== state && next.data !== state.data) {
     const changed = JSON.stringify(next.data) !== JSON.stringify(state.data);
+    // A loaded board keeps its own time, so a squad link can say which board is newer.
+    if (changed && action.type !== "load") next.data.updatedAt = action.now;
     if (changed && UNDOABLE.has(action.type)) {
       const text = next.ui.notice && next.ui.notice.id !== state.ui.notice?.id ? next.ui.notice.text : GAFFER[next.data.voice].changed;
       next.ui.undo = { id: (state.ui.undo?.id ?? 0) + 1, text, data: state.data, step: state.ui.step };
@@ -444,6 +460,7 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     case "load":
       next.data = opened(structuredClone(action.data));
       if (!next.data.createdAt && next.data.players.length) next.data.createdAt = now;
+      if (!next.data.updatedAt && next.data.players.length) next.data.updatedAt = now;
       next.ui = { ...INITIAL_UI, storageOK: ui.storageOK, notice: ui.notice };
       if (action.notice) {
         next.ui.notice = { id: (state.ui.notice?.id ?? 0) + 1, text: action.notice };
@@ -587,6 +604,8 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
         d.clock = { running: false, base: elapsed(d, now), since: 0 };
         note(say.clockPaused);
       } else {
+        // The first whistle keeps the team as it stands, so the match can be taken back to before it.
+        if (!started(d) && !d.subs.length) d.kickoff = keepKickoff(d);
         const breakOver = d.match.atBreak;
         d.match.atBreak = false;
         note(breakOver ? say.secondHalf : d.clock.base > 0 ? say.clockResumed : say.kickOff);
@@ -594,13 +613,24 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       }
       return next;
 
+    // Back to before kick-off: the team that started, the clock at nothing, no changes and no score.
+    // The match details and the squad stay as they are.
     case "clockReset":
+      if (d.kickoff) {
+        for (const p of d.players) Object.assign(p, d.kickoff.flags[p.id] ?? {});
+        applyLineup(d, d.kickoff.lineup, false);
+        d.kickoff = null;
+      }
       d.clock = { running: false, base: 0, since: 0 };
-      d.match.half = 1;
-      d.match.atBreak = false;
-      d.match.ended = false;
-      note(say.clockCleared);
+      d.subs = [];
       d.minutes = { on: {}, played: {} };
+      d.match = { ...d.match, us: 0, them: 0, potm: "", half: 1, atBreak: false, ended: false };
+      ui.step = "pick";
+      ui.selected = null;
+      ui.offSlot = null;
+      ui.offInjured = false;
+      closePicker();
+      note(say.clockCleared);
       return next;
 
     case "setFormation":
@@ -698,6 +728,22 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
 
     case "editDone":
       ui.editing = null;
+      return next;
+
+    case "openClub":
+      ui.clubOpen = true;
+      return next;
+
+    case "closeClub":
+      ui.clubOpen = false;
+      return next;
+
+    case "openCallUp":
+      ui.callUpOpen = true;
+      return next;
+
+    case "closeCallUp":
+      ui.callUpOpen = false;
       return next;
 
     case "togglePos": {
@@ -894,6 +940,9 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
     // Starts the week clean: nobody called up, clock and subs cleared.
     // Injuries and unavailability carry over, since they are not weekly decisions.
     case "newMatchday":
+      // Next week opens on the team that started this one, not the one left on at the final whistle.
+      if (d.kickoff) d.saved = d.kickoff.lineup;
+      d.kickoff = null;
       for (const p of d.players) {
         p.out = true;
         // training is a weekly thing, so it starts clean too

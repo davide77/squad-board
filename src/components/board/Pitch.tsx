@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import { MATCH, NO_NUMBER, SHAPE } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { firstName, shirtName } from "@/lib/board/names";
-import { byId, coverFor, fitLevel, playedMinutes, slots } from "@/lib/board/queries";
+import { byId, coverFor, dupeNumbers, fitLevel, playedMinutes, slots } from "@/lib/board/queries";
 import { useNow } from "@/lib/hooks";
 import type { Slot } from "@/lib/board/types";
 import { cx } from "../cx";
@@ -15,9 +15,11 @@ interface PitchSlotProps {
   readonly slot: Slot;
   /** The time the minutes are read at, shared by every shirt so one timer serves the pitch. */
   readonly now: number;
+  /** Shirt numbers on more than one player, marked on the shirt so the clash shows where the coach looks. */
+  readonly dupes: ReadonlySet<string>;
 }
 
-function PitchSlot({ slot, now }: PitchSlotProps) {
+function PitchSlot({ slot, now, dupes }: PitchSlotProps) {
   const { state, act } = useBoard();
   const { data, ui } = state;
   const p = byId(data, data.xi[slot.id]);
@@ -45,6 +47,7 @@ function PitchSlot({ slot, now }: PitchSlotProps) {
         "pitch-slot--wide": data.nameStyle === "full",
         "pitch-slot--movable": ui.posMode,
         "pitch-slot--drop": isDrop,
+        "pitch-slot--clash": !!p?.num && dupes.has(p.num),
       })}
       style={position}
       data-slot={slot.id}
@@ -75,12 +78,13 @@ function PitchSlot({ slot, now }: PitchSlotProps) {
 export function Pitch() {
   const { state } = useBoard();
   const now = useNow(state.ui.step === "match" && state.data.clock.running, BOARD_CONFIG.minutesTickMs);
+  const dupes = dupeNumbers(state.data);
   return (
     <div className="pitch is-w-full has-radius-panel" data-pitch>
       <PitchMarkings />
       {/* Keyed by the player, so a player's marker glides to their spot in a new shape rather than being redrawn. */}
       {slots(state.data).map((s) => (
-        <PitchSlot key={state.data.xi[s.id] ?? s.id} slot={s} now={now} />
+        <PitchSlot key={state.data.xi[s.id] ?? s.id} slot={s} now={now} dupes={dupes} />
       ))}
     </div>
   );

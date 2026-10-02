@@ -63,6 +63,7 @@ export const PRIVACY = {
       body: [
         "The board keeps your team name, fixture, players' names, shirt numbers, positions, injuries, saved line-ups and substitutions. All of it is saved in this browser on this device.",
         "The messages to the parents and the line-up picture are made on your device too. They only go where you send them.",
+        "Send the squad, under Customise your club, makes a link with the board inside it so you can open it on your phone. The squad sits in the part of the link after the #, which browsers never send to a website, so it goes only where you send the link.",
       ],
     },
     {
@@ -92,7 +93,7 @@ export const PRIVACY = {
     {
       heading: "The club waitlist",
       body: [
-        "If you leave your email address for the club waitlist, in the footer or under Your club on the board, we keep that address and when you left it. It is stored with Brevo, the service we send email with, and only we can see it.",
+        "If you leave your email address for the club waitlist, in the footer or under Customise your club on the board, we keep that address and when you left it. It is stored with Brevo, the service we send email with, and only we can see it.",
         "We use it for one thing: to tell you when Gafferboard for clubs is ready. It is never shared or sold. To be taken off the list, get in touch and we delete it.",
       ],
     },
@@ -106,14 +107,14 @@ export const PRIVACY = {
     {
       heading: "Keep your device safe",
       body: [
-        "Anyone who can open this browser on your device can see the board. Lock your phone with a passcode. On a shared or club computer, use Start again under Your club when you have finished.",
+        "Anyone who can open this browser on your device can see the board. Lock your phone with a passcode. On a shared or club computer, use Start again under Customise your club when you have finished.",
         "A squad file holds every name on the board. Keep it somewhere private, and do not post it in a group chat.",
       ],
     },
     {
       heading: "Deleting your data",
       body: [
-        "Delete a player and they are gone from the board. Start again, under Your club, clears the whole board. Clearing this site's data in your browser settings does the same.",
+        "Delete a player and they are gone from the board. Start again, under Customise your club, clears the whole board. Clearing this site's data in your browser settings does the same.",
         "Squad files you exported are yours to delete. We never had a copy.",
       ],
     },

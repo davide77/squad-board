@@ -7,16 +7,14 @@ import { kitWords } from "@/lib/board/kit";
 import { mapLink } from "@/lib/board/message";
 import type { Competition, MatchTextField } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
-import { CLUB_PANEL_ID } from "./ClubPanel";
 import { KitIcon } from "./KitIcon";
-import { Panel } from "./Panel";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
 // py-3 keeps every field at least 44px tall for a thumb.
 const FIELD = "field is-w-full has-radius-field has-py-3 has-px-3 text-base";
 
-/** This week's opponent, date, times, home or away, and ground. They head the call-up and the result. */
-export function MatchDetailsPanel() {
+/** This week's opponent, date, times, home or away, and ground, in the call-up sheet. They head the call-up and the result. */
+export function MatchDetailsFields() {
   const { state, act } = useBoard();
   const { fixture, match, kits } = state.data;
   const id = useId();
@@ -25,7 +23,7 @@ export function MatchDetailsPanel() {
   const address = match.address.trim();
 
   return (
-    <Panel heading={MESSAGE.heading}>
+    <div>
       <p className="text-sm is-dimmer has-mb-4">{MESSAGE.hint}</p>
       <div className="is-grid has-gap-3">
         <div>
@@ -102,9 +100,16 @@ export function MatchDetailsPanel() {
           {match.venue && <p className="kit-editor__words text-sm is-dim has-mt-2">{kitWords(kits[match.venue])}</p>}
           <p className="text-sm is-dimmer has-mt-1">
             {MESSAGE.venueHint}{" "}
-            <a href={`#${CLUB_PANEL_ID}`} className="hit-area is-kit">
+            <button
+              type="button"
+              className="landing-link-button hit-area is-kit"
+              onClick={() => {
+                act({ type: "closeCallUp" });
+                act({ type: "openClub" });
+              }}
+            >
               {MESSAGE.venueHintLink}
-            </a>
+            </button>
           </p>
         </div>
         <div>
@@ -152,6 +157,6 @@ export function MatchDetailsPanel() {
           </p>
         </div>
       </div>
-    </Panel>
+    </div>
   );
 }

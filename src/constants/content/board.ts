@@ -16,6 +16,9 @@ export const NO_NUMBER = "-";
 export const GLYPHS = {
   close: "\u00D7",
   grip: "\u22EE\u22EE",
+  /** After a toolbar button that opens a menu. */
+  menu: "\u25BE",
+  more: "\u00B7\u00B7\u00B7",
 } as const;
 
 export const UNDO = {
@@ -45,10 +48,14 @@ export const HEADER = {
   /** An unnamed board, straight off the start screen, asks for its name here. */
   teamPlaceholder: "Name your team",
   clockLabel: "Match clock",
+  /** Opens the club sheet: the settings set once a season, out of the weekly column. */
+  club: "Customise your club",
+  /** The match line under the team name opens the call-up sheet. Empty, it asks for the match. */
+  addMatch: "Add this week's match",
+  editMatch: "Edit",
   start: "Start",
   pause: "Pause",
   resume: "Resume",
-  reset: "Reset",
 } as const;
 
 export const SHAPE = {
@@ -67,7 +74,7 @@ export const SHAPE = {
   slotFilled: (num: number | string, name: string, role: string) => `${num} ${name}, ${role}`,
 } as const;
 
-/** The right-hand column of Pick the team: the strongest side, kick-off, and starting over. */
+/** Pick the team's line-ups menu, the way on to the match, and starting over. */
 export const PICK = {
   /** "Strongest XI", from planName, which knows the age group. */
   strongestHeading: (plan: string) => plan.charAt(0).toUpperCase() + plan.slice(1),
@@ -86,6 +93,24 @@ export const PICK = {
   clearPitchConfirm: "Clear the pitch",
   keep: "Keep it",
   backConfirm: "Go back to it",
+  /** The menu at the end of the shape toolbar that holds starting over. */
+  more: "More",
+} as const;
+
+/** The bar along the foot of Pick the team: where the team stands, and the two ways on. */
+export const PICK_BAR = {
+  label: "Ready to go",
+  ready: (called: number, on: number, size: number, bench: number) =>
+    `${called} called up \u00b7 ${on} of ${size} starting \u00b7 ${bench} on the bench`,
+  checks: (n: number) => (n === 1 ? "1 thing to check" : `${n} things to check`),
+  sendCallUp: "Send call-up",
+} as const;
+
+/** The Send call-up sheet: this week's match, the message as the parents will read it, and the send buttons. */
+export const CALL_UP = {
+  heading: "Send call-up",
+  previewHeading: "What the parents see",
+  close: "Close",
 } as const;
 
 export const ZONES = {
@@ -194,7 +219,9 @@ export const START = {
   afterSubmit: "Name the team and add a badge on the board.",
   lookHeading: "Just having a look?",
   example: "Try the example team",
-  importHint: "Moving from another phone? Import the squad file you exported.",
+  /** For the coach who set the team up on a laptop and has opened the board on their phone. */
+  handoffHint: "Set up on your laptop? Open Customise your club there, tap Send the squad and scan the code with this phone.",
+  importHint: "Or import a squad file you exported.",
   privacy: "No account needed. Your squad stays on this device.",
 } as const;
 
@@ -292,9 +319,9 @@ export const MATCH = {
   pause: "Pause",
   resume: "Resume",
   fullTime: "Full time",
-  reset: "Reset",
-  resetText: "Puts the clock back to 0:00 and clears everyone's minutes. The subs stay in the log.",
-  resetConfirm: "Reset the clock",
+  reset: "Back to kick-off",
+  resetText: "Takes the match back to before kick-off: the team you started with, the clock at 0:00, no subs and 0-0.",
+  resetConfirm: "Go back",
   keep: "Keep it",
   benchHeading: "Bench",
   benchHint: "Tap a player on the pitch, then bring someone on.",
@@ -321,6 +348,8 @@ export const MATCH = {
 } as const;
 
 export const SAVED = {
+  /** The toolbar button above the pitch that opens the strongest side and the saved plans. */
+  button: "Line-ups",
   heading: "Saved line-ups",
   nameLabel: "Name this line-up",
   namePlaceholder: "e.g. Plan A, press high",
@@ -384,7 +413,6 @@ export const FULL = {
 
 /** The call-up for the parents, under Pick the team: who's in, when, where and what to wear. */
 export const PARENTS = {
-  heading: "Message to the parents",
   hint: "Who's in, when, where and what to wear. No shape, no bench, no injuries.",
   previewLabel: "Preview",
   namesHint: "Use initials for groups with people outside the club.",
@@ -416,9 +444,9 @@ export const MESSAGE = {
     { key: "home", label: "Home" },
     { key: "away", label: "Away" },
   ],
-  /** "Change the kits under Your club", with Your club a link down to the panel. */
-  venueHint: "Change the kits under",
-  venueHintLink: "Your club",
+  /** "To change the kits, customise your club.", with the last words opening the club sheet. */
+  venueHint: "To change the kits,",
+  venueHintLink: "customise your club",
   /** After the fixture in the message: "v Northgate (away, league)". Then the kit line under it. */
   fixtureTag: (parts: readonly string[]) => (parts.length ? ` (${parts.join(", ")})` : ""),
   /** "Home kit: black and yellow stripes, black shorts, black socks." */
@@ -434,6 +462,8 @@ export const MESSAGE = {
   addressPlaceholder: "Ground name, street, postcode",
   addressHint: "Parents get a Google Maps link with it.",
   mapCheck: "Check it on the map",
+  /** Before the kick-off time in the header's match line: "KO 10:00". */
+  kickoffShort: "KO ",
   /** Lines of the message itself. */
   kickoff: "Kick-off: ",
   meet: "Meet: ",
@@ -473,7 +503,8 @@ export const KIT = {
 } as const;
 
 export const CLUB = {
-  heading: "Your club",
+  heading: "Customise your club",
+  close: "Close",
   gaffer: "Gaffer",
   ageLabel: "Age group",
   formatLabel: "Format",
@@ -492,11 +523,29 @@ export const CLUB = {
   import: "Import squad file",
   importLabel: "Squad file to import",
   wipe: "Start again",
-  hint: "Everything is stored in this browser on this device. Export a file to move it to another phone or laptop, or to keep a copy before a season change.",
+  hint: "Everything is stored in this browser on this device. Send the squad to open it on your phone, or export a file to keep a copy before a season change.",
   stored: "Saved in this browser on this device",
   noStorage: "This browser is blocking storage, so nothing will be saved. Export your squad before you close it.",
   fileSuffix: "-board.json",
   fileFallback: "squad",
+} as const;
+
+/** Sending the board to another device by link or QR code, under Customise your club. */
+export const HANDOFF = {
+  label: "Other device",
+  open: "Send the squad",
+  /** Beside Customise your club in the board header, on a laptop or tablet. */
+  toPhone: "Send to phone",
+  sheetTitle: "Open it on your phone",
+  close: "Close",
+  making: "Making the code.",
+  codeLabel: "QR code that opens your squad on another device",
+  scan: "Scan this with your phone's camera. The squad opens there, ready for matchday.",
+  copy: "Copy link",
+  share: "Share link",
+  shareTitle: "Gafferboard squad",
+  privacy: "The link carries your players' names. Send it to yourself or a coach you trust, never the parents' group. The badge stays on this device.",
+  unsupported: "This browser can't make the link. Export a squad file instead.",
 } as const;
 
 export const PICKER = {
@@ -523,6 +572,9 @@ export const CONFIRM = {
   deleteForGood: (name: string) => `Delete ${name} for good? This cannot be undone.`,
   replaceSquad: "Replace the squad on this board with the one in the file?",
   replaceSquadYes: "Replace the squad",
+  replaceFromLink: "Replace the squad on this device with the one from the link?",
+  replaceFromOlderLink:
+    "The squad on this device was changed after this link was made. Replace it with the older one from the link?",
   wipe: "Clear this board and start again? Everything on it is deleted. Export a file first if you want a copy.",
   keep: "Keep it",
 } as const;

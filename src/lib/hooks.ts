@@ -61,6 +61,33 @@ export function useEscapeKey(active: boolean, onEscape: () => void) {
 
 const SCROLL_LOCK_CLASS = "is-scroll-locked";
 // Layers can stack (the picker over the example sheet), so the page is let go by the last one to close.
+/**
+ * Where a pinned column sits while the page scrolls, written to `--sticky-top` on it. A column that fits the
+ * screen pins `gap` from the top. A taller one scrolls with the page until its foot is in view, then pins
+ * there, so the page has one scroll and the column never needs its own. `footRef` is a bar pinned along the
+ * bottom of the screen, whose height the column keeps clear of. `layout` is whatever swaps the column's
+ * content or mounts the bar, such as the step, so the measuring starts again with it.
+ */
+export function useStickyTop(ref: RefObject<HTMLElement | null>, footRef: RefObject<HTMLElement | null>, gap: number, layout: unknown) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const place = () => {
+      const room = window.innerHeight - (footRef.current?.offsetHeight ?? 0) - gap;
+      el.style.setProperty("--sticky-top", `${Math.min(gap, room - el.offsetHeight)}px`);
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(el);
+    if (footRef.current) observer.observe(footRef.current);
+    window.addEventListener("resize", place);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", place);
+    };
+  }, [ref, footRef, gap, layout]);
+}
+
 let scrollLocks = 0;
 
 /** Holds the page still while a layer is open over it. */

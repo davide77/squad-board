@@ -7,11 +7,12 @@ import Image from "next/image";
 import { VISOR_MARK } from "@/constants/brand";
 import { CLUB } from "@/constants/content/board";
 import { SITE } from "@/constants/site";
+import { BOARD_CONFIG } from "@/constants/config";
 import { kitColours } from "@/lib/board/kit";
-import { BenchPanel, PoolPanel } from "./Zones";
+import { useStickyTop } from "@/lib/hooks";
 import { BoardHeader } from "./BoardHeader";
 import { useBoard } from "./BoardProvider";
-import { ClubPanel } from "./ClubPanel";
+import { ClubSheet } from "./ClubSheet";
 import { ExampleBanner } from "./ExampleBanner";
 import { KeepSafe } from "./KeepSafe";
 import { GafferLine } from "./GafferLine";
@@ -19,11 +20,9 @@ import { Picker } from "./Picker";
 import { PlayerDrawer } from "./PlayerDrawer";
 import { UndoBar } from "./UndoBar";
 import { ShapePanel } from "./ShapePanel";
-import { MatchDetailsPanel } from "./MatchDetailsPanel";
-import { SavedPanel } from "./SavedPanel";
 import { FullActions, FullKinds, FullPreview } from "./Full";
-import { ParentsMessage } from "./ParentsMessage";
-import { PickActions } from "./PickActions";
+import { CallUpSheet } from "./CallUpSheet";
+import { NewMatchday, PickBar } from "./PickActions";
 import { BenchTray, ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
 import { Pitch } from "./Pitch";
 import { SquadPanel } from "./SquadPanel";
@@ -44,27 +43,15 @@ interface StepColumns {
 
 /**
  * What each step shows, and where. Left is the list the coach works from, centre the pitch,
- * right what comes next. A phone stacks them with the centre first.
+ * right what comes next. A phone stacks them with the centre first. Pick the team has no right
+ * column: its way on is the bar along the foot, and the call-up is a sheet.
  */
 const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
   pick: {
     left: <SquadPanel />,
-    centre: (
-      <>
-        <ShapePanel />
-        <BenchPanel />
-        <PoolPanel />
-      </>
-    ),
-    right: (
-      <>
-        <MatchDetailsPanel />
-        <ParentsMessage />
-        <PickActions />
-        <SavedPanel />
-        <ClubPanel />
-      </>
-    ),
+    // Only the pitch, so it fits the screen and stays pinned. The bench and the rest of the squad are
+    // groups in the squad list, which take a player dragged off the pitch.
+    centre: <ShapePanel />,
   },
   match: {
     left: <MatchBench />,
@@ -81,7 +68,12 @@ const STEP_COLUMNS: Readonly<Record<BoardStep, StepColumns>> = {
   full: {
     left: <FullKinds />,
     centre: <FullPreview />,
-    right: <FullActions />,
+    right: (
+      <>
+        <FullActions />
+        <NewMatchday />
+      </>
+    ),
   },
 };
 
@@ -92,6 +84,10 @@ export function BoardView({ top }: BoardViewProps) {
   const { onPointerDown, onClickCapture } = useBoardDrag(rootRef);
   const { step } = state.ui;
   const columns = STEP_COLUMNS[step];
+  // The pitch column pins while the lists beside it scroll with the page, clear of the bar along the foot.
+  const centreRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  useStickyTop(centreRef, barRef, BOARD_CONFIG.stickyGapPx, step);
 
   // A new step starts at the top, not wherever the last one was scrolled to. Skipped on the first
   // render, so opening the board never jumps.
@@ -116,15 +112,17 @@ export function BoardView({ top }: BoardViewProps) {
         id={STEP_PANEL_ID}
         role="tabpanel"
         aria-labelledby={stepTabId(step)}
-        className={cx("board-step", `board-step--${step}`, !columns.left && "board-step--no-left")}
+        className={cx("board-step", `board-step--${step}`, !columns.left && "board-step--no-left", !columns.right && "board-step--no-right")}
       >
         {columns.left && <div className="board-step__left">{columns.left}</div>}
-        <div className="board-step__centre">
+        <div ref={centreRef} className="board-step__centre">
           <GafferLine />
           {columns.centre}
         </div>
         {columns.right && <div className="board-step__right">{columns.right}</div>}
       </div>
+      {/* Pinned along the foot while the coach picks: where the team stands, and the two ways on. */}
+      {step === "pick" && <PickBar ref={barRef} />}
       <footer className="board__foot is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-mt-7 has-pt-4 text-sm is-dimmer">
         <span className="is-inline-flex is-align-center has-gap-2 is-chalk text-md has-font-headline has-font-bold tracking-number">
           <Image src={VISOR_MARK.src} alt="" width={VISOR_MARK.footerSize} height={VISOR_MARK.footerSize} />
@@ -133,6 +131,8 @@ export function BoardView({ top }: BoardViewProps) {
         <span>{state.ui.storageOK ? CLUB.stored : CLUB.noStorage}</span>
       </footer>
       <Picker />
+      <ClubSheet />
+      <CallUpSheet />
       <PlayerDrawer />
       <UndoBar />
       <Toast />

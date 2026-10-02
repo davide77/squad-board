@@ -17,7 +17,7 @@ import {
 import { isVoice } from "@/lib/voice";
 import { defaultKits, readKit, stripOf } from "./kit";
 import { captureLineup, elapsed } from "./queries";
-import type { BoardData, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
+import type { BoardData, Kickoff, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyMatch(): MatchDetails {
   return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", surface: "", competition: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
@@ -40,6 +40,7 @@ export function emptyData(): BoardData {
     nameStyle: "first",
     preset: null,
     saved: null,
+    kickoff: null,
     removed: [],
     colour: 0,
     kits: defaultKits(stripOf(0)),
@@ -48,6 +49,7 @@ export function emptyData(): BoardData {
     example: false,
     createdAt: 0,
     backedUpAt: 0,
+    updatedAt: 0,
     voice: DEFAULT_VOICE,
     age: null,
     format: DEFAULT_FORMAT,
@@ -162,6 +164,17 @@ function readLineup(v: unknown): Lineup | null {
   return { formation: readPlanFormation(v.formation, custom), xi: readXI(v.xi), bench: ids(v.bench), custom };
 }
 
+function readKickoff(v: unknown): Kickoff | null {
+  if (!isRec(v) || !isRec(v.flags)) return null;
+  const lineup = readLineup(v.lineup);
+  if (!lineup) return null;
+  const flags: Kickoff["flags"] = {};
+  for (const [id, f] of Object.entries(v.flags)) {
+    if (isRec(f)) flags[id] = { out: f.out === true, inj: f.inj === true, una: f.una === true, trn: f.trn === true };
+  }
+  return { lineup, flags };
+}
+
 function readNamedLineup(v: unknown): NamedLineup | null {
   const l = readLineup(v);
   return l && isRec(v) ? { ...l, name: str(v.name) } : null;
@@ -211,6 +224,7 @@ export function readBoard(raw: unknown): BoardData | null {
     nameStyle: NAME_STYLES.some((o) => o.key === style) ? (style as NameStyle) : "first",
     preset: readLineup(raw.preset),
     saved: readLineup(raw.saved),
+    kickoff: readKickoff(raw.kickoff),
     removed: list(raw.removed).map(readPlayer).filter(notNull),
     colour: KIT_COLOURS[colour] ? colour : 0,
     kits: readKits(raw, KIT_COLOURS[colour] ? colour : 0),
@@ -220,6 +234,7 @@ export function readBoard(raw: unknown): BoardData | null {
     example: raw.example === true,
     createdAt: num(raw.createdAt),
     backedUpAt: num(raw.backedUpAt),
+    updatedAt: num(raw.updatedAt),
     voice: isVoice(raw.voice) ? raw.voice : DEFAULT_VOICE,
     age: isAge(raw.age) ? raw.age : null,
     format,

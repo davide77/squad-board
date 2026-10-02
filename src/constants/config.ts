@@ -34,6 +34,8 @@ export const BOARD_CONFIG = {
   pasteRows: 9,
   /** Names listed in the no-position warning. Past this it gives a count instead. */
   noPositionNamesMax: 3,
+  /** The gap above and below the pinned pitch column. Matches spacer(4) on .board-step__centre in _board.scss. */
+  stickyGapPx: 16,
 } as const;
 
 // The club badge a coach can add. It is shrunk to a small square PNG in the browser,
@@ -203,6 +205,24 @@ export const ANALYTICS_EVENTS = {
    * used. "1 week" is a coach back for the next matchweek: the "a third come back" test, measured directly.
    */
   weekActive: "Week active",
+  /** A squad sent to another device by link or QR code, and one opened from it. */
+  squadSent: "Squad sent",
+  squadReceived: "Squad received",
+} as const;
+
+/**
+ * Moving the board to another device. The squad rides in the address after the #, which a browser
+ * never sends to a server, so nothing about the players reaches us.
+ */
+export const HANDOFF_CONFIG = {
+  /** The name in the address: /board#squad=... */
+  param: "squad",
+  /** Squeezes the squad so a full matchday fits in a QR code. */
+  compression: "deflate-raw",
+  /** Low error correction keeps the code coarse enough to scan off a laptop screen. */
+  ecc: "L",
+  /** The light margin round the code, in modules, that a camera needs to find it. */
+  border: 3,
 } as const;
 
 /**

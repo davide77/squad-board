@@ -7,11 +7,12 @@ import { teamSize } from "@/lib/board/queries";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { Panel } from "./Panel";
+import { LineupsMenu, MoreMenu } from "./PickActions";
 import { Pitch } from "./Pitch";
 
 const LABEL = "is-flex is-align-center has-gap-2 has-font-headline has-font-bold text-xs tracking-caps uppercase is-dimmer";
 
-/** The pitch for picking the team, with the format, the shape and bench cover above it. */
+/** The pitch for picking the team, with the format, the shape, the line-ups, bench cover and starting over above it. */
 export function ShapePanel() {
   const { state, act } = useBoard();
   const { data, ui } = state;
@@ -24,7 +25,7 @@ export function ShapePanel() {
     <Panel heading={SHAPE.heading} count={SHAPE.xiCount(Object.keys(data.xi).length, teamSize(data))}>
       <div className="is-flex is-flex-wrap is-align-center has-gap-3 has-mb-3">
         <label htmlFor={formatId} className={LABEL}>
-          {CLUB.formatLabel}
+          <span className="shape-toolbar__label">{CLUB.formatLabel}</span>
           <select
             id={formatId}
             className="formation-select has-font-headline has-font-semibold text-lg has-radius-field has-py-2"
@@ -39,7 +40,7 @@ export function ShapePanel() {
           </select>
         </label>
         <label htmlFor={shapeId} className={LABEL}>
-          {SHAPE.formationLabel}
+          <span className="shape-toolbar__label">{SHAPE.formationLabel}</span>
           <select
             id={shapeId}
             className="formation-select has-font-headline has-font-semibold text-xl tracking-tag has-radius-field has-py-2"
@@ -63,9 +64,13 @@ export function ShapePanel() {
             </Button>
           </>
         )}
+        <LineupsMenu />
         <Button variant="quiet" className="has-py-3" aria-pressed={data.showCover} onClick={() => act({ type: "toggleCover" })}>
           {data.showCover ? SHAPE.hideCover : SHAPE.showCover}
         </Button>
+        <div className="shape-toolbar__end">
+          <MoreMenu />
+        </div>
       </div>
 
       <Pitch />
