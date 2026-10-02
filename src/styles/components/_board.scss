@@ -19,6 +19,13 @@ $pitch-headroom: spacer(11) * 3;
 // The room the bar along the foot of Pick the team takes: its buttons and their padding.
 $pick-bar-room: spacer(11) + spacer(4);
 
+// Headings on the board, and in the sheets over it, are chalk. Yellow is kept for what the coach acts on:
+// Send call-up, ticked boxes, the step showing and the shirts on the pitch. :where keeps this at the
+// weight of a bare element, so a colour utility on a heading still wins.
+:where(.board, .drawer) :is(h1, h2, h3, h4) {
+  color: color(chalk);
+}
+
 .board {
   // Pitch lines take a faint wash of the kit colour.
   --line: #{tint(kit, 24%)};
@@ -175,7 +182,7 @@ $pick-bar-room: spacer(11) + spacer(4);
 }
 
 .board-header {
-  border-bottom: 2px solid color(kit);
+  border-bottom: 1px solid $edge;
 
   &__ident {
     flex: 1 1 260px;
@@ -635,10 +642,64 @@ $pick-bar-room: spacer(11) + spacer(4);
 
 // ---------- The Gaffer's line ----------
 
-.gaffer-line {
-  // The line sits straight beside the mark, no box around either.
-  &__bubble {
-    max-width: 560px;
+// The Gaffer: a round avatar, its ring in his colours, and a bubble whose tail touches it, so the two
+// read as one person speaking. Light and small: he is commentary, and the pitch stays the strongest thing.
+$gaffer-avatar-size: spacer(8);
+$gaffer-tail: spacer(2);
+
+.gaffer-avatar {
+  width: $gaffer-avatar-size;
+  height: $gaffer-avatar-size;
+  background-color: color(board-2);
+  border: 2px solid color(visor);
+
+  &--arm {
+    border-color: color(chalk);
+  }
+}
+
+.gaffer-bubble {
+  position: relative;
+  max-width: 560px;
+  min-height: $gaffer-avatar-size;
+  margin-inline-start: $gaffer-tail;
+  // Level with the avatar's foot, where the tail is, however many lines it runs to.
+  align-self: flex-end;
+  color: color(chalk);
+  background-color: color(board-3);
+  border-radius: $radius-sheet $radius-sheet $radius-sheet $radius-sm;
+
+  &--one-line {
+    @include min(bp(md)) {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // The tail, at the bubble's foot, reaching back to touch the avatar. The bubble sits a tail's width
+  // from the avatar, with no other gap, so the two join.
+  &::before {
+    content: '';
+    position: absolute;
+    left: -$gaffer-tail + 1px;
+    bottom: 0;
+    width: $gaffer-tail;
+    height: $gaffer-tail * 1.5;
+    background-color: inherit;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+
+  // Each new line fades in, so it reads as him speaking up. Keyed by the notice, so it plays per line.
+  @media (prefers-reduced-motion: no-preference) {
+    animation: gaffer-speak $transition-base both;
+  }
+}
+
+@keyframes gaffer-speak {
+  from {
+    opacity: 0;
+    transform: translateY(spacer(1));
   }
 }
 
@@ -793,6 +854,11 @@ $pick-bar-room: spacer(11) + spacer(4);
     }
   }
 
+  // His line or the status, beside the buttons. It gives way first when the row is tight.
+  &__gaffer {
+    flex: 1 1 0;
+  }
+
   // On a phone the two buttons share the width, within reach of a thumb.
   &__actions {
     @include max(bp(md)) {
@@ -806,18 +872,10 @@ $pick-bar-room: spacer(11) + spacer(4);
   margin-inline-start: auto;
 }
 
-// Format and Formation say what their dropdowns are. On a phone the words are for screen readers only,
-// so both dropdowns share one row above the pitch: the values, 11-a-side and 4-3-3, speak for themselves.
-.shape-toolbar__label {
-  @include max(bp(md)) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
+// One note above the squad for everyone without a position, with Set positions beside it.
+.position-note {
+  background-color: color(board-2);
+  border: 1px solid $edge;
 }
 
 // The match line under the team name: the details, and Edit, underlined, so it reads as the way in.
@@ -935,4 +993,32 @@ $pick-bar-room: spacer(11) + spacer(4);
     border: 0;
     cursor: pointer;
   }
+}
+
+// ---------- Customise your club ----------
+
+// The pill at the far end of the site header: the club's crest and the words. 44px tall for a thumb.
+.club-pill {
+  min-height: $hit-size;
+  padding: 0 spacer(4) 0 spacer(1);
+  color: color(chalk);
+  background: none;
+  border: 1px solid $edge;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: color(board-2);
+  }
+}
+
+// Open on your phone, beside it: the same pill without a crest.
+.club-pill--plain {
+  padding: 0 spacer(4);
+}
+
+.crest--sm {
+  width: spacer(8) - spacer(2);
+  height: spacer(8) - spacer(2);
+  font-size: font-size(xs);
 }

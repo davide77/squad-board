@@ -1,7 +1,7 @@
 "use client";
 
 import type { KeyboardEvent } from "react";
-import { GLYPHS, NO_NUMBER, SQUAD } from "@/constants/content/board";
+import { GLYPHS, SQUAD } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { blocked, playedMinutes, positionCodes, reasonOf, started, where } from "@/lib/board/queries";
 import { useNow } from "@/lib/hooks";
@@ -40,9 +40,12 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
             {place.fit === 2 ? SQUAD.playsThere : SQUAD.atAPush}
           </span>
         )}
-        <span className="has-font-headline text-xs tracking-tag is-dimmer">
-          {[p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition, minutes].filter(Boolean).join(" · ")}
-        </span>
+        {/* No positions is one note above the list, not a line on every row. */}
+        {(p.pos.length > 0 || minutes) && (
+          <span className="has-font-headline text-xs tracking-tag is-dim">
+            {[p.pos.length ? positionCodes(p).join(" · ") : "", minutes].filter(Boolean).join(" · ")}
+          </span>
+        )}
       </span>
     </>
   );
@@ -65,7 +68,7 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
     >
       <button
         type="button"
-        className="roster-row__grip text-md text-center is-dimmer"
+        className="roster-row__grip text-md text-center is-dim"
         data-grip={p.id}
         aria-label={SQUAD.reorder(p.name)}
         onKeyDown={onGripKey}
@@ -88,7 +91,6 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
           dupe && "roster-row__num--dupe",
         )}
         value={p.num}
-        placeholder={NO_NUMBER}
         inputMode="numeric"
         maxLength={BOARD_CONFIG.shirtNumberMaxLength}
         aria-label={SQUAD.shirtFor(p.name)}
@@ -113,7 +115,7 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
       {!(grouped && SAID_BY_GROUP.has(status)) && (
         <span
           className={cx(
-            "status-pill has-font-headline text-2xs tracking-heading text-center has-radius-pill has-px-2 is-shrink-0",
+            "status-pill has-font-headline text-xs tracking-heading text-center has-radius-pill has-px-2 is-shrink-0",
             `status-pill--${status}`,
           )}
         >
@@ -122,7 +124,7 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
       )}
       <button
         type="button"
-        className="roster-row__edit text-md is-dimmer"
+        className="roster-row__edit text-md is-dim"
         aria-label={SQUAD.editLabel(p.name)}
         aria-haspopup="dialog"
         onClick={() => act({ type: "toggleEdit", id: p.id })}

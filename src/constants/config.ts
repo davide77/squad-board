@@ -32,8 +32,8 @@ export const BOARD_CONFIG = {
   pasteMaxPlayers: 40,
   /** Rows shown in the squad box on the start screen. */
   pasteRows: 9,
-  /** Names listed in the no-position warning. Past this it gives a count instead. */
-  noPositionNamesMax: 3,
+  /** How long the Gaffer's reaction stays in the bar under Pick the team before it gives way to the status line. */
+  gafferQuietMs: 6000,
   /** The gap above and below the pinned pitch column. Matches spacer(4) on .board-step__centre in _board.scss. */
   stickyGapPx: 16,
 } as const;

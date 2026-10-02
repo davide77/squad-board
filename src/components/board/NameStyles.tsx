@@ -15,7 +15,7 @@ export function NameStyles({ label, hint }: NameStylesProps) {
   const id = useId();
   return (
     <div>
-      <p id={id} className="has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-2">
+      <p id={id} className="has-font-headline text-xs tracking-caps uppercase is-dim has-mb-2">
         {label}
       </p>
       <div role="group" aria-labelledby={id} className="name-styles is-grid has-gap-2">
@@ -31,7 +31,7 @@ export function NameStyles({ label, hint }: NameStylesProps) {
           </button>
         ))}
       </div>
-      {hint && <p className="text-sm is-dimmer has-mt-2">{hint}</p>}
+      {hint && <p className="text-sm is-dim has-mt-2">{hint}</p>}
     </div>
   );
 }

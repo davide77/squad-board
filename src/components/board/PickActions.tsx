@@ -8,14 +8,14 @@ import { matchIsToday } from "@/lib/board/message";
 import { changedFromStrongest, matchUnderway, planName, squadChecks, started, teamSize, where } from "@/lib/board/queries";
 import { useNow } from "@/lib/hooks";
 import { Button } from "../Button";
-import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ConfirmBox } from "./ConfirmBox";
+import { GafferAvatar, GafferBubble, useGafferReaction } from "./GafferLine";
 import { useClockToggle } from "./MatchClock";
 import { Popover } from "./Popover";
 import { SavedLineups } from "./SavedLineups";
 
-const MENU_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-2";
+const MENU_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dim has-mb-2";
 const TOOLBAR_BUTTON = "button button--default is-inline-flex is-align-center has-gap-2 has-py-3 has-px-3 text-base has-radius-field";
 
 /** The strongest side to save or go back to, and the saved plans under it, in a menu above the pitch. */
@@ -42,9 +42,9 @@ export function LineupsMenu() {
       trigger={
         <>
           {SAVED.button}
-          <span className="text-2xs is-dim" aria-hidden="true">
-            {GLYPHS.menu}
-          </span>
+          <svg className="is-dim" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+            <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </>
       }
     >
@@ -183,6 +183,7 @@ export function PickBar({ ref }: PickBarProps) {
   const onPitch = Object.keys(data.xi).length;
   const bench = data.players.filter((p) => !p.out && where(data, p.id) === "bench").length;
   const { flagged } = squadChecks(data);
+  const reaction = useGafferReaction();
 
   return (
     <div
@@ -191,14 +192,25 @@ export function PickBar({ ref }: PickBarProps) {
       role="region"
       aria-label={PICK_BAR.label}
     >
-      {/* On a phone the counts give way to the buttons: the Squad and Shape headings already say them. */}
-      <p className={cx("is-flex-wrap is-align-center has-gap-3 text-base", flagged ? "is-flex" : "is-hidden is-md-flex")}>
-        <span className="is-hidden is-md-inline">{PICK_BAR.ready(called, onPitch, teamSize(data), bench)}</span>
-        {flagged > 0 && <span className="pick-bar__check text-sm">{PICK_BAR.checks(flagged)}</span>}
-      </p>
+      {/* The Gaffer, reacting to what the coach just did, right beside the buttons. Once he goes quiet he
+          steps out and the status line takes his place: the full counts, or on a phone who is starting. */}
+      <div className="pick-bar__gaffer is-flex is-align-center is-min-w-0">
+        {reaction ? (
+          <>
+            <GafferAvatar />
+            <GafferBubble key={reaction.id} text={reaction.text} oneLine />
+          </>
+        ) : (
+          <p className="is-flex is-flex-wrap is-align-center has-gap-3 text-base is-min-w-0">
+            <span className="is-hidden is-md-inline">{PICK_BAR.ready(called, onPitch, teamSize(data), bench)}</span>
+            <span className="is-md-hidden">{PICK_BAR.short(onPitch, teamSize(data))}</span>
+            {flagged > 0 && <span className="pick-bar__check text-sm">{PICK_BAR.checks(flagged)}</span>}
+          </p>
+        )}
+      </div>
       <div className="pick-bar__actions is-flex has-gap-2">
         <Button
-          variant={matchFirst ? "primary" : "outline"}
+          variant={matchFirst ? "primary" : "quiet"}
           className="is-flex-1 has-py-3 has-px-5 text-md"
           onClick={() => {
             if (!underway) kickOff();

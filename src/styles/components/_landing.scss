@@ -23,6 +23,23 @@
     position: relative;
   }
 
+  // On the board it is a slim bar, about 64px, with the mark at 40px, so the pitch fits without scrolling.
+  &--board {
+    padding-top: spacer(3);
+
+    .landing-header__bar {
+      padding: spacer(2) spacer(3);
+    }
+
+    .site-logo {
+      font-size: font-size(2xl);
+    }
+
+    .site-logo__mark {
+      width: spacer(8);
+    }
+  }
+
   &__bar {
     pointer-events: auto;
     padding: spacer(2) spacer(3);

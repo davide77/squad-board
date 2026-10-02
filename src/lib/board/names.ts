@@ -50,7 +50,7 @@ export function sentName(d: { readonly nameStyle: NameStyle; readonly players: r
   return p ? shirtName(p, d.nameStyle, d.players) : name;
 }
 
-/** Up to two initials from the team name, for the crest. */
+/** The first letters of the first two words: "Ayat Sunday" is AS. A team's crest, or a player with no shirt number. */
 export function monogram(team: string): string {
   return team
     .trim()

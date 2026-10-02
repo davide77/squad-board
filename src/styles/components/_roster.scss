@@ -34,7 +34,25 @@
     touch-action: none;
 
     &:hover {
-      color: color(kit);
+      color: color(chalk);
+    }
+
+    // Shown only when it can be used: on hover, or with the keyboard on it. Its room stays, so names
+    // never shift. A touchscreen has no hover, so there the row keeps its space for the name.
+    @media (hover: hover) {
+      opacity: 0;
+      transition: opacity $transition-fast;
+    }
+
+    @media (hover: none) {
+      display: none;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover &__grip,
+    &:focus-within &__grip {
+      opacity: 1;
     }
   }
 
@@ -135,12 +153,9 @@
     box-shadow: inset 3px 0 0 tint(chalk, 50%);
   }
 
+  // The bench is marked apart from the starters by a fainter bar. Yellow stays for what the coach acts on.
   &--bench {
-    box-shadow: inset 3px 0 0 color(kit);
-  }
-
-  &--bench &__name {
-    color: color(kit);
+    box-shadow: inset 3px 0 0 tint(chalk, 22%);
   }
 
   &--pool &__name {
@@ -172,7 +187,7 @@
 // Where a player is this week
 .status-pill {
   padding-block: 1px;
-  color: color(dimmer);
+  color: color(dim);
   white-space: nowrap;
   border: 1px solid transparent;
 

@@ -10,6 +10,7 @@ import { trackSend } from "@/lib/analytics";
 import { canHandOff, qrPath, squadLink } from "@/lib/board/handoff";
 import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
 import { Button } from "../Button";
+import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ControlRow } from "./Panel";
 
@@ -89,7 +90,7 @@ function SquadLinkPanel({ link }: { readonly link: string | null }) {
           </Button>
         )}
       </div>
-      <p className="text-sm is-dimmer">{HANDOFF.privacy}</p>
+      <p className="text-sm is-dim">{HANDOFF.privacy}</p>
     </div>
   );
 }
@@ -123,7 +124,7 @@ export function SendSquad() {
 }
 
 /**
- * Beside Customise your club in the board header, on a laptop or tablet: one tap to the code. The coach who
+ * Beside Customise your club at the far end of the header, on a laptop or tablet: one tap to the code. The coach who
  * plans the week at a desk and runs the match on a phone should not have to go looking for it.
  */
 export function SendToPhone({ className }: { readonly className?: string }) {
@@ -146,9 +147,9 @@ export function SendToPhone({ className }: { readonly className?: string }) {
 
   return (
     <>
-      <Button
-        size="tiny"
-        className={className}
+      <button
+        type="button"
+        className={cx("club-pill club-pill--plain is-inline-flex is-align-center has-radius-pill text-base has-font-semibold", className)}
         aria-haspopup="dialog"
         onClick={() => {
           setOpen(true);
@@ -156,7 +157,7 @@ export function SendToPhone({ className }: { readonly className?: string }) {
         }}
       >
         {HANDOFF.toPhone}
-      </Button>
+      </button>
       <AnimatePresence>
         {open && (
           <motion.div

@@ -33,7 +33,7 @@ export function ControlRow({ label, className, children }: ControlRowProps) {
   return (
     <div className={cx("is-flex is-flex-wrap is-align-center has-gap-2 has-mt-2", className)}>
       {label && (
-        <span className="control-label has-font-headline text-xs tracking-caps uppercase is-dimmer">{label}</span>
+        <span className="control-label has-font-headline text-xs tracking-caps uppercase is-dim">{label}</span>
       )}
       {children}
     </div>

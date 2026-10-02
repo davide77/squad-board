@@ -64,7 +64,7 @@ export function MatchClockCard() {
     <div className="match-card has-py-3 has-px-4 has-radius-panel has-mb-4">
       <div className="is-flex is-flex-wrap is-align-center is-justify-between has-gap-4">
         <div className="is-flex is-align-baseline has-gap-3">
-          <span role="timer" aria-label={MATCH.clockLabel} className={cx("match-card__time has-font-headline has-font-bold is-tabular", on ? "is-chalk" : "is-dimmer")}>
+          <span role="timer" aria-label={MATCH.clockLabel} className={cx("match-card__time has-font-headline has-font-bold is-tabular", on ? "is-chalk" : "is-dim")}>
             {fmtClock(ms)}
           </span>
           <span className="text-base is-dim" aria-live="polite">
@@ -237,7 +237,7 @@ export function MatchBench() {
             {injured.map((p) => (
               <li key={p.id} className="is-flex is-align-center is-justify-between has-gap-3 has-py-2">
                 <span className="text-md">{p.name}</span>
-                <span className="status-pill status-pill--inj has-font-headline text-2xs tracking-heading has-radius-pill has-px-2">
+                <span className="status-pill status-pill--inj has-font-headline text-xs tracking-heading has-radius-pill has-px-2">
                   {MATCH.injured}
                 </span>
               </li>

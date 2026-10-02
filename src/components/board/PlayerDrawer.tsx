@@ -15,7 +15,7 @@ import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ConfirmBox } from "./ConfirmBox";
 
-const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dimmer has-mb-1";
+const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1";
 const HEADING = "has-font-headline has-font-bold text-lg";
 
 /** This week, as the drawer shows it: one of the four. */
@@ -118,7 +118,7 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
               >
                 <span className="has-font-headline has-font-bold text-xl">{o.key}</span>
                 <span className="text-sm leading-snug">{o.label}</span>
-                {p.pos[0] === o.key && <span className="has-font-headline has-font-bold text-2xs tracking-caps uppercase">{DRAWER.main}</span>}
+                {p.pos[0] === o.key && <span className="has-font-headline has-font-bold text-xs tracking-caps uppercase">{DRAWER.main}</span>}
               </button>
             );
           })}
@@ -143,7 +143,7 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
             </div>
           </div>
         )}
-        <p className="text-base is-dimmer">
+        <p className="text-base is-dim">
           {DRAWER.listedAs}{" "}
           <strong className="has-font-headline text-lg tracking-tag is-chalk">
             {p.pos.length ? positionCodes(p).join(" · ") : SQUAD.noPosition}
