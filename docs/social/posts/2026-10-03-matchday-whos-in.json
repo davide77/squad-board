@@ -1,0 +1,29 @@
+{
+  "slug": "2026-10-03-matchday-whos-in",
+  "format": "story",
+  "type": "stories",
+  "pillar": "Product",
+  "voice": "hairdryer",
+  "when": "Saturday 3 October 2026, morning, before kick-offs",
+  "slides": [
+    {
+      "layout": "cover",
+      "kicker": "Saturday",
+      "title": "Matchday.\n*Who's in?*",
+      "alt": "Saturday. Matchday. Who's in?"
+    },
+    {
+      "layout": "list",
+      "kicker": "Today",
+      "title": "On the touchline.",
+      "items": ["Tick who's here", "Clock on at kick-off", "Every sub logged to the minute", "The result to the parents at full time"],
+      "alt": "On the touchline today: tick who's here, clock on at kick-off, every sub logged to the minute, the result to the parents at full time."
+    },
+    {
+      "layout": "end",
+      "title": "Go on. Enjoy it.",
+      "body": "Free for your team.\nLink in bio.",
+      "alt": "Gafferboard. Go on, enjoy it. Free for your team, link in bio."
+    }
+  ]
+}
