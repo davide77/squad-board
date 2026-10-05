@@ -97,7 +97,8 @@ ul{list-style:none;display:flex;flex-direction:column;gap:30px}
 li{display:flex;gap:30px;align-items:baseline;font-size:48px;line-height:1.25}
 li i{flex:none;width:30px;height:30px;border-radius:50%;background:${C.kit};transform:translateY(2px)}
 main.screen{justify-content:center;align-items:flex-start;gap:36px;padding-top:36px}
-.phone{align-self:center;flex:1;min-height:0;aspect-ratio:9/16;border-radius:44px;overflow:hidden;border:2px solid ${C.rule};background:${C.board2}}
+/* Screenshots run wide and show the top of the screen, where the content is: small enough to read on a phone. */
+.phone{align-self:center;flex:1;min-height:0;width:${Math.round((f.w - 2 * f.padX) * 0.82)}px;border-radius:44px;overflow:hidden;border:2px solid ${C.rule};background:${C.board2}}
 .phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 p.caption{font-size:40px;max-width:none}
 footer{display:flex;justify-content:space-between;align-items:center;padding-top:36px;border-top:2px solid ${C.rule}}
