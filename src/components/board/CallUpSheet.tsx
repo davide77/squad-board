@@ -12,6 +12,7 @@ import { NameFirst, TEAM_NAME_MARK, useNameFirst } from "./NameFirst";
 import { NameStyles } from "./NameStyles";
 import { SideSheet } from "./SideSheet";
 import { useCopySheet } from "./useCopySheet";
+import { Icon } from "../Icon";
 
 const SECTION_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dim has-mb-3";
 
@@ -76,11 +77,12 @@ function SendButtons() {
           target="_blank"
           rel="noopener"
           onClick={nameFirst.guardLink("whatsapp", whatsapp, () => trackSend(ANALYTICS_EVENTS.callUpSent, data, SENT_HOW.whatsapp))}
-          className="button button--primary is-flex is-flex-1 is-align-center is-justify-center has-py-3 text-md has-radius-field has-font-bold"
+          className="button button--primary is-flex is-flex-1 is-align-center is-justify-center has-gap-2 has-py-3 text-md has-radius-field has-font-bold"
         >
+          <Icon name="send" size="button" />
           {PARENTS.whatsapp}
         </a>
-        <Button className="has-py-3 has-px-5" onClick={nameFirst.guard("copy", copy)}>
+        <Button className="has-py-3 has-px-5" icon="copy" onClick={nameFirst.guard("copy", copy)}>
           {PARENTS.copy}
         </Button>
       </div>

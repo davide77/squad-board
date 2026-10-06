@@ -72,7 +72,7 @@ export const TONE_SLIDES: Readonly<Record<Tone, ToneSlides>> = {
 };
 
 /**
- * The clip or still behind slide 2 for each tone. Generated to match the film's Gaffer.
+ * The clip or still behind slide 2 for each tone. The same Gaffer as the film.
  * A slide without a video shows its poster, and so does every slide under reduced motion.
  */
 export interface OnboardingMedia {

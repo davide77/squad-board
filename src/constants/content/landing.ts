@@ -165,7 +165,7 @@ export const FILM = {
  */
 export const phoneCopy = (path: string): string => path.replace(/(\.\w+)$/, "-sm$1");
 
-/** The film files in public/film. Vertical 9:16, cut from the Runway renders. */
+/** The film files in public/film. Vertical 9:16. */
 export const FILM_MEDIA = {
   teaser: { mp4: "/film/gafferboard-teaser.mp4", webm: "/film/gafferboard-teaser.webm" },
   film: "/film/gafferboard-film.mp4",

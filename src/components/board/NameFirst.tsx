@@ -118,7 +118,7 @@ export function NameFirst({ stage, nameIt, sendAnyway }: NameFirstProps) {
         <p role="status" className="text-base has-font-semibold has-mb-2">
           {NAME_FIRST.named}
         </p>
-        <Button variant="primary" onClick={sendAnyway}>
+        <Button variant="primary" icon="send" onClick={sendAnyway}>
           {NAME_FIRST.send}
         </Button>
       </div>

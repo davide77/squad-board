@@ -2,7 +2,7 @@
 
 import { useCallback, useId, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { GLYPHS, NO_NUMBER, PICKER } from "@/constants/content/board";
+import { NO_NUMBER, PICKER } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { MOTION } from "@/constants/motion";
 import { PHONE_QUERY } from "@/constants/config";
@@ -13,6 +13,7 @@ import type { Player } from "@/lib/board/types";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
+import { Icon } from "../Icon";
 
 interface OptionProps {
   readonly player: Player;
@@ -96,8 +97,8 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
             {current ? PICKER.subFilled(firstName(current.name)) : PICKER.subEmpty}
           </p>
         </div>
-        <button type="button" className="picker__close text-2xl is-dim" aria-label={PICKER.close} onClick={() => act({ type: "closePicker" })}>
-          {GLYPHS.close}
+        <button type="button" className="picker__close is-flex is-align-center is-justify-center is-dim" aria-label={PICKER.close} onClick={() => act({ type: "closePicker" })}>
+          <Icon name="close" />
         </button>
       </div>
       <div className="picker__list">

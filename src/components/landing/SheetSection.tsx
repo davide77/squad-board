@@ -28,7 +28,7 @@ export function SheetSection() {
             >
               {SHEET_SECTION.email}
             </a>
-            <Button variant="outline" className="has-py-3 has-px-5 has-font-bold text-md" onClick={copySheet}>
+            <Button variant="outline" icon="copy" className="has-py-3 has-px-5 has-font-bold text-md" onClick={copySheet}>
               {copyState === "copied" ? SHEET_SECTION.copied : SHEET_SECTION.copy}
             </Button>
           </div>

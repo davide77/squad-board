@@ -4,7 +4,7 @@ import { useCallback, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ANALYTICS_EVENTS, SENT_HOW, type SentHow } from "@/constants/config";
-import { GLYPHS, HANDOFF } from "@/constants/content/board";
+import { HANDOFF } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { MOTION } from "@/constants/motion";
 import { trackSend } from "@/lib/analytics";
@@ -14,6 +14,7 @@ import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ControlRow } from "./Panel";
+import { Icon } from "../Icon";
 
 /** The link as a QR code, dark on chalk, because that is what a camera reads. */
 function SquadCode({ link }: { readonly link: string }) {
@@ -87,7 +88,7 @@ function SquadLinkPanel({ link }: { readonly link: string | null }) {
       <SquadCode link={link} />
       <p className="text-md is-chalk has-font-semibold">{HANDOFF.scan}</p>
       <div className="is-flex is-flex-wrap has-gap-2">
-        <Button size="tiny" onClick={() => void copy(link)}>
+        <Button size="tiny" icon="copy" onClick={() => void copy(link)}>
           {HANDOFF.copy}
         </Button>
         {canShare && (
@@ -195,11 +196,11 @@ export function SendToPhone({ className }: { readonly className?: string }) {
                   </h2>
                   <button
                     type="button"
-                    className="drawer__close is-flex is-align-center is-justify-center text-2xl has-radius-field"
+                    className="drawer__close is-flex is-align-center is-justify-center has-radius-field"
                     aria-label={HANDOFF.close}
                     onClick={close}
                   >
-                    {GLYPHS.close}
+                    <Icon name="close" />
                   </button>
                 </div>
                 <SquadLinkPanel link={link} />

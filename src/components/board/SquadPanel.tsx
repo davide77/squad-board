@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent } from "react";
-import { CONFIRM, GLYPHS, SET_POSITIONS, SQUAD, ZONES } from "@/constants/content/board";
+import { CONFIRM, SET_POSITIONS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
 import { GAFFER } from "@/constants/content/gaffer";
 import { blocked, freeAt, slotById, squadChecks, where } from "@/lib/board/queries";
@@ -13,6 +13,7 @@ import { cx } from "../cx";
 import { ConfirmBox } from "./ConfirmBox";
 import { SetPositionsSheet } from "./SetPositionsSheet";
 import { RosterRow } from "./RosterRow";
+import { Icon } from "../Icon";
 
 /**
  * Players taken out of the squad, under the list: a tap brings each one back, and the cross deletes
@@ -47,7 +48,7 @@ function RemovedList() {
               aria-expanded={asking === p.id}
               onClick={() => setAsking(p.id)}
             >
-              {GLYPHS.close}
+              <Icon name="close" size="small" />
             </button>
           </li>
         ))}

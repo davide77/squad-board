@@ -3,7 +3,7 @@
 import { useCallback, useId, useRef, useState, type FocusEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BOARD_CONFIG } from "@/constants/config";
-import { DRAWER, GLYPHS, NO_NUMBER, SQUAD } from "@/constants/content/board";
+import { DRAWER, NO_NUMBER, SQUAD } from "@/constants/content/board";
 import { POSITIONS, SIDED_CODES } from "@/constants/football";
 import { MOTION } from "@/constants/motion";
 import { firstName } from "@/lib/board/names";
@@ -14,6 +14,7 @@ import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ConfirmBox } from "./ConfirmBox";
+import { Icon } from "../Icon";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1";
 const HEADING = "has-font-headline has-font-bold text-lg";
@@ -55,8 +56,8 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
         <h2 id={titleId} className="text-3xl is-truncate">
           {p.name.trim() || DRAWER.newPlayer}
         </h2>
-        <button type="button" className="drawer__close is-flex is-align-center is-justify-center text-2xl has-radius-field" aria-label={DRAWER.close} onClick={close}>
-          {GLYPHS.close}
+        <button type="button" className="drawer__close is-flex is-align-center is-justify-center has-radius-field" aria-label={DRAWER.close} onClick={close}>
+          <Icon name="close" />
         </button>
       </div>
 

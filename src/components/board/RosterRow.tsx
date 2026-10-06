@@ -1,13 +1,14 @@
 "use client";
 
 import type { KeyboardEvent } from "react";
-import { GLYPHS, SQUAD } from "@/constants/content/board";
+import { SQUAD } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { blocked, playedMinutes, positionCodes, reasonOf, started, where } from "@/lib/board/queries";
 import { useNow } from "@/lib/hooks";
 import type { Player } from "@/lib/board/types";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
+import { Icon } from "../Icon";
 
 interface RosterRowProps {
   readonly player: Player;
@@ -68,12 +69,12 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
     >
       <button
         type="button"
-        className="roster-row__grip text-md text-center is-dim"
+        className="roster-row__grip is-flex is-align-center is-justify-center is-dim"
         data-grip={p.id}
         aria-label={SQUAD.reorder(p.name)}
         onKeyDown={onGripKey}
       >
-        {GLYPHS.grip}
+        <Icon name="grip" size="button" />
       </button>
       <label className="roster-row__pick-hit is-shrink-0">
         <input

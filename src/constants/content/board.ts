@@ -12,13 +12,6 @@ export const NAME_STYLES: readonly { readonly key: NameStyle; readonly label: st
 /** Shown where a player has no shirt number, or a position is empty on the team sheet. */
 export const NO_NUMBER = "-";
 
-/** Icon glyphs. Each control that uses one carries its own aria-label. */
-export const GLYPHS = {
-  close: "\u00D7",
-  grip: "\u22EE\u22EE",
-  more: "\u00B7\u00B7\u00B7",
-} as const;
-
 export const UNDO = {
   button: "Undo",
 } as const;

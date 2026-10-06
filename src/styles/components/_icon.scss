@@ -1,0 +1,12 @@
+@use '../abstracts' as *;
+
+// The icon set (Icon.tsx). Strokes and dots take the text colour from the SVG attributes. Only the
+// disc needs a rule: it is the player picked, so it wears the kit colour, as the disc in the logo does.
+.icon__disc {
+  fill: color(kit);
+}
+
+// On the kit colour the disc would vanish, so it takes the kit ink like the stroke around it.
+.button--primary .icon__disc {
+  fill: currentColor;
+}

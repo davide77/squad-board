@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { UNDO_MS } from "@/constants/config";
 import { UNDO } from "@/constants/content/board";
 import { useBoard } from "./BoardProvider";
+import { Icon } from "../Icon";
 
 /**
  * After a change to the team, what changed and a way to take it back, for a few seconds.
@@ -25,7 +26,10 @@ export function UndoBar() {
   return (
     <div className="undo-bar is-flex is-align-center has-gap-4 has-py-2 has-pl-4 has-pr-2 has-radius-field">
       <span className="text-md has-font-semibold is-truncate">{undo.text}</span>
-      <button type="button" className="undo-bar__button has-radius-field has-px-4 has-font-bold text-md" onClick={() => act({ type: "undo" })}>
+      <button type="button" className="undo-bar__button is-inline-flex is-align-center has-gap-2 has-radius-field has-px-4 has-font-bold text-md"
+        onClick={() => act({ type: "undo" })}
+      >
+        <Icon name="undo" size="button" />
         {UNDO.button}
       </button>
     </div>

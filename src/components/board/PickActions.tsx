@@ -2,7 +2,7 @@
 
 import { useState, type Ref } from "react";
 import { BOARD_CONFIG } from "@/constants/config";
-import { GLYPHS, PICK, PICK_BAR, SAVED, STEPS } from "@/constants/content/board";
+import { PICK, PICK_BAR, SAVED, STEPS } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { matchIsToday } from "@/lib/board/message";
 import { changedFromStrongest, matchUnderway, planName, squadChecks, started, teamSize, where } from "@/lib/board/queries";
@@ -14,6 +14,7 @@ import { GafferAvatar, GafferBubble, useGafferReaction } from "./GafferLine";
 import { useClockToggle } from "./MatchClock";
 import { Popover } from "./Popover";
 import { SavedLineups } from "./SavedLineups";
+import { Icon } from "../Icon";
 
 const MENU_HEADING = "has-font-headline text-xs tracking-caps uppercase is-dim has-mb-2";
 const TOOLBAR_BUTTON = "button button--default is-inline-flex is-align-center has-gap-2 has-py-3 has-px-3 text-base has-radius-field";
@@ -42,9 +43,7 @@ export function LineupsMenu() {
       trigger={
         <>
           {SAVED.button}
-          <svg className="is-dim" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-            <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Icon name="chevronDown" size="small" className="is-dim" />
         </>
       }
     >
@@ -56,7 +55,7 @@ export function LineupsMenu() {
               {!data.preset ? PICK.planNone(plan) : changed ? PICK.planChanged(plan) : PICK.planSame(plan, data.preset.formation)}
             </p>
             <div className="is-flex has-gap-2">
-              <Button className="is-flex-1" onClick={() => act({ type: "setStrongest" })}>
+              <Button className="is-flex-1" icon="saveLineup" onClick={() => act({ type: "setStrongest" })}>
                 {PICK.saveStrongest}
               </Button>
               <Button className="is-flex-1" disabled={!data.preset || !changed} onClick={() => backToStrongest(close)}>
@@ -101,7 +100,7 @@ export function MoreMenu() {
       align="end"
       triggerClassName={`${TOOLBAR_BUTTON} is-justify-center`}
       triggerLabel={PICK.more}
-      trigger={GLYPHS.more}
+      trigger={<Icon name="more" size="button" />}
     >
       {(close) => (
         <section>
@@ -211,6 +210,7 @@ export function PickBar({ ref }: PickBarProps) {
       <div className="pick-bar__actions is-flex has-gap-2">
         <Button
           variant={matchFirst ? "primary" : "quiet"}
+          icon="clock"
           className="is-flex-1 has-py-3 has-px-5 text-md"
           onClick={() => {
             if (!underway) kickOff();
@@ -221,6 +221,7 @@ export function PickBar({ ref }: PickBarProps) {
         </Button>
         <Button
           variant={matchFirst ? "outline" : "primary"}
+          icon="send"
           className="is-flex-1 has-py-3 has-px-5 text-md"
           aria-haspopup="dialog"
           onClick={() => act({ type: "openCallUp" })}

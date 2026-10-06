@@ -19,6 +19,7 @@ import { NameFirst, useNameFirst } from "./NameFirst";
 import { NameStyles } from "./NameStyles";
 import { Panel } from "./Panel";
 import { useCopySheet } from "./useCopySheet";
+import { Icon } from "../Icon";
 
 /** Left: the result for the parents, or the picture for the coaches. Radio buttons, so the arrow keys move between them. */
 export function FullKinds() {
@@ -210,11 +211,12 @@ export function FullActions() {
           onClick={nameFirst.guardLink("whatsapp", whatsapp, () =>
             trackSend(ANALYTICS_EVENTS.resultSent, data, SENT_HOW.whatsapp),
           )}
-          className="button button--primary is-flex is-align-center is-justify-center has-py-4 text-lg has-radius-field has-font-bold"
+          className="button button--primary is-flex is-align-center is-justify-center has-gap-2 has-py-4 text-lg has-radius-field has-font-bold"
         >
+          <Icon name="send" size="button" />
           {FULL.send}
         </a>
-        <Button className="has-py-3" onClick={nameFirst.guard("copy", copy)}>
+        <Button className="has-py-3" icon="copy" onClick={nameFirst.guard("copy", copy)}>
           {FULL.copy}
         </Button>
       </div>

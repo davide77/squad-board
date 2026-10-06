@@ -23,7 +23,7 @@ export function ShapePanel() {
   return (
     // No heading: the toolbar says what this is, and the bar along the foot counts who is on.
     <section aria-label={SHAPE.label} className="has-pt-3">
-      <div className="is-flex is-flex-wrap is-align-center has-gap-3 has-mb-3">
+      <div className="is-flex is-flex-wrap is-align-stretch has-gap-3 has-mb-3">
         <label htmlFor={formatId} className="is-flex">
           {/* The select shows "11-a-side", which says it. The word is for screen readers. */}
           <span className="sr-only">{CLUB.formatLabel}</span>
@@ -71,7 +71,7 @@ export function ShapePanel() {
             {data.showCover ? SHAPE.hideCover : SHAPE.showCover}
           </Button>
         )}
-        <div className="shape-toolbar__end">
+        <div className="shape-toolbar__end is-flex">
           <MoreMenu />
         </div>
       </div>

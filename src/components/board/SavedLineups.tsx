@@ -1,11 +1,12 @@
 "use client";
 
 import { useId, type FormEvent } from "react";
-import { GLYPHS, SAVED } from "@/constants/content/board";
+import { SAVED } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { fitsFormat } from "@/lib/board/queries";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
+import { Icon } from "../Icon";
 
 /** The saved plans, under the strongest side in the Line-ups menu. */
 export function SavedLineups() {
@@ -35,7 +36,7 @@ export function SavedLineups() {
                 {SAVED.load}
               </Button>
               <Button size="tiny" variant="quiet" aria-label={SAVED.delete(l.name)} onClick={() => act({ type: "deleteNamed", index: i })}>
-                {GLYPHS.close}
+                <Icon name="close" size="small" />
               </Button>
             </div>
           ))
@@ -53,7 +54,9 @@ export function SavedLineups() {
           className="field field--grow has-radius-field has-py-2 has-px-3"
           placeholder={SAVED.namePlaceholder}
         />
-        <Button type="submit">{SAVED.save}</Button>
+        <Button type="submit" icon="saveLineup">
+          {SAVED.save}
+        </Button>
       </form>
     </>
   );

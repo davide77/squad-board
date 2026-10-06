@@ -2,9 +2,9 @@
 
 import { useId, useRef, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { GLYPHS } from "@/constants/content/board";
 import { MOTION } from "@/constants/motion";
 import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
+import { Icon } from "../Icon";
 
 interface SideSheetProps {
   readonly open: boolean;
@@ -63,11 +63,11 @@ export function SideSheet({ open, onClose, title, hint, closeLabel, foot, childr
               </div>
               <button
                 type="button"
-                className="drawer__close is-flex is-align-center is-justify-center text-2xl has-radius-field"
+                className="drawer__close is-flex is-align-center is-justify-center has-radius-field"
                 aria-label={closeLabel}
                 onClick={onClose}
               >
-                {GLYPHS.close}
+                <Icon name="close" />
               </button>
             </div>
             {children}
