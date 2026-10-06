@@ -114,11 +114,13 @@ $pick-bar-room: spacer(11) + spacer(4);
     }
   }
 
-  // Pick the team keeps the bar along the foot, so the pitch is sized to fit above it.
+  // Pick the team keeps the bar along the foot, so the pitch is sized to fit above it. The cap sits on
+  // the whole panel, so the toolbar above and the hint below line up with the pitch's edges.
   @include min(bp(md)) {
     &--pick &__centre {
-      .pitch {
+      .shape-panel {
         max-width: calc((100dvh - #{$pitch-headroom + $pick-bar-room}) * 3 / 4);
+        margin-inline: auto;
       }
     }
   }
@@ -868,10 +870,6 @@ $gaffer-tail: spacer(2);
 }
 
 // The shape toolbar's last item, the menu that holds starting over, sits at the far end.
-.shape-toolbar__end {
-  margin-inline-start: auto;
-}
-
 // One note above the squad for everyone without a position, with Set positions beside it.
 .position-note {
   background-color: color(board-2);

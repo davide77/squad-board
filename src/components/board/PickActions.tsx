@@ -42,6 +42,7 @@ export function LineupsMenu() {
       triggerClassName={TOOLBAR_BUTTON}
       trigger={
         <>
+          <Icon name="saveLineup" size="button" />
           {SAVED.button}
           <Icon name="chevronDown" size="small" className="is-dim" />
         </>

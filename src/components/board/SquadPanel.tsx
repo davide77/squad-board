@@ -130,7 +130,7 @@ export function SquadPanel() {
           </h2>
           <p className="text-sm is-dim">{SQUAD.pickedCount(picked, players.length, injured, away)}</p>
         </div>
-        <Button className="is-shrink-0 has-py-3" onClick={() => act({ type: "toggleCallUps" })}>
+        <Button className="is-shrink-0 has-py-3" icon="callUp" onClick={() => act({ type: "toggleCallUps" })}>
           {anyOut ? SQUAD.callUpEveryone : SQUAD.clearCallUps}
         </Button>
       </div>
@@ -153,7 +153,7 @@ export function SquadPanel() {
       {noPosition.length > 0 && (
         <div className="position-note is-flex is-flex-wrap is-align-center is-justify-between has-gap-2 has-radius-field has-py-2 has-px-3 has-mb-3">
           <span className="text-base">{SET_POSITIONS.note(noPosition.length)}</span>
-          <Button variant="chalk" onClick={() => setPositioning(noPosition.map((p) => p.id))}>
+          <Button variant="chalk" icon="pitch" onClick={() => setPositioning(noPosition.map((p) => p.id))}>
             {SET_POSITIONS.open}
           </Button>
         </div>
