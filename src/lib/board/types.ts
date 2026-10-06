@@ -219,6 +219,8 @@ export interface UiState {
   editing: string | null;
   /** The club sheet: age group, gaffer, colours, kits, badge, backup and starting over. */
   clubOpen: boolean;
+  /** Add a team: what more than one team gets, and the waitlist until it is ready. */
+  teamsOpen: boolean;
   /** The Send call-up sheet: this week's match, the message as the parents read it, and the send buttons. */
   callUpOpen: boolean;
   pickerSlot: string | null;

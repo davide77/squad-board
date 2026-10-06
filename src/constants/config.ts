@@ -208,7 +208,12 @@ export const ANALYTICS_EVENTS = {
   /** A squad sent to another device by link or QR code, and one opened from it. */
   squadSent: "Squad sent",
   squadReceived: "Squad received",
+  /** Add a team opened, with where from: how many coaches want a second team, before it is built. */
+  teamsOpened: "Teams opened",
 } as const;
+
+/** Where Add a team was opened from. */
+export const TEAMS_FROM = { header: "Header", club: "Club sheet" } as const;
 
 /**
  * Moving the board to another device. The squad rides in the address after the #, which a browser

@@ -21,6 +21,7 @@ import { Picker } from "./Picker";
 import { PlayerDrawer } from "./PlayerDrawer";
 import { UndoBar } from "./UndoBar";
 import { ShapePanel } from "./ShapePanel";
+import { TeamsSheet } from "./TeamsSheet";
 import { FullActions, FullKinds, FullPreview } from "./Full";
 import { CallUpSheet } from "./CallUpSheet";
 import { NewMatchday, PickBar } from "./PickActions";
@@ -135,6 +136,7 @@ export function BoardView({ top }: BoardViewProps) {
       {!sandbox && <ClubButton />}
       <Picker />
       <ClubSheet />
+      {!sandbox && <TeamsSheet />}
       <CallUpSheet />
       <PlayerDrawer />
       <UndoBar />

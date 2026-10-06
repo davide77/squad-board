@@ -11,13 +11,13 @@ import { exportSquadFile } from "@/lib/board/files";
 import { clearStored, emptyData } from "@/lib/board/storage";
 import type { KitSide } from "@/lib/board/types";
 import { writeVoicePref } from "@/lib/voice";
-import { ClubWaitlist } from "@/components/landing/ClubWaitlist";
 import { Button } from "../Button";
 import { BadgePicker } from "./BadgePicker";
 import { ConfirmBox } from "./ConfirmBox";
 import { useBoard } from "./BoardProvider";
 import { ImportSquadButton } from "./ImportSquadButton";
 import { KitEditor } from "./KitEditor";
+import { useOpenTeams } from "./TeamsSheet";
 import { SendSquad } from "./SendSquad";
 import { ControlRow } from "./Panel";
 import { SideSheet } from "./SideSheet";
@@ -38,9 +38,8 @@ function ClubSettings() {
   // One strip open at a time, so the panel never runs to ten rows of swatches.
   const [editingKit, setEditingKit] = useState<KitSide | null>(null);
 
-  // One team is free. A second is the club waitlist for now, opened in place under the button.
-  const [askingMoreTeams, setAskingMoreTeams] = useState(false);
-  const moreTeamsId = useId();
+  // More teams has a sheet of its own, which takes this one's place.
+  const openTeams = useOpenTeams("club");
 
   // Asked in place, under the button, before anything is deleted.
   const [confirmingWipe, setConfirmingWipe] = useState(false);
@@ -137,21 +136,10 @@ function ClubSettings() {
       {!sandbox && (
         <>
           <ControlRow label={MORE_TEAMS.label}>
-            <Button
-              size="tiny"
-              aria-expanded={askingMoreTeams}
-              aria-controls={moreTeamsId}
-              onClick={() => setAskingMoreTeams(!askingMoreTeams)}
-            >
-              {askingMoreTeams ? MORE_TEAMS.close : MORE_TEAMS.button}
+            <Button size="tiny" icon="add" aria-haspopup="dialog" onClick={openTeams}>
+              {MORE_TEAMS.button}
             </Button>
           </ControlRow>
-          {askingMoreTeams && (
-            <div id={moreTeamsId} className="is-flex is-flex-column has-gap-3 has-mt-2 has-mb-3">
-              <p className="text-md is-chalk has-font-semibold">{MORE_TEAMS.line}</p>
-              <ClubWaitlist prompt={MORE_TEAMS.prompt} cta={MORE_TEAMS.cta} />
-            </div>
-          )}
           <SendSquad />
           <ControlRow label={CLUB.backupLabel}>
             <Button size="tiny" onClick={exportFile}>

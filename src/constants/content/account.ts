@@ -1,6 +1,8 @@
 // Every string about signing in and the account page. The site speaks Hairdryer (brand.md);
 // labels, buttons and anything about access stay straight.
 
+import type { IconName } from "@/constants/icons";
+
 export const ACCOUNT = {
   title: "Sign in",
   titleSignedIn: "Your account",
@@ -45,14 +47,35 @@ export const SIGN_IN_EMAIL = {
   ignore: "Didn't ask for this? Ignore it. Nobody can sign in without this email.",
 } as const;
 
-/** "Add another team" on the board, under Customise your club. One team is free; more is the club waitlist for now. */
+/** One line of what a second team gets, with its icon. */
+export interface TeamBenefit {
+  readonly icon: IconName;
+  readonly text: string;
+}
+
+const TEAM_BENEFITS: readonly TeamBenefit[] = [
+  { icon: "squad", text: "Each team keeps its own squad, kits and line-ups." },
+  { icon: "yourClub", text: "Switch teams with one tap, from the top of the board." },
+  { icon: "teamSheet", text: "Call-ups and team sheets for every side, sent the same way." },
+  { icon: "phone", text: "Your teams on your phone and your laptop, kept in step." },
+];
+
+/**
+ * Add a team: the button beside Customise your club, the row in the club sheet, and the sheet both open.
+ * One team is free for good. More than one comes with the club plan, so for now the sheet is the waitlist.
+ */
 export const MORE_TEAMS = {
   label: "Teams",
-  button: "Add another team",
+  button: "Add a team",
+  heading: "Add a team",
+  hint: "Run every side you coach from one board.",
   close: "Close",
-  line: "One team's free. More than one is coming for clubs.",
+  benefitsHeading: "What you get",
+  benefits: TEAM_BENEFITS,
+  free: "Your first team stays free. For good.",
+  when: "Coming for the 2027-28 season. Paid once a season, not every month.",
   prompt: "Want it first?",
-  cta: "Leave your email.",
+  cta: "Leave your email and we'll tell you the day it's ready.",
 } as const;
 
 export const FOOTER_SIGN_IN = "Sign in";

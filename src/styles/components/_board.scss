@@ -1015,6 +1015,34 @@ $gaffer-tail: spacer(2);
   padding: 0 spacer(4);
 }
 
+// Add a team, after the club: an empty crest with a dashed edge, a free slot on the board. The plus is
+// in the kit colour, so the one way to a second team is seen without shouting.
+.club-pill--add {
+  border-style: dashed;
+
+  // On a phone it is the slot alone, so the pill closes round it evenly.
+  @include max(bp(sm)) {
+    padding-inline: spacer(1);
+  }
+
+  &:hover .club-pill__slot {
+    border-color: color(kit-edge);
+  }
+}
+
+.club-pill__slot {
+  width: spacer(8) - spacer(2);
+  height: spacer(8) - spacer(2);
+  border: 1px dashed color(dim);
+  transition: border-color $transition-fast;
+}
+
+// The free promise in Add a team, on a wash of the club colour.
+.teams-sheet__offer {
+  background-color: tint(kit, 10%);
+  border: 1px solid tint(kit, 35%);
+}
+
 .crest--sm {
   width: spacer(8) - spacer(2);
   height: spacer(8) - spacer(2);

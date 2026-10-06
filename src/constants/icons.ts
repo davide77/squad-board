@@ -113,6 +113,7 @@ export const ICONS = {
   ],
   yourClub: [{ kind: "path", d: "M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z" }],
   undo: [{ kind: "path", d: "M9 14L4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" }],
+  add: [{ kind: "path", d: "M12 5v14M5 12h14" }],
   close: [{ kind: "path", d: "M6 6l12 12M18 6L6 18" }],
 
   // Controls

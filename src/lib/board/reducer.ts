@@ -84,6 +84,8 @@ export type Action =
   | { type: "editDone" }
   | { type: "openClub" }
   | { type: "closeClub" }
+  | { type: "openTeams" }
+  | { type: "closeTeams" }
   | { type: "openCallUp" }
   | { type: "closeCallUp" }
   | { type: "togglePos"; pos: PositionKey }
@@ -141,6 +143,7 @@ const INITIAL_UI: UiState = {
   selected: null,
   editing: null,
   clubOpen: false,
+  teamsOpen: false,
   callUpOpen: false,
   pickerSlot: null,
   posMode: false,
@@ -737,6 +740,16 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
 
     case "closeClub":
       ui.clubOpen = false;
+      return next;
+
+    // Opened from the club sheet as well as the header, so it takes the club sheet's place.
+    case "openTeams":
+      ui.clubOpen = false;
+      ui.teamsOpen = true;
+      return next;
+
+    case "closeTeams":
+      ui.teamsOpen = false;
       return next;
 
     case "openCallUp":
