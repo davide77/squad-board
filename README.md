@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-`npm run build` for a production build, `npm run lint` before committing.
+`npm run build` for a production build. Before committing: `npm run lint`, `npm run typecheck` and `npm test`. CI runs all four on every push and pull request.
 
 ## Where things are
 
