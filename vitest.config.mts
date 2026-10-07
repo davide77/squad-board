@@ -1,13 +1,26 @@
 import { fileURLToPath } from "node:url";
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
-// The board logic is pure, so the tests run in Node with no DOM.
+const src = fileURLToPath(new URL("./src", import.meta.url));
+
 export default defineConfig({
-  resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
-  },
   test: {
-    environment: "node",
-    include: ["src/**/*.test.ts"],
+    projects: [
+      {
+        // The board logic is pure, so its tests run in Node with no DOM.
+        resolve: { alias: { "@": src } },
+        test: { name: "unit", environment: "node", include: ["src/**/*.test.ts"] },
+      },
+      {
+        // Every story is a test: it renders in a real browser, runs its play function, then axe.
+        plugins: [storybookTest({ configDir: fileURLToPath(new URL("./.storybook", import.meta.url)) })],
+        test: {
+          name: "storybook",
+          browser: { enabled: true, headless: true, provider: playwright(), instances: [{ browser: "chromium" }] },
+        },
+      },
+    ],
   },
 });

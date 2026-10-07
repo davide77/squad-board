@@ -1,24 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Barlow, Saira_Condensed } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { THEME_COLOUR } from "@/constants/brand";
 import { OPEN_GRAPH_BASE, SITE_URL, TITLE_TEMPLATE, TWITTER_CARD } from "@/constants/seo";
 import { SITE } from "@/constants/site";
+import { body, headline } from "./fonts";
 import "../styles/main.scss";
-
-const body = Barlow({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-body",
-});
-
-const headline = Saira_Condensed({
-  subsets: ["latin"],
-  // No 500: medium is only ever set on Barlow. Each weight is one more preloaded file.
-  weight: ["600", "700"],
-  variable: "--font-headline",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
