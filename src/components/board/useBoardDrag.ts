@@ -1,15 +1,43 @@
 "use client";
 
 import { useEffect, useEffectEvent, useRef, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
+import { animate } from "framer-motion";
 import { NO_NUMBER } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
 import { CUSTOM_BOUNDS, CUSTOM_FORMATION } from "@/constants/football";
+import { MOTION } from "@/constants/motion";
 import { byId } from "@/lib/board/queries";
 import type { DropTarget } from "@/lib/board/types";
+import { prefersReducedMotion } from "@/lib/hooks";
+import { velocityOf } from "@/lib/motion";
 import { useBoard } from "./BoardProvider";
 
+interface Sample {
+  readonly x: number;
+  readonly y: number;
+  readonly t: number;
+}
+
+interface PlayerSession {
+  kind: "player";
+  pid: string;
+  pointerId: number;
+  x0: number;
+  y0: number;
+  /** Where the press landed from the centre of what was pressed, so the dragged copy stays under that point. */
+  grabX: number;
+  grabY: number;
+  /** The dragged copy's centre, now. */
+  x: number;
+  y: number;
+  /** The last few pointer positions, for the finger's speed on release. */
+  trail: Sample[];
+  moved: boolean;
+  ghost: HTMLElement | null;
+}
+
 type Session =
-  | { kind: "player"; pid: string; pointerId: number; x0: number; y0: number; moved: boolean; ghost: HTMLElement | null }
+  | PlayerSession
   | { kind: "marker"; index: number; pointerId: number }
   | { kind: "row"; id: string; pointerId: number; list: HTMLElement };
 
@@ -33,26 +61,80 @@ function targetFrom(el: Element | null): DropTarget | null {
 export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
   const { state, act } = useBoard();
   const session = useRef<Session | null>(null);
-  const edgeTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const edgeFrame = useRef<number | null>(null);
+  const edgeY = useRef(0);
   const swallowClick = useRef(false);
 
   function stopEdgeScroll() {
-    if (edgeTimer.current) clearInterval(edgeTimer.current);
-    edgeTimer.current = null;
+    if (edgeFrame.current !== null) cancelAnimationFrame(edgeFrame.current);
+    edgeFrame.current = null;
   }
 
-  // Keeps the page moving when a name is dragged to the top or bottom of the screen.
+  // Keeps the page moving when a name is dragged to the top or bottom of the screen: once a frame, faster
+  // the nearer the finger is to the edge, so the coach steers the speed by how far in they hold it.
   function edgeScroll(y: number) {
-    stopEdgeScroll();
-    const zone = BOARD_CONFIG.edgeScrollZonePx;
-    const step = y < zone ? -1 : y > window.innerHeight - zone ? 1 : 0;
-    if (!step) return;
+    edgeY.current = y;
+    if (edgeFrame.current !== null) return;
     // Inside the example sheet the sheet scrolls, not the page.
     const scroller = rootRef.current?.closest<HTMLElement>("[data-scroller]") ?? window;
-    edgeTimer.current = setInterval(
-      () => scroller.scrollBy(0, step * BOARD_CONFIG.edgeScrollStepPx),
-      BOARD_CONFIG.edgeScrollIntervalMs,
-    );
+    const tick = () => {
+      const zone = BOARD_CONFIG.edgeScrollZonePx;
+      const at = edgeY.current;
+      const into = at < zone ? at - zone : at > window.innerHeight - zone ? at - (window.innerHeight - zone) : 0;
+      if (!into) {
+        edgeFrame.current = null;
+        return;
+      }
+      scroller.scrollBy(0, clamp(into / zone, -1, 1) * BOARD_CONFIG.edgeScrollStepPx);
+      edgeFrame.current = requestAnimationFrame(tick);
+    };
+    edgeFrame.current = requestAnimationFrame(tick);
+  }
+
+  function placeGhost(ghost: HTMLElement, x: number, y: number) {
+    ghost.style.setProperty("--ghost-x", `${x}px`);
+    ghost.style.setProperty("--ghost-y", `${y}px`);
+  }
+
+  /**
+   * On release the dragged copy flies into the player's place, wherever the drop put them: the new slot, the
+   * bench, or back where they started if the drop missed. It sets off at the finger's speed, so letting go
+   * has no seam, and the real marker shows again as it lands.
+   */
+  function land(s: PlayerSession) {
+    const ghost = s.ghost;
+    if (!ghost) return;
+    if (prefersReducedMotion()) return ghost.remove();
+    const speed = velocityOf(s.trail);
+    // A frame on, the board has drawn the drop.
+    requestAnimationFrame(() => {
+      const home = rootRef.current?.querySelector<HTMLElement>(`[data-player="${CSS.escape(s.pid)}"]`);
+      const box = home?.getBoundingClientRect();
+      if (!home || !box?.width) return ghost.remove();
+      home.dataset.landing = "";
+      ghost.classList.add("chip--landing");
+      let settled = 0;
+      const settle = () => {
+        if (++settled < 2) return;
+        ghost.remove();
+        delete home.dataset.landing;
+      };
+      // Across and down on their own springs, so a throw that was mostly sideways stays mostly sideways.
+      let x = s.x;
+      let y = s.y;
+      animate(s.x, box.left + box.width / 2, {
+        ...MOTION.ghostLand,
+        velocity: speed.x,
+        onUpdate: (v) => placeGhost(ghost, (x = v), y),
+        onComplete: settle,
+      });
+      animate(s.y, box.top + box.height / 2, {
+        ...MOTION.ghostLand,
+        velocity: speed.y,
+        onUpdate: (v) => placeGhost(ghost, x, (y = v)),
+        onComplete: settle,
+      });
+    });
   }
 
   function makeGhost(pid: string): HTMLElement | null {
@@ -81,9 +163,12 @@ export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
       e.preventDefault();
       edgeScroll(e.clientY);
       const rows = [...s.list.querySelectorAll<HTMLElement>("[data-pid]")].filter((r) => r.dataset.pid !== s.id);
+      // Measured where each row is settling, not where its slide has got to, so a row on the move
+      // cannot swap the order straight back.
       const before = rows.find((r) => {
         const b = r.getBoundingClientRect();
-        return e.clientY < b.top + b.height / 2;
+        const sliding = new DOMMatrixReadOnly(getComputedStyle(r).transform).m42;
+        return e.clientY < b.top - sliding + b.height / 2;
       });
       const others = state.data.players.filter((p) => p.id !== s.id);
       // The list is one group of the squad. Past its last row, the row goes just after that one.
@@ -120,8 +205,11 @@ export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
       s.ghost = makeGhost(s.pid);
     }
     e.preventDefault();
-    s.ghost?.style.setProperty("--ghost-x", `${e.clientX}px`);
-    s.ghost?.style.setProperty("--ghost-y", `${e.clientY}px`);
+    s.x = e.clientX - s.grabX;
+    s.y = e.clientY - s.grabY;
+    s.trail.push({ x: s.x, y: s.y, t: e.timeStamp });
+    while (s.trail.length > 2 && e.timeStamp - s.trail[0].t > BOARD_CONFIG.velocityWindowMs) s.trail.shift();
+    if (s.ghost) placeGhost(s.ghost, s.x, s.y);
     act({ type: "dragOver", target: targetFrom(document.elementFromPoint(e.clientX, e.clientY)) });
   });
 
@@ -133,12 +221,12 @@ export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
     if (s.kind === "row") act({ type: "rowDrag", id: null });
     if (s.kind !== "player" || !s.moved) return;
 
-    s.ghost?.remove();
     // The click that follows a drag is not a tap.
     swallowClick.current = true;
     setTimeout(() => (swallowClick.current = false), 0);
     const target = targetFrom(document.elementFromPoint(e.clientX, e.clientY));
     act(target ? { type: "drop", pid: s.pid, target } : { type: "dragOver", target: null });
+    land(s);
   });
 
   const onCancel = useEffectEvent(() => {
@@ -188,12 +276,20 @@ export function useBoardDrag(rootRef: RefObject<HTMLElement | null>) {
 
     const holder = t.closest<HTMLElement>("[data-player]");
     if (holder?.dataset.player) {
+      const box = holder.getBoundingClientRect();
+      const grabX = e.clientX - (box.left + box.width / 2);
+      const grabY = e.clientY - (box.top + box.height / 2);
       session.current = {
         kind: "player",
         pid: holder.dataset.player,
         pointerId: e.pointerId,
         x0: e.clientX,
         y0: e.clientY,
+        grabX,
+        grabY,
+        x: e.clientX - grabX,
+        y: e.clientY - grabY,
+        trail: [],
         moved: false,
         ghost: null,
       };

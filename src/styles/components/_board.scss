@@ -142,7 +142,7 @@ $pick-bar-room: spacer(11) + spacer(4);
     border: 0;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color $transition-fast, color $transition-fast;
+    @include pressable((background-color $transition-fast, color $transition-fast));
 
     &:hover:not(&--on) {
       color: color(chalk);
@@ -521,6 +521,8 @@ $pick-bar-room: spacer(11) + spacer(4);
     padding-bottom: calc(#{spacer(5)} + env(safe-area-inset-bottom));
     background-color: color(board-2);
     border-left: 1px solid $edge;
+    // A sideways swipe is the drawer's to take (useSheetDrag.ts); an up and down one still scrolls it.
+    touch-action: pan-y;
   }
 
   &__close {
@@ -531,6 +533,8 @@ $pick-bar-room: spacer(11) + spacer(4);
     background-color: color(board-3);
     border: 1px solid $edge;
     cursor: pointer;
+
+    @include pressable;
   }
 
   // The shirt number beside the name, as on a teamsheet.
@@ -579,7 +583,7 @@ $pick-bar-room: spacer(11) + spacer(4);
   background-color: color(board);
   border: 1px solid $edge;
   cursor: pointer;
-  transition: background-color $transition-fast, border-color $transition-fast;
+  @include pressable((background-color $transition-fast, border-color $transition-fast));
 
   &:hover {
     border-color: tint(kit, 50%);
@@ -723,7 +727,7 @@ $gaffer-tail: spacer(2);
   background-color: color(board-2);
   border: 1px solid $edge;
   cursor: pointer;
-  transition: background-color $transition-fast, border-color $transition-fast;
+  @include pressable((background-color $transition-fast, border-color $transition-fast));
 
   &:hover {
     border-color: tint(chalk, 40%);
@@ -973,10 +977,12 @@ $gaffer-tail: spacer(2);
   top: calc(#{spacer(3)} + env(safe-area-inset-top));
   z-index: z(toast);
   max-width: calc(100vw - #{spacer(4) * 2});
+  overflow: hidden;
   color: color(board);
   background-color: color(chalk);
   box-shadow: 0 spacer(4) spacer(7) tint(black, 60%);
-  transform: translateX(-50%);
+  // `translate`, not `transform`: framer-motion owns the transform for the bar's entrance.
+  translate: -50% 0;
 
   @include min(bp(md)) {
     top: auto;
@@ -990,6 +996,24 @@ $gaffer-tail: spacer(2);
     background-color: color(board);
     border: 0;
     cursor: pointer;
+
+    @include pressable;
+  }
+
+  // How long is left to take it back. Drains along the foot over UNDO_MS, passed in as --undo-ms.
+  &__timer {
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    background-color: tint(board, 35%);
+    transform-origin: left;
+    animation: undo-drain var(--undo-ms) linear forwards;
+  }
+}
+
+@keyframes undo-drain {
+  to {
+    scale: 0 1;
   }
 }
 

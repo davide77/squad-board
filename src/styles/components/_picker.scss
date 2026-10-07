@@ -30,6 +30,8 @@
 
     line-height: line-height(tight);
 
+    @include pressable;
+
     &:hover {
       color: color(chalk);
     }
@@ -60,7 +62,9 @@
   border-bottom: 1px solid $rule;
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  // A row lights up under the thumb rather than shrinking: a full-width row that shrank would look broken.
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
     background-color: color(board-3);
   }
 

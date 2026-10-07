@@ -1,8 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { useEscapeKey, useFocusTrap } from "@/lib/hooks";
+import { AnimatePresence, motion } from "framer-motion";
+import { PHONE_QUERY } from "@/constants/config";
+import { MOTION } from "@/constants/motion";
+import { useEscapeKey, useFocusTrap, useMediaQuery } from "@/lib/hooks";
 import { cx } from "../cx";
+import { useSheetDrag } from "./useSheetDrag";
 
 interface PopoverProps {
   /** Names the panel for a screen reader. */
@@ -22,18 +26,29 @@ interface Anchor {
   readonly right: number;
 }
 
+// On a wider screen the panel grows quickly out of its button, and shrinks back into it.
+const GROW = {
+  initial: { opacity: 0, scale: MOTION.popScale },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: MOTION.popScale },
+  transition: MOTION.pop,
+} as const;
+
 /**
  * A small panel under a toolbar button. It is fixed to the trigger's place on screen, so a scrolling column
  * never clips it, and closes on Escape, a tap outside, or a scroll. On a phone it rises as a sheet from the
- * bottom edge instead.
+ * bottom edge instead, which can be pulled back down.
  */
 export function Popover({ label, trigger, triggerLabel, triggerClassName, align = "start", children }: PopoverProps) {
+  // Where the panel sits is kept after it closes, so it shrinks back into its button rather than jumping.
   const [anchor, setAnchor] = useState<Anchor | null>(null);
+  const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
-  const open = anchor !== null;
-  const close = useCallback(() => setAnchor(null), []);
+  const close = useCallback(() => setOpen(false), []);
+  const phone = useMediaQuery(PHONE_QUERY);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheet = useSheetDrag("bottom", close, panelRef);
 
   useEscapeKey(open, close);
   useFocusTrap(open, panelRef);
@@ -56,7 +71,9 @@ export function Popover({ label, trigger, triggerLabel, triggerClassName, align 
   function toggle() {
     if (open) return close();
     const r = triggerRef.current?.getBoundingClientRect();
-    if (r) setAnchor({ top: r.bottom, left: r.left, right: window.innerWidth - r.right });
+    if (!r) return;
+    setAnchor({ top: r.bottom, left: r.left, right: window.innerWidth - r.right });
+    setOpen(true);
   }
 
   const place = anchor
@@ -77,21 +94,37 @@ export function Popover({ label, trigger, triggerLabel, triggerClassName, align 
       >
         {trigger}
       </button>
-      {open && (
-        <>
-          <div className="popover__backdrop" aria-hidden="true" onClick={close} />
-          <div
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="backdrop"
+            className="popover__backdrop"
+            aria-hidden="true"
+            onClick={close}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={MOTION.fade}
+          />
+        )}
+        {open && (
+          <motion.div
+            key="panel"
             ref={panelRef}
             id={panelId}
             role="dialog"
             aria-label={label}
             className={cx("popover__panel is-flex is-flex-column has-gap-4 has-p-4", `popover__panel--${align}`)}
             style={place}
+            {...(phone ? sheet.motion : GROW)}
           >
+            {phone && (
+              <div className="sheet-grabber is-flex is-align-center is-justify-center is-shrink-0" aria-hidden="true" onPointerDown={sheet.grab} />
+            )}
             {children(close)}
-          </div>
-        </>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

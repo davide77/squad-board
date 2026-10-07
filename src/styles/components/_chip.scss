@@ -1,5 +1,7 @@
 @use '../abstracts' as *;
 
+$ghost-scale: 1.06;
+
 // A zone players can be dropped into: the bench, the rest of the squad.
 .chips {
   min-height: 52px;
@@ -26,6 +28,8 @@
   border: 1px solid $edge;
   cursor: pointer;
   touch-action: none;
+
+  @include pressable;
 
   &:hover {
     background-color: color(board-3);
@@ -59,7 +63,9 @@
     border-color: color(chalk);
   }
 
-  // Follows the pointer while a player is dragged.
+  // Follows the pointer while a player is dragged. Lifted slightly (MOTION.ghostScale in motion.ts), and
+  // sized back down as it lands in its new place. `translate` and `scale`, not `transform`, so each can move
+  // on its own.
   &--ghost {
     position: fixed;
     left: var(--ghost-x);
@@ -67,7 +73,28 @@
     z-index: z(ghost);
     opacity: 0.95;
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(1.06);
+    translate: -50% -50%;
+    scale: $ghost-scale;
     filter: drop-shadow(0 8px 14px tint(black, 55%));
+    transition: scale $transition-base;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: ghost-lift $transition-press;
+    }
   }
+
+  &--landing {
+    scale: 1;
+  }
+}
+
+@keyframes ghost-lift {
+  from {
+    scale: 1;
+  }
+}
+
+// The player's real marker or chip, hidden while the dragged copy flies in to it. Set by useBoardDrag.ts.
+[data-landing] {
+  opacity: 0;
 }

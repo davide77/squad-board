@@ -30,7 +30,8 @@ function PitchSlot({ slot, now, dupes }: PitchSlotProps) {
           .map((c) => firstName(c.name))
           .join(" / ")
       : "";
-  const position = { "--x": `${slot.x}%`, "--y": `${100 - slot.y}%` } as CSSProperties;
+  // Unitless shares of the pitch: _pitch.scss turns them into container units.
+  const position = { "--x": slot.x, "--y": 100 - slot.y } as CSSProperties;
   const isDrop = ui.dropTarget?.kind === "slot" && ui.dropTarget.id === slot.id;
   // On Matchday a tap picks the player coming off, and each shirt shows its minutes.
   const matchday = ui.step === "match";

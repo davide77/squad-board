@@ -112,6 +112,11 @@ function subscribeToMotion(onChange: () => void) {
   return () => query.removeEventListener("change", onChange);
 }
 
+/** The same question, asked once, for an event handler that is about to animate something itself. */
+export function prefersReducedMotion(): boolean {
+  return window.matchMedia(REDUCED_MOTION).matches;
+}
+
 /** Whether the system asks for less movement. The server renders as if motion is fine. */
 export function usePrefersReducedMotion(): boolean {
   return useSyncExternalStore(

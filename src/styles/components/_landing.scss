@@ -48,6 +48,11 @@
     border: 1px solid color(board-3);
     box-shadow: 0 spacer(3) spacer(8) tint(black, 45%);
 
+    @media (prefers-reduced-transparency: reduce) {
+      background-color: color(board-2);
+      backdrop-filter: none;
+    }
+
     @include min(bp(md)) {
       padding: spacer(3) spacer(5);
     }
@@ -202,6 +207,7 @@
   font-family: $font-family-headline;
   font-weight: font-weight(bold);
   line-height: line-height(display);
+  letter-spacing: tracking(display);
   text-transform: uppercase;
   text-wrap: balance;
   // Global headings take the kit colour; landing headlines follow their section.
@@ -260,7 +266,7 @@
   // Players glide to their new spot when the shape changes.
   @media (prefers-reduced-motion: no-preference) {
     .pitch-slot {
-      transition: left 350ms ease, top 350ms ease;
+      transition: translate 350ms ease;
     }
   }
 }

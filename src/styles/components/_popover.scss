@@ -28,12 +28,15 @@ $popover-width: 340px;
   border-radius: $radius-sheet;
   box-shadow: 0 spacer(2) spacer(2) tint(black, 50%);
 
+  // It grows out of the corner under its button, so it reads as coming from there.
   &--start {
     left: var(--pop-left);
+    transform-origin: top left;
   }
 
   &--end {
     right: var(--pop-right);
+    transform-origin: top right;
   }
 
   @include max(bp(md)) {

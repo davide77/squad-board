@@ -1,8 +1,10 @@
 "use client";
 
 import type { KeyboardEvent } from "react";
+import { motion } from "framer-motion";
 import { SQUAD } from "@/constants/content/board";
 import { BOARD_CONFIG } from "@/constants/config";
+import { MOTION } from "@/constants/motion";
 import { blocked, playedMinutes, positionCodes, reasonOf, started, where } from "@/lib/board/queries";
 import { useNow } from "@/lib/hooks";
 import type { Player } from "@/lib/board/types";
@@ -60,7 +62,10 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
   }
 
   return (
-    <li
+    // `layout`: when the squad order changes, the rows slide to their new places rather than jumping there.
+    <motion.li
+      layout="position"
+      transition={MOTION.reorder}
       data-pid={p.id}
       className={cx("roster-row is-flex is-align-center has-gap-2 has-py-2", `roster-row--${isBlocked || p.out ? "out" : status}`, {
         "roster-row--dragging": ui.draggingRow === p.id,
@@ -132,6 +137,6 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
       >
         {SQUAD.edit}
       </button>
-    </li>
+    </motion.li>
   );
 }

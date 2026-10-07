@@ -1,4 +1,9 @@
+@use 'sass:math';
 @use '../abstracts' as *;
+
+// The pitch is 3 wide by 4 long.
+$pitch-wide: 3;
+$pitch-long: 4;
 
 // Below this width the rows of a shape sit closer than a full size marker is tall.
 $pitch-tight: 300px;
@@ -6,7 +11,7 @@ $pitch-tight: 300px;
 .pitch {
   position: relative;
   container: pitch / inline-size;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: #{$pitch-wide} / #{$pitch-long};
   overflow: hidden;
   background: linear-gradient(175deg, color(pitch-top), color(pitch-bottom) 66%);
   border: 1px solid $edge;
@@ -27,18 +32,21 @@ $pitch-tight: 300px;
   }
 }
 
-// A marker on the pitch, placed by --x and --y from the formation.
+// A marker on the pitch, placed by --x and --y from the formation: unitless shares of the pitch's width and
+// length. Placed with `translate` in container units rather than left and top, so a change of shape glides on
+// the compositor instead of laying the page out again every frame. 1cqi is a hundredth of the pitch's width,
+// and the pitch is long by $pitch-long / $pitch-wide of that.
 .pitch-slot {
   position: absolute;
-  left: var(--x);
-  top: var(--y);
+  left: 0;
+  top: 0;
   width: 66px;
   padding: 0;
   background: none;
   border: 0;
   color: inherit;
   cursor: pointer;
-  transform: translate(-50%, -50%);
+  translate: calc(var(--x) * 1cqi - 50%) calc(var(--y) * #{math.div($pitch-long, $pitch-wide)}cqi - 50%);
   touch-action: none;
 
   &__disc {
@@ -47,6 +55,12 @@ $pitch-tight: 300px;
     color: color(dimmer);
     background-color: tint(black, 14%);
     border: 1px dashed var(--line);
+    transition: scale $transition-press;
+  }
+
+  // The shirt dips under the thumb. The marker itself keeps still, so a drag starts from where it was.
+  &:active &__disc {
+    scale: $press-scale;
   }
 
   &__name {
@@ -115,7 +129,7 @@ $pitch-tight: 300px;
   // A new shape: each player glides to their new spot. Not while positions are dragged by hand.
   @media (prefers-reduced-motion: no-preference) {
     &:not(.pitch-slot--movable) {
-      transition: left $transition-base, top $transition-base;
+      transition: translate $transition-base;
     }
   }
 

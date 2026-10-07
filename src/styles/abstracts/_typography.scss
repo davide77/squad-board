@@ -70,6 +70,7 @@ $line-heights: (
 
 // Saira Condensed labels carry a little air. Named by intent, not by value.
 $letter-spacings: (
+  display: -0.01em, // landing headlines: caps this large read loose without a little pulled in
   normal: 0,
   number: 0.02em,   // team name, crest
   tag: 0.04em,      // position tags, the formation picker

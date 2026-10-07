@@ -75,7 +75,7 @@ export function DemoBoard({ line }: DemoBoardProps) {
             <PitchMarkings />
             {demo.xi.map((p, i) => {
               const spec = specs[i];
-              const position = { "--x": `${spec.x}%`, "--y": `${100 - spec.y}%` } as CSSProperties;
+              const position = { "--x": spec.x, "--y": 100 - spec.y } as CSSProperties;
               return (
                 <button
                   key={spec.role + i}

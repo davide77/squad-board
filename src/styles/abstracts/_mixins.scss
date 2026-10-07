@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use 'spacers' as *;
 @use 'variables' as *;
 
@@ -59,5 +60,16 @@
     width: max(100%, #{$size});
     height: max(100%, #{$size});
     transform: translate(-50%, -50%);
+  }
+}
+
+// A control that dips the moment it is pressed. A phone has no hover, so this is the only sign a tap
+// landed before the board answers. `scale` rather than `transform`, so it never fights a control's own
+// placement. $also keeps the control's other transitions, since one `transition` replaces another.
+@mixin pressable($also: ()) {
+  transition: list.append($also, scale $transition-press, $separator: comma);
+
+  &:active:not(:disabled) {
+    scale: $press-scale;
   }
 }

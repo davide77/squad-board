@@ -1,0 +1,31 @@
+@use '../abstracts' as *;
+
+// The handle along the top of a bottom sheet: the picker, the example team, a popover on a phone.
+// Pulled down, it takes the sheet with it (useSheetDrag.ts). The bar is small, the strip it sits in
+// is a full 44px for a thumb, and the page never scrolls from it.
+.sheet-grabber {
+  min-height: $hit-size;
+  margin-top: -(spacer(3));
+  margin-bottom: -(spacer(2));
+  cursor: grab;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &::before {
+    content: '';
+    width: spacer(9);
+    height: spacer(1) + 1px;
+    border-radius: $radius-pill;
+    background-color: color(dimmer);
+  }
+
+  // A floating panel on a wider screen is closed from its own button, so it shows no handle.
+  &--phone {
+    @include min(bp(sheet)) {
+      display: none;
+    }
+  }
+}

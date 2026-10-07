@@ -8,7 +8,7 @@
   white-space: nowrap;
   border: 1px solid $edge;
   cursor: pointer;
-  transition: background-color $transition-fast, color $transition-fast, filter $transition-fast;
+  @include pressable((background-color $transition-fast, color $transition-fast, filter $transition-fast));
 
   &:disabled {
     cursor: not-allowed;

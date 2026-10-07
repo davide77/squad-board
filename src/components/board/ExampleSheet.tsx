@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type PointerEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { EXAMPLE } from "@/constants/content/board";
 import type { VoiceKey } from "@/constants/content/landing";
@@ -11,22 +11,26 @@ import { exampleBoard } from "@/lib/board/start";
 import { Button } from "../Button";
 import { BoardProvider, useBoard } from "./BoardProvider";
 import { BoardView } from "./BoardView";
+import { useSheetDrag } from "./useSheetDrag";
 
 const newId = () => crypto.randomUUID();
 
 interface ExampleBarProps {
   readonly titleId: string;
   readonly onClose: () => void;
+  /** Starts pulling the sheet down from its grabber. */
+  readonly onGrab: (e: PointerEvent) => void;
 }
 
 /** Stays at the top of the sheet while the coach scrolls the example, with the way back out. */
-function ExampleBar({ titleId, onClose }: ExampleBarProps) {
+function ExampleBar({ titleId, onClose, onGrab }: ExampleBarProps) {
   const { state } = useBoard();
   // Escape closes the picker first, when it is open over the example.
   useEscapeKey(!state.ui.pickerSlot, onClose);
 
   return (
     <div className="example-sheet__bar is-flex is-flex-wrap is-align-center is-justify-between has-gap-3 has-py-3 has-mb-4">
+      <div className="sheet-grabber sheet-grabber--phone is-flex is-align-center is-justify-center is-w-full" aria-hidden="true" onPointerDown={onGrab} />
       <div className="is-flex-1 is-min-w-0">
         <p id={titleId} className="has-font-headline has-font-bold text-base tracking-caps uppercase is-kit">
           {EXAMPLE.sheetTag}
@@ -51,11 +55,12 @@ interface ExampleSheetProps {
  * closing it leaves the coach exactly where they were, half-typed squad and all.
  */
 export function ExampleSheet({ open, onClose, voice }: ExampleSheetProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheet = useSheetDrag("bottom", onClose, panelRef);
 
   useScrollLock(open);
-  useFocusTrap(open, cardRef);
+  useFocusTrap(open, panelRef);
 
   return (
     <AnimatePresence>
@@ -71,18 +76,15 @@ export function ExampleSheet({ open, onClose, voice }: ExampleSheetProps) {
           }}
         >
           <motion.div
-            ref={cardRef}
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
             data-scroller=""
             className="example-sheet__card is-w-full bg-board"
-            initial={{ y: MOTION.sheetY }}
-            animate={{ y: 0 }}
-            exit={{ y: MOTION.sheetY }}
-            transition={MOTION.sheet}
+            {...sheet.motion}
           >
-            <ExampleBoard voice={voice} titleId={titleId} onClose={onClose} />
+            <ExampleBoard voice={voice} titleId={titleId} onClose={onClose} onGrab={sheet.grab} />
           </motion.div>
         </motion.div>
       )}
@@ -94,14 +96,15 @@ interface ExampleBoardProps {
   readonly voice: VoiceKey;
   readonly titleId: string;
   readonly onClose: () => void;
+  readonly onGrab: (e: PointerEvent) => void;
 }
 
 /** A fresh copy of the example each time the sheet opens. */
-function ExampleBoard({ voice, titleId, onClose }: ExampleBoardProps) {
+function ExampleBoard({ voice, titleId, onClose, onGrab }: ExampleBoardProps) {
   const [sandbox] = useState(() => ({ data: { ...exampleBoard(newId), voice }, notice: GAFFER[voice].exampleLoaded }));
   return (
     <BoardProvider sandbox={sandbox}>
-      <BoardView top={<ExampleBar titleId={titleId} onClose={onClose} />} />
+      <BoardView top={<ExampleBar titleId={titleId} onClose={onClose} onGrab={onGrab} />} />
     </BoardProvider>
   );
 }

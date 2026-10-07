@@ -14,6 +14,7 @@ import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ConfirmBox } from "./ConfirmBox";
+import { useSheetDrag } from "./useSheetDrag";
 import { Icon } from "../Icon";
 
 const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dim has-mb-1";
@@ -213,9 +214,10 @@ export function PlayerDrawer() {
   const { state, act } = useBoard();
   const p = byId(state.data, state.ui.editing);
   const open = !!p;
-  const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const close = useCallback(() => act({ type: "editDone" }), [act]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheet = useSheetDrag("right", close, panelRef);
 
   useEscapeKey(open, close);
   useScrollLock(open);
@@ -240,10 +242,8 @@ export function PlayerDrawer() {
             aria-modal="true"
             aria-labelledby={titleId}
             className="drawer__panel is-flex is-flex-column has-gap-6 is-w-full has-p-5"
-            initial={{ x: MOTION.drawerX }}
-            animate={{ x: 0 }}
-            exit={{ x: MOTION.drawerX }}
-            transition={MOTION.sheet}
+            {...sheet.motion}
+            onPointerDown={sheet.swipe}
           >
             <DrawerBody key={p.id} p={p} titleId={titleId} close={close} />
           </motion.div>

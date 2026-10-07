@@ -10,6 +10,11 @@
   background-color: tint(board, 80%);
   backdrop-filter: blur(4px);
 
+  @media (prefers-reduced-transparency: reduce) {
+    background-color: color(board);
+    backdrop-filter: none;
+  }
+
   @include min(bp(sheet)) {
     align-items: center;
     padding: spacer(5);

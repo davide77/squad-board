@@ -30,7 +30,7 @@ export function Toast() {
             className="toast text-base has-font-semibold bg-kit is-kit-ink has-radius-pill has-py-2 has-px-5"
             initial={{ opacity: 0, y: MOTION.toastY }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, y: MOTION.toastY }}
             transition={MOTION.toast}
           >
             {notice.text}

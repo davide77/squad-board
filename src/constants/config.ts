@@ -13,8 +13,10 @@ export const BOARD_CONFIG = {
   dragThresholdPx: 8,
   /** Distance from the viewport edge that starts auto-scroll while reordering. */
   edgeScrollZonePx: 90,
-  edgeScrollStepPx: 12,
-  edgeScrollIntervalMs: 16,
+  /** The most the page scrolls in one frame, with the finger at the very edge. Slower the further in. */
+  edgeScrollStepPx: 14,
+  /** How far back the finger's speed is measured when a dragged player is let go. */
+  velocityWindowMs: 80,
   clockTickMs: 1000,
   /** Past this much on the match clock, Reset asks first: there is a real match's worth of minutes to lose. */
   resetAskAfterMs: 2 * 60_000,
@@ -99,7 +101,10 @@ export const PICTURE_CONFIG = {
 // in components/_toast.scss uses the same duration: keep them in sync.
 export const TOAST_MS = 1800;
 
-/** How long Undo stays offered after a change to the team. Long enough to spot a mis-tap on the touchline. */
+/**
+ * How long Undo stays offered after a change to the team. Long enough to spot a mis-tap on the touchline.
+ * The line draining along the undo bar's foot reads it as --undo-ms (components/_board.scss).
+ */
 export const UNDO_MS = 8000;
 
 // A longer line stays up long enough to read: this much per character, up to the cap.

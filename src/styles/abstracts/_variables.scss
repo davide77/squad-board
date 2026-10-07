@@ -9,10 +9,12 @@ $z-index: (
   raised: 5,
   // The step tabs, fixed along the bottom of a phone. Under the picker and every overlay.
   dock: 50,
-  // The example team sheet. Under the drag ghost and the picker, which open inside it.
-  modal: 55,
   ghost: 60,
+  // Sheets, drawers and the site header.
   overlay: 70,
+  // The example team sheet. A modal, so above the site header: its picker, drawers and drag ghost open
+  // inside it and stack within it.
+  modal: 80,
   toast: 90,
   skip: 1000,
 );
@@ -40,6 +42,10 @@ $rule: color(rule);
 // Transitions
 $transition-fast: 150ms ease;
 $transition-base: 250ms ease;
+// A press: quick both ways, so the control answers the finger the moment it lands.
+$transition-press: 100ms ease-out;
+// Pressed controls dip slightly, as a real button gives under a thumb.
+$press-scale: 0.97;
 
 // Focus ring
 $focus-ring-width: 2px;

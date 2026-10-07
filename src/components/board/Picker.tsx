@@ -13,6 +13,7 @@ import type { Player } from "@/lib/board/types";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
+import { useSheetDrag } from "./useSheetDrag";
 import { Icon } from "../Icon";
 
 interface OptionProps {
@@ -136,14 +137,15 @@ export function Picker() {
   const phone = useMediaQuery(PHONE_QUERY);
   const slotId = phone ? state.ui.pickerSlot : null;
   const open = !!slotId;
-  const cardRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const close = useCallback(() => act({ type: "closePicker" }), [act]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheet = useSheetDrag("bottom", close, panelRef);
 
   // Escape lets go of a picked position at every size, sheet or not.
   useEscapeKey(!!state.ui.pickerSlot, close);
   useScrollLock(open);
-  useFocusTrap(open, cardRef);
+  useFocusTrap(open, panelRef);
 
   return (
     <AnimatePresence>
@@ -159,16 +161,14 @@ export function Picker() {
           }}
         >
           <motion.div
-            ref={cardRef}
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
             className={cx("picker__card is-flex is-flex-column is-w-full bg-board-2 has-pt-4 has-px-4")}
-            initial={{ y: MOTION.sheetY }}
-            animate={{ y: 0 }}
-            exit={{ y: MOTION.sheetY }}
-            transition={MOTION.sheet}
+            {...sheet.motion}
           >
+            <div className="sheet-grabber is-flex is-align-center is-justify-center is-shrink-0" aria-hidden="true" onPointerDown={sheet.grab} />
             <PickerBody slotId={slotId} titleId={titleId} />
           </motion.div>
         </motion.div>

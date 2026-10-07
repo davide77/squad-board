@@ -14,6 +14,7 @@ import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { ControlRow } from "./Panel";
+import { useSheetDrag } from "./useSheetDrag";
 import { Icon } from "../Icon";
 
 /** The link as a QR code, dark on chalk, because that is what a camera reads. */
@@ -138,12 +139,13 @@ export function SendToPhone({ className }: { readonly className?: string }) {
   const { state } = useBoard();
   const [open, setOpen] = useState(false);
   const { link, make, clear } = useSquadLink();
-  const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const close = useCallback(() => {
     setOpen(false);
     clear();
   }, [clear]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheet = useSheetDrag("right", close, panelRef);
 
   useEscapeKey(open, close);
   useScrollLock(open);
@@ -185,10 +187,8 @@ export function SendToPhone({ className }: { readonly className?: string }) {
                 aria-modal="true"
                 aria-labelledby={titleId}
                 className="drawer__panel is-flex is-flex-column has-gap-6 is-w-full has-p-5"
-                initial={{ x: MOTION.drawerX }}
-                animate={{ x: 0 }}
-                exit={{ x: MOTION.drawerX }}
-                transition={MOTION.sheet}
+                {...sheet.motion}
+                onPointerDown={sheet.swipe}
               >
                 <div className="is-flex is-align-center is-justify-between has-gap-3">
                   <h2 id={titleId} className="text-3xl">

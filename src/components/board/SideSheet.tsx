@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MOTION } from "@/constants/motion";
 import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
 import { Icon } from "../Icon";
+import { useSheetDrag } from "./useSheetDrag";
 
 interface SideSheetProps {
   readonly open: boolean;
@@ -20,11 +21,12 @@ interface SideSheetProps {
 
 /**
  * A sheet that slides in from the right edge over a dimmed board, full width on a phone. It traps focus,
- * closes on Escape or a tap outside, and locks the page behind it.
+ * closes on Escape, a tap outside or a swipe back off to the right, and locks the page behind it.
  */
 export function SideSheet({ open, onClose, title, hint, closeLabel, foot, children }: SideSheetProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheet = useSheetDrag("right", onClose, panelRef);
 
   useEscapeKey(open, onClose);
   useScrollLock(open);
@@ -49,10 +51,8 @@ export function SideSheet({ open, onClose, title, hint, closeLabel, foot, childr
             aria-modal="true"
             aria-labelledby={titleId}
             className="drawer__panel is-flex is-flex-column has-gap-6 is-w-full has-p-5"
-            initial={{ x: MOTION.drawerX }}
-            animate={{ x: 0 }}
-            exit={{ x: MOTION.drawerX }}
-            transition={MOTION.sheet}
+            {...sheet.motion}
+            onPointerDown={sheet.swipe}
           >
             <div className="is-flex is-align-start is-justify-between has-gap-3">
               <div className="is-min-w-0">
