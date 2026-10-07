@@ -62,7 +62,8 @@ const TEAM_BENEFITS: readonly TeamBenefit[] = [
 
 /**
  * Add a team: the button beside Customise your club, the row in the club sheet, and the sheet both open.
- * One team is free for good. More than one comes with the club plan, so for now the sheet is the waitlist.
+ * One team is free for good. More than one comes with the season pass, so for now the sheet is the waitlist.
+ * The price is stated so the waitlist measures who would pay it, not only who is curious.
  */
 export const MORE_TEAMS = {
   label: "Teams",
@@ -73,6 +74,7 @@ export const MORE_TEAMS = {
   benefitsHeading: "What you get",
   benefits: TEAM_BENEFITS,
   free: "Your first team stays free. For good.",
+  price: "£19.99 a season for all your teams.",
   when: "Coming for the 2027-28 season. Paid once a season, not every month.",
   prompt: "Want it first?",
   cta: "Leave your email and we'll tell you the day it's ready.",

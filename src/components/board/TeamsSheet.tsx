@@ -41,6 +41,7 @@ export function TeamsSheet() {
       </section>
       <section className="teams-sheet__offer has-radius-panel has-p-4 is-flex is-flex-column has-gap-2">
         <p className="has-font-headline has-font-bold text-lg is-chalk">{MORE_TEAMS.free}</p>
+        <p className="text-md has-font-semibold is-chalk">{MORE_TEAMS.price}</p>
         <p className="text-base is-dim">{MORE_TEAMS.when}</p>
       </section>
       <ClubWaitlist prompt={MORE_TEAMS.prompt} cta={MORE_TEAMS.cta} />
