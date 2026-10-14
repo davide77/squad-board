@@ -185,18 +185,24 @@ Fallbacks: Saira Condensed -> Barlow -> system sans. Barlow -> system sans.
 The logo is the **visor mark**: the Gafferboard G wearing a coach's visor. The G is drawn the way a coach draws a run on a tactics board, one chalk stroke that sweeps round from the top right and turns in along the bar, stopping short of a disc in the kit colour. The disc is a player, placed where the coach wants them. The visor on top makes the G the Gaffer: the coach on the touchline who picks the team.
 
 - **Concept.** The Gaffer decides, the board shows it. The stroke is the plan, the disc is the pick, the visor is the person making the call.
-- **Shapes.** A single round-capped stroke, the same weight all the way, like chalk or a marker pen. A white visor sitting on the G, with a stitched grey seam and a grey peak. No ball, no whistle, no shield: every other football product already uses those.
-- **Colours.** Chalk `#F6F6F3` stroke and visor, Dim `#96968F` seam and shading, a Board 2 `#141414` keyline round the visor, and a Yellow `#F2D106` disc, on Board `#0A0A0A`. The disc is the only colour.
+- **Shapes.** A single round-capped stroke, the same weight all the way, like chalk or a marker pen. A white visor sitting on the G, with a grey band along its lower edge and a grey peak, its underside cut into the G. No ball, no whistle, no shield: every other football product already uses those.
+- **Colours.** Chalk `#F6F6F3` stroke and visor, Dim `#96968F` band and peak, and a Yellow `#F2D106` disc, on Board `#0A0A0A`. The disc is the only colour.
 - **Lockup.** Wherever the brand is signed, the mark sits on the left with "Gafferboard" beside it in Saira Condensed Bold, vertically centred, as in the site header ([SiteLogo.tsx](src/components/SiteLogo.tsx)). There is no separate wordmark file: the name is set as live text in the brand font.
 
 Files in [public/brand/](public/brand/):
 
-- `Logo.svg` - the visor mark, on a 240 square, for dark backgrounds. **The source for everything else.** `VISOR_MARK` in [src/constants/brand.ts](src/constants/brand.ts) points here.
+- `Logo.svg` - the visor mark, on a 240 square, for dark backgrounds. Exported from Figma (below) and the source for every other file here. `VISOR_MARK` in [src/constants/brand.ts](src/constants/brand.ts) points here.
 - `gafferboard-icon.svg` - the mark on a Board rounded square. Also `src/app/icon.svg` (the favicon).
 - `gafferboard-icon-192.png`, `gafferboard-icon-512.png`, `gafferboard-icon-maskable-512.png` - web app icons. `src/app/apple-icon.png` is the iPhone home screen icon.
 - `gafferboard-avatar-1080.png` - the mark on a full Board square, sized for social profile pictures, which crop to a circle.
 
-All of these are rendered from `Logo.svg`. Change the mark there first, then render the others again.
+**Figma is the source of truth for the mark.** It lives in the Gafferboard Figma file, Components page, as the `Logo/Mark` component; the lockups and highlight covers are instances of it. To change the logo:
+
+1. Edit `Logo/Mark` in Figma.
+2. Export the `Export/Logo 240` frame next to it as SVG, with text outlined, over `public/brand/Logo.svg`.
+3. Run `node tools/brand/render-icons.mjs`. It renders the favicon, the Apple icon, the app icons and the avatar from `Logo.svg`.
+
+Never edit these files by hand. The `Logo/Mark - small size test` strip in Figma shows the mark from 16px to 64px; check it after any change.
 
 Rules:
 
