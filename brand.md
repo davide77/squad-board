@@ -187,7 +187,7 @@ The logo is the **visor mark**: the Gafferboard G wearing a coach's visor. The G
 - **Concept.** The Gaffer decides, the board shows it. The stroke is the plan, the disc is the pick, the visor is the person making the call.
 - **Shapes.** A single round-capped stroke, the same weight all the way, like chalk or a marker pen. A white visor sitting on the G, with a grey band along its lower edge and a grey peak, its underside cut into the G. No ball, no whistle, no shield: every other football product already uses those.
 - **Colours.** Chalk `#F6F6F3` stroke and visor, Dim `#96968F` band and peak, and a Yellow `#F2D106` disc, on Board `#0A0A0A`. The disc is the only colour.
-- **Lockup.** Wherever the brand is signed, the mark sits on the left with "Gafferboard" beside it in Saira Condensed Bold, vertically centred, as in the site header ([SiteLogo.tsx](src/components/SiteLogo.tsx)). There is no separate wordmark file: the name is set as live text in the brand font.
+- **Lockup.** Wherever the brand is signed, the mark sits on the left with "Gafferboard" beside it in Saira Condensed Bold, vertically centred, as in the site header ([SiteLogo.tsx](src/components/SiteLogo.tsx)). On the site the name is live text in the brand font. For anywhere else, use the outlined files below.
 
 Files in [public/brand/](public/brand/):
 
@@ -195,6 +195,11 @@ Files in [public/brand/](public/brand/):
 - `gafferboard-icon.svg` - the mark on a Board rounded square. Also `src/app/icon.svg` (the favicon).
 - `gafferboard-icon-192.png`, `gafferboard-icon-512.png`, `gafferboard-icon-maskable-512.png` - web app icons. `src/app/apple-icon.png` is the iPhone home screen icon.
 - `gafferboard-avatar-1080.png` - the mark on a full Board square, sized for social profile pictures, which crop to a circle.
+- `gafferboard-symbol.svg` - the mark cropped tight to its edges, for places that add their own spacing (mockup tools, partner pages).
+- `gafferboard-wordmark.svg` - "Gafferboard" in Saira Condensed Bold, text outlined. Exported from `Logo/Wordmark` in Figma.
+- `gafferboard-horizontal.svg` - the lockup, mark and name side by side, text outlined. Exported from `Logo/Horizontal` in Figma.
+
+All the SVGs are drawn in Chalk for dark backgrounds.
 
 **Figma is the source of truth for the mark.** It lives in the Gafferboard Figma file, Components page, as the `Logo/Mark` component; the lockups and highlight covers are instances of it. To change the logo:
 
