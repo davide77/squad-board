@@ -48,13 +48,13 @@ export const MAKER = {
 
 /** The board's events, in words, for the privacy page. Keep in step with ANALYTICS_EVENTS in config.ts. */
 const EVENTS_COUNTED =
-  "On the board we also count a few moments: a board started or opened again, the first use of the board each week, the match clock started, half time and full time, and a call-up, result or picture sent. With them go the age group, how it went out (WhatsApp, a copy or shared) and roughly how long since the last visit, such as \"7 to 13 days\" or \"1 week\". To tell that gap, the time and week of your last visit are kept in this browser and never leave it. No names, no team details and nothing else from your board are sent.";
+  "On the board we also count a few moments: a board started or opened again, the first use of the board each week, the match clock started, half time and full time, a call-up, result or picture sent, and the founding coach card shown, joined or closed. With them go the age group, how it went out (WhatsApp, a copy or shared) and roughly how long since the last visit, such as \"7 to 13 days\" or \"1 week\". To tell that gap, the time and week of your last visit are kept in this browser and never leave it. No names, no team details and nothing else from your board are sent.";
 
 export const PRIVACY = {
   title: "Privacy and safety",
   description:
     "How Gafferboard looks after your squad: no database, no advertising, and an account only if you want one. The board stays in the browser on your device.",
-  updated: "Last updated 1 October 2026",
+  updated: "Last updated 14 October 2026",
   intro:
     "Gafferboard has no database. Your squad lives in the browser on your device, and nothing about your players is sent to us. Signing in is optional, and only tells us your email address.",
   sections: [
@@ -69,7 +69,7 @@ export const PRIVACY = {
     {
       heading: "What we do not collect",
       body: [
-        "You do not need an account. No email address, unless you choose to sign in or join the club waitlist. No advertising and no trackers that follow you to other sites. The only cookie is the one that keeps you signed in, and only if you sign in. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
+        "You do not need an account. No email address, unless you choose to sign in, join the club waitlist or become a founding coach. No advertising and no trackers that follow you to other sites. The only cookie is the one that keeps you signed in, and only if you sign in. The fonts are served from gafferboard.com, so the page does not call out to anyone else.",
         "Like any website, our host, Vercel, sees what every browser sends when a page loads, such as your IP address, and keeps it briefly in its logs for security. What is on your board is never part of that.",
       ],
     },
@@ -95,6 +95,13 @@ export const PRIVACY = {
       body: [
         "If you leave your email address for the club waitlist, in the footer or under Customise your club on the board, we keep that address and when you left it. It is stored with Brevo, the service we send email with, and only we can see it.",
         "We use it for one thing: to tell you when Gafferboard for clubs is ready. It is never shared or sold. To be taken off the list, get in touch and we delete it.",
+      ],
+    },
+    {
+      heading: "Founding coaches",
+      body: [
+        "Coaches who used Gafferboard in its first weeks see a thank-you card on their board, once. If you leave your email address there, we keep that address and when you left it, with Brevo, on a separate list only we can see.",
+        "We use it to offer you a founding price when the season pass comes and to show you new things first. It is never shared or sold. Every email has a link to leave the list, or get in touch and we delete it.",
       ],
     },
     {

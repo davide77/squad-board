@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useId } from "react";
-import { WAITLIST_CONFIG } from "@/constants/config";
+import { WAITLIST_CONFIG, type WaitlistList } from "@/constants/config";
 import { WAITLIST } from "@/constants/content/pages";
 import { joinWaitlist, type WaitlistState } from "@/lib/server/waitlist";
 
@@ -11,17 +11,35 @@ interface ClubWaitlistProps {
   /** The bold line before the field. The footer asks clubs; the board asks coaches with more than one team. */
   readonly prompt?: string;
   readonly cta?: string;
+  /** Which Brevo list the address goes on. */
+  readonly list?: WaitlistList;
+  readonly label?: string;
+  /** What shows in place of the form once the address is in. */
+  readonly joined?: string;
+  /** Called once the address is in, after the server says so. */
+  readonly onJoined?: () => void;
 }
 
 /** One line for clubs: an email and a button, then a word from the Gaffer. No account. */
-export function ClubWaitlist({ prompt = WAITLIST.prompt, cta = WAITLIST.cta }: ClubWaitlistProps) {
-  const [state, action, pending] = useActionState(joinWaitlist, START);
+export function ClubWaitlist({
+  prompt = WAITLIST.prompt,
+  cta = WAITLIST.cta,
+  list = "club",
+  label = WAITLIST.label,
+  joined = WAITLIST.joined,
+  onJoined,
+}: ClubWaitlistProps) {
+  const [state, action, pending] = useActionState(async (previous: WaitlistState, form: FormData) => {
+    const next = await joinWaitlist(previous, form);
+    if (next.status === "joined") onJoined?.();
+    return next;
+  }, START);
   const id = useId();
 
   if (state.status === "joined") {
     return (
       <p role="status" className="text-md has-font-semibold is-chalk">
-        {WAITLIST.joined}
+        {joined}
       </p>
     );
   }
@@ -33,7 +51,7 @@ export function ClubWaitlist({ prompt = WAITLIST.prompt, cta = WAITLIST.cta }: C
       </p>
       <div className="is-flex has-gap-2">
         <label htmlFor={id} className="sr-only">
-          {WAITLIST.label}
+          {label}
         </label>
         <input
           id={id}
@@ -46,6 +64,7 @@ export function ClubWaitlist({ prompt = WAITLIST.prompt, cta = WAITLIST.cta }: C
           aria-describedby={`${id}-status`}
           className="field waitlist__email has-radius-field has-py-2 has-px-3 text-base"
         />
+        <input type="hidden" name={WAITLIST_CONFIG.listField} value={list} />
         {/* Out of sight and out of the tab order: only a bot fills it in. */}
         <input name={WAITLIST_CONFIG.trapField} tabIndex={-1} autoComplete="off" aria-hidden="true" className="sr-only" />
         <button type="submit" disabled={pending} aria-busy={pending} className="button button--chalk has-py-3 has-px-4 has-radius-field has-font-bold text-base">

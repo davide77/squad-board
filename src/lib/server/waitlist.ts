@@ -1,6 +1,6 @@
 "use server";
 
-import { WAITLIST_CONFIG } from "@/constants/config";
+import { WAITLIST_CONFIG, type WaitlistList } from "@/constants/config";
 
 export type WaitlistStatus = "idle" | "joined" | "invalid" | "failed";
 
@@ -10,10 +10,12 @@ export interface WaitlistState {
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
+const isList = (k: string): k is WaitlistList => Object.hasOwn(WAITLIST_CONFIG.lists, k);
+
 /**
- * Adds an email to the club waitlist, a contact list in Brevo. Runs on the server, so the API key
- * never reaches the browser. An address already in Brevo is added to the list and counts as joined:
- * signing up twice is not an error for the coach.
+ * Adds an email to one of the lists, the club waitlist unless the form says founding coaches. Each is a
+ * contact list in Brevo. Runs on the server, so the API key never reaches the browser. An address
+ * already in Brevo is added to the list and counts as joined: signing up twice is not an error for the coach.
  */
 export async function joinWaitlist(_previous: WaitlistState, form: FormData): Promise<WaitlistState> {
   // A bot that fills in the hidden field is thanked, and nothing is written.
@@ -22,8 +24,9 @@ export async function joinWaitlist(_previous: WaitlistState, form: FormData): Pr
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   if (email.length > WAITLIST_CONFIG.maxEmail || !EMAIL.test(email)) return { status: "invalid" };
 
+  const which = String(form.get(WAITLIST_CONFIG.listField) ?? "");
   const key = process.env.BREVO_API_KEY;
-  const list = Number(process.env.BREVO_WAITLIST_LIST_ID);
+  const list = Number(process.env[WAITLIST_CONFIG.lists[isList(which) ? which : "club"]]);
   if (!key || !Number.isInteger(list) || list <= 0) return { status: "failed" };
 
   try {

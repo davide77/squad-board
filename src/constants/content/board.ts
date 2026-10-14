@@ -253,6 +253,27 @@ export const KEEP = {
   later: "Not now",
 } as const;
 
+/**
+ * The thank-you to the coaches who found Gafferboard first, at the top of their board, once. The thanks
+ * speaks in the coach's chosen voice; the offer, the field and the buttons stay straight (brand.md).
+ */
+export const FOUNDING = {
+  hairdryer: {
+    title: "You were here early",
+    body: "Before most had heard of us. That counts. Thanks.",
+    joined: "Noted. Founding coach. We'll be in touch.",
+  },
+  arm: {
+    title: "Thank you, Coach",
+    body: "You were one of the very first coaches on Gafferboard, before most people had heard of it. That means a lot to us.",
+    joined: "Lovely stuff. You're a founding coach now. We'll be in touch.",
+  },
+  prompt: "Be a founding coach.",
+  cta: "Leave your email for a founding price when the season pass comes, and first look at anything new. Nothing else, and you can leave any time.",
+  label: "Email address for founding coaches",
+  close: "Close",
+} as const;
+
 /** The made-up team a coach can try the board with. The players come from the landing demo. */
 export const EXAMPLE = {
   team: "Ashford Juniors",

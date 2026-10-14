@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { KEEP_CONFIG } from "@/constants/config";
-import { CLUB, KEEP } from "@/constants/content/board";
+import { useEffect, useState, type ReactNode } from "react";
+import { ANALYTICS_EVENTS, FOUNDING_CONFIG, FOUNDING_DID, KEEP_CONFIG } from "@/constants/config";
+import { CLUB, FOUNDING, KEEP } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
+import { trackBoard } from "@/lib/analytics";
+import type { BoardData } from "@/lib/board/types";
 import { exportSquadFile } from "@/lib/board/files";
 import { useInstallPrompt, useIsInstalled, useIsTouch, useStoredFlag } from "@/lib/hooks";
+import { ClubWaitlist } from "@/components/landing/ClubWaitlist";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 
@@ -29,8 +32,51 @@ function Card({ title, body, children }: CardProps) {
   );
 }
 
+// Once per page load, however often the card remounts (and React runs effects twice in development).
+let foundingCounted = false;
+
+interface FoundingProps {
+  readonly data: BoardData;
+  /** The coach left an email, so the card keeps its thanks up until they close it. */
+  readonly onJoined: () => void;
+  readonly onClose: () => void;
+}
+
+/** The thank-you to an early coach, with the one offer: leave an email and be a founding coach. */
+function FoundingCard({ data, onJoined, onClose }: FoundingProps) {
+  const lines = FOUNDING[data.voice];
+  useEffect(() => {
+    if (foundingCounted) return;
+    foundingCounted = true;
+    trackBoard(ANALYTICS_EVENTS.founding, data, { did: FOUNDING_DID.shown });
+    // Counted once, on the board as it opened.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const joined = () => {
+    trackBoard(ANALYTICS_EVENTS.founding, data, { did: FOUNDING_DID.joined });
+    onJoined();
+  };
+  const close = () => {
+    trackBoard(ANALYTICS_EVENTS.founding, data, { did: FOUNDING_DID.closed });
+    onClose();
+  };
+
+  return (
+    <Card title={lines.title} body={lines.body}>
+      <div className="is-w-full">
+        <ClubWaitlist list="founding" prompt={FOUNDING.prompt} cta={FOUNDING.cta} label={FOUNDING.label} joined={lines.joined} onJoined={joined} />
+      </div>
+      <Button variant="quiet" onClick={close}>
+        {FOUNDING.close}
+      </Button>
+    </Card>
+  );
+}
+
 /**
- * One card at a time at the top of an own board: first the nudge to put Gafferboard
+ * One card at a time at the top of an own board: first the thanks to a coach who found Gafferboard
+ * early, then the nudge to put Gafferboard
  * on the home screen, where the phone will not clear it, then a reminder to keep a copy.
  */
 export function KeepSafe() {
@@ -40,7 +86,10 @@ export function KeepSafe() {
   const touch = useIsTouch();
   const prompt = useInstallPrompt();
   const [homeClosed, closeHome] = useStoredFlag(KEEP_CONFIG.homeDismissedKey);
-  const [hidden, setHidden] = useState<"home" | "backup" | null>(null);
+  const [foundingClosed, closeFounding] = useStoredFlag(FOUNDING_CONFIG.closedKey);
+  // Joining closes the card for good, but it stays up this visit so the thanks can be read.
+  const [thanked, setThanked] = useState(false);
+  const [hidden, setHidden] = useState<"founding" | "home" | "backup" | null>(null);
   // Read once when the board opens, so the cards do not appear mid-match.
   const [openedAt] = useState(Date.now);
   // Also read once: a clock stopped at half-time mid-session must not bring the card up.
@@ -48,6 +97,26 @@ export function KeepSafe() {
 
   if (data.example || !data.players.length) return null;
   const since = data.createdAt ? openedAt - data.createdAt : Infinity;
+
+  // Never during a match: the clock is running, or the coach is on the match step.
+  const early = data.createdAt < FOUNDING_CONFIG.before;
+  const showFounding =
+    early && hidden !== "founding" && (thanked || (!foundingClosed && !data.clock.running && state.ui.step !== "match"));
+  if (showFounding) {
+    return (
+      <FoundingCard
+        data={data}
+        onJoined={() => {
+          setThanked(true);
+          closeFounding();
+        }}
+        onClose={() => {
+          setHidden("founding");
+          closeFounding();
+        }}
+      />
+    );
+  }
 
   const showHome = touch && !installed && !homeClosed && hidden !== "home" && since > KEEP_CONFIG.homeAfterMs;
   if (showHome) {

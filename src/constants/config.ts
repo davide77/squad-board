@@ -125,8 +125,8 @@ export const LANDING_CONFIG = {
 } as const;
 
 /**
- * The club waitlist, a contact list in Brevo. The server adds each address through Brevo's API with
- * BREVO_API_KEY, to the list numbered BREVO_WAITLIST_LIST_ID (see .env.example).
+ * The email lists, contact lists in Brevo. The server adds each address through Brevo's API with
+ * BREVO_API_KEY, to the list numbered in the environment variable named under `lists` (see .env.example).
  */
 export const WAITLIST_CONFIG = {
   endpoint: "https://api.brevo.com/v3/contacts",
@@ -134,6 +134,27 @@ export const WAITLIST_CONFIG = {
   maxEmail: 254,
   /** A field people never see: a bot that fills it in is thanked and ignored. */
   trapField: "website",
+  /** The hidden field that says which list the form joins. */
+  listField: "list",
+  /** Each list, and the environment variable that holds its number in Brevo. */
+  lists: {
+    club: "BREVO_WAITLIST_LIST_ID",
+    founding: "BREVO_FOUNDING_LIST_ID",
+  },
+} as const;
+
+export type WaitlistList = keyof typeof WAITLIST_CONFIG.lists;
+
+/**
+ * The thank-you to the coaches who found Gafferboard first. Only a board made on this device before
+ * `before` sees the card, so it can never be shown to someone who arrived later. Boards from before
+ * createdAt was kept (0) were made earlier still, so they count.
+ */
+export const FOUNDING_CONFIG = {
+  /** Midnight at the start of 16 October 2026, UK time. */
+  before: Date.UTC(2026, 9, 15, 23),
+  /** Remembers, on this device only, that the card was closed or the coach joined. */
+  closedKey: "gafferboard:founding-card-closed",
 } as const;
 
 /**
@@ -215,7 +236,12 @@ export const ANALYTICS_EVENTS = {
   squadReceived: "Squad received",
   /** Add a team opened, with where from: how many coaches want a second team, before it is built. */
   teamsOpened: "Teams opened",
+  /** The founding coach card, with what happened: shown, joined or closed. */
+  founding: "Founding coach",
 } as const;
+
+/** What happened to the founding coach card. */
+export const FOUNDING_DID = { shown: "Shown", joined: "Joined", closed: "Closed" } as const;
 
 /** Where Add a team was opened from. */
 export const TEAMS_FROM = { header: "Header", club: "Club sheet" } as const;
