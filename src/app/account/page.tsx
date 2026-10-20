@@ -15,6 +15,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// What the account page says after a link that did not sign anyone in.
+const LINK_PROBLEMS: Readonly<Record<string, string>> = {
+  expired: ACCOUNT.link.expired,
+  invalid: ACCOUNT.link.invalid,
+  used: ACCOUNT.link.used,
+  failed: ACCOUNT.link.failed,
+};
+
 interface AccountPageProps {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
@@ -50,12 +58,13 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           </Link>
           <SignOutButton />
         </div>
+        <p className="text-sm is-dim has-mt-3">{copy.signOutNote}</p>
       </PageShell>
     );
   }
 
   const copy = ACCOUNT.signedOut;
-  const linkProblem = status === "expired" ? ACCOUNT.link.expired : status === "invalid" ? ACCOUNT.link.invalid : null;
+  const linkProblem = typeof status === "string" && Object.hasOwn(LINK_PROBLEMS, status) ? LINK_PROBLEMS[status] : null;
   return (
     <PageShell>
       <h1 className="text-5xl tracking-heading has-mb-3">{copy.heading}</h1>

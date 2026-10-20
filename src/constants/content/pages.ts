@@ -53,10 +53,10 @@ const EVENTS_COUNTED =
 export const PRIVACY = {
   title: "Privacy and safety",
   description:
-    "How Gafferboard looks after your squad: no database, no advertising, and an account only if you want one. The board stays in the browser on your device.",
-  updated: "Last updated 14 October 2026",
+    "How Gafferboard looks after your squad: it is never sent to us, no advertising, and an account only if you want one. The board stays in the browser on your device.",
+  updated: "Last updated 20 October 2026",
   intro:
-    "Gafferboard has no database. Your squad lives in the browser on your device, and nothing about your players is sent to us. Signing in is optional, and only tells us your email address.",
+    "Gafferboard keeps no database of squads. Your squad lives in the browser on your device, and nothing about your players is sent to us. Signing in is optional, and only tells us your email address.",
   sections: [
     {
       heading: "What is stored, and where",
@@ -86,8 +86,9 @@ export const PRIVACY = {
       heading: "Signing in",
       body: [
         "Signing in is optional. You give your email address and we email you a link through Brevo, the service we send email with. The link works for 15 minutes.",
-        "Tap it and this browser keeps one cookie that says which email address is signed in, for up to six months. It is needed to keep you signed in, so it needs no banner. It holds nothing else, and it is signed so it cannot be changed.",
-        "We keep no account database. Your squad is not sent anywhere when you sign in: it stays on this device. Sign out on the account page and the cookie is deleted.",
+        "Tap it, press Sign in, and this browser keeps one cookie that says which email address is signed in, for up to six months. It is needed to keep you signed in, so it needs no banner. It holds nothing else, and it is signed so it cannot be changed.",
+        "We keep no account database. So that each link works only once, and signing out really signs you out, we keep two small notes with Upstash, the service we store them with: that a link was used, for 15 minutes, and when you last signed out, for six months. Neither holds your email address, only a scrambled code made from it.",
+        "Your squad is not sent anywhere when you sign in: it stays on this device. Sign out on the account page and the cookie is deleted, and you are signed out on every device that used your address.",
       ],
     },
     {

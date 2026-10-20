@@ -6,7 +6,8 @@ import { AUTH_CONFIG } from "@/constants/config";
 import { SIGN_IN_EMAIL } from "@/constants/content/account";
 import { ROUTES } from "@/constants/routes";
 import { SITE_URL } from "@/constants/seo";
-import { makeLinkToken } from "./auth";
+import { endSessions, makeLinkToken, redeemLink, sessionEmail, SESSION_COOKIE } from "./auth";
+import { authStore } from "./store";
 
 export type SignInStatus = "idle" | "sent" | "invalid" | "failed";
 
@@ -46,7 +47,7 @@ async function origin(): Promise<string> {
 }
 
 /**
- * Emails a sign-in link. Nothing is stored: the link carries the address, signed and timed. The same
+ * Emails a sign-in link. Nothing is stored yet: the link carries the address, signed, timed and with its own id. The same
  * answer comes back whether or not the address has signed in before, so nobody can test addresses.
  */
 export async function requestSignIn(_previous: SignInState, form: FormData): Promise<SignInState> {
@@ -82,7 +83,29 @@ export async function requestSignIn(_previous: SignInState, form: FormData): Pro
   }
 }
 
+/**
+ * The button on the page the emailed link lands on. Only a press uses the link up, so an email app
+ * that opens links to scan them cannot spend it before the coach does.
+ */
+export async function confirmSignIn(form: FormData): Promise<void> {
+  const token = String(form.get(AUTH_CONFIG.tokenParam) ?? "");
+  const store = authStore();
+  const result = store ? await redeemLink(token, Date.now(), store) : ({ ok: false, reason: "failed" } as const);
+  if (!result.ok) redirect(`${ROUTES.account}?${AUTH_CONFIG.statusParam}=${result.reason}`);
+  (await cookies()).set({ ...SESSION_COOKIE, value: result.session });
+  redirect(`${ROUTES.account}?${AUTH_CONFIG.statusParam}=ok`);
+}
+
+/** Signs this address out everywhere: the store refuses every session made before now, copies of this cookie included. */
 export async function signOut(): Promise<void> {
-  (await cookies()).delete(AUTH_CONFIG.cookie);
+  const jar = await cookies();
+  const token = jar.get(AUTH_CONFIG.cookie)?.value;
+  const store = authStore();
+  if (token && store) {
+    const now = Date.now();
+    const email = await sessionEmail(token, now, store);
+    if (email) await endSessions(email, now, store).catch(() => undefined);
+  }
+  jar.delete(AUTH_CONFIG.cookie);
   redirect(ROUTES.account);
 }

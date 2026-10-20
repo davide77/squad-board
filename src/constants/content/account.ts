@@ -15,7 +15,7 @@ export const ACCOUNT = {
     placeholder: "Your email",
     button: "Email me a link",
     sending: "Sending",
-    sent: (email: string) => `Link sent to ${email}. Check your inbox. It works for 15 minutes.`,
+    sent: (email: string) => `Link sent to ${email}. Check your inbox. It works once, for 15 minutes.`,
     spam: "Nothing there? Check spam. Still nothing? Send it again.",
     again: "Send it again",
     invalid: "That email doesn't look right. Check it and go again.",
@@ -24,6 +24,17 @@ export const ACCOUNT = {
   link: {
     expired: "That link has run out. Send a new one.",
     invalid: "That link doesn't work. Send a new one.",
+    used: "That link has been used. Each one works once. Send a new one.",
+    failed: "That didn't work at our end. Send a new link and try again.",
+  },
+  /** The page the emailed link opens. Signing in takes a press, so an email app checking the link cannot use it up. */
+  confirm: {
+    title: "Sign in",
+    heading: "Sign in.",
+    as: (email: string) => `Signing in as ${email}.`,
+    note: "The link works once. Not you? Close this page.",
+    button: "Sign in",
+    signingIn: "Signing in",
   },
   signedIn: {
     heading: "Signed in.",
@@ -35,6 +46,7 @@ export const ACCOUNT = {
     board: "Open the board",
     signOut: "Sign out",
     signingOut: "Signing out",
+    signOutNote: "Signing out here signs you out on every device.",
   },
 } as const;
 
@@ -42,7 +54,7 @@ export const ACCOUNT = {
 export const SIGN_IN_EMAIL = {
   subject: "Your Gafferboard sign-in link",
   heading: "Your sign-in link",
-  body: "Tap the button on the phone or computer you want to sign in on. The link works for 15 minutes.",
+  body: "Tap the button on the phone or computer you want to sign in on. The link works once, for 15 minutes.",
   button: "Sign in to Gafferboard",
   ignore: "Didn't ask for this? Ignore it. Nobody can sign in without this email.",
 } as const;

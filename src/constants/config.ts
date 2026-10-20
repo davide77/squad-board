@@ -160,9 +160,10 @@ export const FOUNDING_CONFIG = {
 } as const;
 
 /**
- * Sign-in by email link. No password and no database: the link and the session are both signed with
- * AUTH_SECRET, and the link is sent through Brevo's email API with BREVO_API_KEY from
- * BREVO_SENDER_EMAIL (see .env.example). Only the coach's email address is ever involved.
+ * Sign-in by email link. No password and no account database: the link and the session are both
+ * signed with AUTH_SECRET, and the link is sent through Brevo's email API with BREVO_API_KEY from
+ * BREVO_SENDER_EMAIL (see .env.example). Upstash remembers which links were used and when an address
+ * last signed out, so a link works once and signing out ends every copy of the session.
  */
 export const AUTH_CONFIG = {
   emailEndpoint: "https://api.brevo.com/v3/smtp/email",
@@ -178,6 +179,9 @@ export const AUTH_CONFIG = {
   tokenParam: "token",
   /** Back on the account page after a link, saying how it went. */
   statusParam: "link",
+  /** Store keys: a used link by its id, and an address's last sign-out by a keyed hash of it. */
+  usedLinkKey: "gb:link:",
+  signedOutKey: "gb:out:",
   maxEmail: 254,
   trapField: "website",
 } as const;
