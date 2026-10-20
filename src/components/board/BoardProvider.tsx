@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, use, useCallback, useEffect, useMemo, useReducer, type ReactNode } from "react";
-import { BOARD_CONFIG } from "@/constants/config";
-import { boardReducer, initBoard, initSandbox, type Action } from "@/lib/board/reducer";
-import { keepStored, writeStored } from "@/lib/board/storage";
+import { createContext, use, useCallback, useEffect, useMemo, useReducer, useRef, type ReactNode } from "react";
+import { BOARD_CONFIG, STORAGE_KEY } from "@/constants/config";
+import { boardReducer, initBoard, initSandbox, type Action, type StampedAction } from "@/lib/board/reducer";
+import { keepStored, readStoredRaw, readSynced, writeStored } from "@/lib/board/storage";
 import type { BoardData, BoardState } from "@/lib/board/types";
 
 interface BoardContextValue {
@@ -28,19 +28,72 @@ interface BoardProviderProps {
 }
 
 export function BoardProvider({ children, sandbox }: BoardProviderProps) {
-  const [state, dispatch] = useReducer(boardReducer, sandbox, (s) => (s ? initSandbox(s.data, s.notice) : initBoard()));
+  const [state, dispatch] = useReducer(boardReducer, sandbox, (s) => (s ? initSandbox(s.data, s.notice) : initBoard(Date.now())));
   const inMemory = !!sandbox;
-  const act = useCallback((action: Action) => dispatch({ ...action, now: Date.now() }), []);
 
-  // Writes to localStorage a moment after the last change.
+  // Two tabs can have the same board open. Each one remembers what it last saw in storage, the
+  // screen at that moment, and every action since. When the other tab has saved in between,
+  // this one takes that board and plays its own actions on top, instead of writing over it.
+  const seen = useRef<string | null>(null);
+  const pending = useRef<StampedAction[]>([]);
+  const savedUi = useRef(state.ui);
+  const latest = useRef(state);
+  const adopted = useRef<BoardData | null>(null);
+  useEffect(() => {
+    latest.current = state;
+  });
+  useEffect(() => {
+    if (!inMemory) seen.current = readStoredRaw();
+  }, [inMemory]);
+
+  const act = useCallback(
+    (action: Action) => {
+      const stamped: StampedAction = { ...action, now: Date.now() };
+      if (!inMemory) pending.current.push(stamped);
+      dispatch(stamped);
+    },
+    [inMemory],
+  );
+
+  const adopt = useCallback(
+    (raw: string | null) => {
+      const now = Date.now();
+      const data = readSynced(raw, now);
+      seen.current = raw;
+      // With nothing of its own to add, this tab now matches storage and has nothing to write back.
+      adopted.current = pending.current.length ? null : data;
+      dispatch({ type: "adopt", data, ui: savedUi.current, replay: [...pending.current], now });
+    },
+    [],
+  );
+
+  // Writes to localStorage a moment after the last change, unless another tab saved first.
   const { data } = state;
   useEffect(() => {
-    if (inMemory) return;
+    if (inMemory || data === adopted.current) return;
     const timer = setTimeout(() => {
-      if (!writeStored(data, Date.now())) act({ type: "storageFailed" });
+      const stored = readStoredRaw();
+      if (stored !== seen.current) return adopt(stored);
+      const written = writeStored(data);
+      if (!written) return act({ type: "storageFailed" });
+      seen.current = written;
+      pending.current = [];
+      savedUi.current = latest.current.ui;
     }, BOARD_CONFIG.saveDebounceMs);
     return () => clearTimeout(timer);
-  }, [data, act, inMemory]);
+  }, [data, act, adopt, inMemory]);
+
+  // Another tab saved or cleared the board.
+  useEffect(() => {
+    if (inMemory) return;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== STORAGE_KEY && e.key !== null) return;
+      const raw = readStoredRaw();
+      if (raw !== seen.current) adopt(raw);
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [adopt, inMemory]);
 
   // Once the coach has a team of their own, ask the browser to keep it.
   const ownTeam = !inMemory && data.players.length > 0 && !data.example;

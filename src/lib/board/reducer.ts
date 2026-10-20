@@ -129,7 +129,8 @@ export type Action =
   | { type: "bringOn"; pid: string }
   | { type: "fullTime" }
   | { type: "halfTime" }
-  | { type: "undo" };
+  | { type: "undo" }
+  | { type: "adopt"; data: BoardData; ui: UiState; replay: readonly StampedAction[] };
 
 /** Every action is stamped with the time it happened, so the reducer stays pure. */
 export type StampedAction = Action & { readonly now: number };
@@ -202,11 +203,11 @@ function opened(d: BoardData): BoardData {
   return d;
 }
 
-export function initBoard(): BoardState {
-  const stored = loadStored();
+export function initBoard(now: number): BoardState {
+  const stored = loadStored(now);
   const data = stored ? opened(stored) : emptyData();
-  // A finished match reopens on its result, and one under way on the match. The clock itself
-  // reopens paused where it was (storage.ts), so it is the time on it that says so.
+  // A finished match reopens on its result, and one under way on the match. A running clock
+  // carries on through a refresh (storage.ts), so the time on it says which.
   const step = data.match.ended ? "full" : started(data) ? "match" : "pick";
   return { data, ui: { ...INITIAL_UI, step } };
 }
@@ -408,6 +409,14 @@ const UNDOABLE: ReadonlySet<Action["type"]> = new Set([
 ]);
 
 export function boardReducer(state: BoardState, action: StampedAction): BoardState {
+  // Another tab saved the board. Take theirs, then play this tab's unsaved actions on top of it,
+  // from the screen as it was when this tab last saved, so neither tab's change is lost. The screen
+  // stays where the coach has it, minus anything that points at the board as it was.
+  if (action.type === "adopt") {
+    const merged = action.replay.reduce(boardReducer, { data: action.data, ui: action.ui });
+    const ui = { ...state.ui, undo: null, selected: null, editing: null, pickerSlot: null, offSlot: null, dropTarget: null, draggingRow: null };
+    return { data: merged.data, ui };
+  }
   if (action.type === "undo") {
     const undo = state.ui.undo;
     if (!undo) return state;
@@ -483,6 +492,7 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
 
     // Handled in boardReducer, which holds the board from before the change.
     case "undo":
+    case "adopt":
       return state;
 
     case "setSendKind":

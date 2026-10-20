@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { PositionKey } from "@/constants/football";
 import { boardReducer, initSandbox, type Action } from "./reducer";
-import { playedMs, slotOf, slots } from "./queries";
+import { elapsed, playedMs, slotOf, slots } from "./queries";
 import { buildBoard } from "./start";
+import { readSynced, storedJSON } from "./storage";
 import type { BoardState } from "./types";
 
 const MIN = 60000;
@@ -168,5 +169,48 @@ describe("new matchday", () => {
     expect(s.data.players.find((p) => p.id === missed)?.trn).toBe(false);
     expect(s.data.match.date).toBe("");
     expect(Object.keys(s.data.xi)).toHaveLength(0);
+  });
+});
+
+describe("two tabs on one board", () => {
+  // Tab A and Tab B open the same saved board. Each plays its own actions, then saves in turn.
+  it("keeps both tabs' changes when one saves over the other", () => {
+    const opened = board();
+    const tabA = play(opened, [{ type: "setName", id: "p1", value: "Alfie" }, 1000]);
+    const fromA = readSynced(storedJSON(tabA.data), 2000);
+
+    // Tab B renamed someone else before it heard about Tab A's save.
+    const unsaved = { type: "setFormation", name: "4-4-2", now: 1500 } as const;
+    const tabB = play(opened, [unsaved, 1500]);
+    const merged = boardReducer(tabB, { type: "adopt", data: fromA, ui: opened.ui, replay: [unsaved], now: 2000 });
+
+    expect(merged.data.players.find((p) => p.id === "p1")?.name).toBe("Alfie");
+    expect(merged.data.formation).toBe("4-4-2");
+  });
+
+  it("takes the other tab's board as it is when this tab has nothing unsaved", () => {
+    const opened = board();
+    const tabA = play(opened, [{ type: "setName", id: "p2", value: "Bea" }, 1000]);
+    const fromA = readSynced(storedJSON(tabA.data), 2000);
+    const tabB = boardReducer(opened, { type: "adopt", data: fromA, ui: opened.ui, replay: [], now: 2000 });
+
+    expect(tabB.data).toBe(fromA);
+    expect(tabB.data.players.find((p) => p.id === "p2")?.name).toBe("Bea");
+  });
+
+  it("does not let an undo in one tab take back the other tab's change", () => {
+    const opened = board();
+    const tabB = play(opened, [{ type: "setFormation", name: "4-4-2" }, 1000]);
+    const fromA = readSynced(storedJSON(play(opened, [{ type: "setName", id: "p1", value: "Alfie" }, 1500]).data), 2000);
+    const adopted = boardReducer(tabB, { type: "adopt", data: fromA, ui: opened.ui, replay: [], now: 2000 });
+
+    expect(adopted.ui.undo).toBeNull();
+  });
+
+  it("carries a running match clock across to the other tab", () => {
+    const kickOff = play(board(), [{ type: "clockToggle" }, 10 * MIN]);
+    const other = readSynced(storedJSON(kickOff.data), 35 * MIN);
+    expect(other.clock.running).toBe(true);
+    expect(elapsed(other, 35 * MIN)).toBe(25 * MIN);
   });
 });

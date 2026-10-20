@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { parseStored, readBoard, snapshot } from "./storage";
+import { BOARD_CONFIG } from "@/constants/config";
+import { elapsed } from "./queries";
+import { parseStored, readBoard, snapshot, storedJSON } from "./storage";
 import { buildBoard } from "./start";
 
 const player = (id: string, extra: Record<string, unknown> = {}) => ({ id, name: `Player ${id}`, num: id, pos: ["CM"], ...extra });
@@ -88,5 +90,55 @@ describe("parseStored", () => {
     expect(back?.team).toBe("Reds");
     expect(back?.players).toEqual(d.players);
     expect(back?.clock).toEqual({ running: false, base: 90000, since: 0 });
+  });
+});
+
+describe("the match clock through a refresh", () => {
+  const MIN = 60000;
+  const KICK_OFF = Date.UTC(2026, 9, 24, 10, 0);
+  const reds = () => {
+    let n = 0;
+    return buildBoard("Reds", [{ num: "1", name: "Sam Keeper", pos: ["GK"] }], () => `p${++n}`, "U15");
+  };
+
+  // John's case: kick off at 10:00, leave the board alone, refresh at 10:25.
+  it("still shows the real match time after nobody touched the board for 25 minutes", () => {
+    const d = reds();
+    d.clock = { running: true, base: 0, since: KICK_OFF };
+    d.updatedAt = KICK_OFF;
+    const savedJustAfterKickOff = storedJSON(d);
+
+    const back = parseStored(savedJustAfterKickOff, KICK_OFF + 25 * MIN);
+    expect(back?.clock.running).toBe(true);
+    expect(back && elapsed(back, KICK_OFF + 25 * MIN)).toBe(25 * MIN);
+  });
+
+  it("keeps the minutes banked before a pause", () => {
+    const d = reds();
+    d.clock = { running: true, base: 20 * MIN, since: KICK_OFF + 30 * MIN };
+    const back = parseStored(storedJSON(d), KICK_OFF + 40 * MIN);
+    expect(back && elapsed(back, KICK_OFF + 40 * MIN)).toBe(30 * MIN);
+  });
+
+  it("reopens a clock left running for hours paused at its last change", () => {
+    const d = reds();
+    d.clock = { running: true, base: 0, since: KICK_OFF };
+    d.updatedAt = KICK_OFF + 70 * MIN;
+    const back = parseStored(storedJSON(d), KICK_OFF + BOARD_CONFIG.clockStaleMs + MIN);
+    expect(back?.clock).toEqual({ running: false, base: 70 * MIN, since: 0 });
+  });
+
+  it("reopens a clock that started in the future paused, so time never runs backwards", () => {
+    const d = reds();
+    d.clock = { running: true, base: 5 * MIN, since: KICK_OFF + 60 * MIN };
+    const back = parseStored(storedJSON(d), KICK_OFF);
+    expect(back?.clock).toEqual({ running: false, base: 5 * MIN, since: 0 });
+  });
+
+  it("still banks the clock in a squad file, which can be opened any day", () => {
+    const d = reds();
+    d.clock = { running: true, base: 0, since: KICK_OFF };
+    const file = readBoard(JSON.parse(JSON.stringify(snapshot(d, KICK_OFF + 25 * MIN))));
+    expect(file?.clock).toEqual({ running: false, base: 25 * MIN, since: 0 });
   });
 });

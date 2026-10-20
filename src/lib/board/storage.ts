@@ -1,6 +1,6 @@
 import { KIT_COLOURS } from "@/constants/brand";
 import { COMPETITIONS, NAME_STYLES, type NameStyle } from "@/constants/content/board";
-import { BADGE_CONFIG, STORAGE_KEY } from "@/constants/config";
+import { BADGE_CONFIG, BOARD_CONFIG, STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import {
   AGE_GROUPS,
@@ -17,7 +17,7 @@ import {
 import { isVoice } from "@/lib/voice";
 import { defaultKits, readKit, stripOf } from "./kit";
 import { captureLineup, elapsed } from "./queries";
-import type { BoardData, Kickoff, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
+import type { BoardData, Clock, Kickoff, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyMatch(): MatchDetails {
   return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", surface: "", competition: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
@@ -229,7 +229,7 @@ export function readBoard(raw: unknown): BoardData | null {
     colour: KIT_COLOURS[colour] ? colour : 0,
     kits: readKits(raw, KIT_COLOURS[colour] ? colour : 0),
     badge: isBadge(raw.badge) ? raw.badge : "",
-    // A board always reopens with the clock paused where it was left.
+    // A file or link always opens with the clock paused. parseStored carries on a running one saved on this device.
     clock: { running: false, base: isRec(raw.clock) ? num(raw.clock.base) : 0, since: 0 },
     example: raw.example === true,
     createdAt: num(raw.createdAt),
@@ -243,9 +243,24 @@ export function readBoard(raw: unknown): BoardData | null {
   };
 }
 
-/** What is written to storage and to an exported file. The clock is banked, never running. */
+/** What goes into an exported file or a squad link. The clock is banked, never running. */
 export function snapshot(d: BoardData, now: number): BoardData {
   return { ...d, clock: { running: false, base: elapsed(d, now), since: 0 } };
+}
+
+/**
+ * The clock as it was saved on this device. A running clock keeps running through a refresh:
+ * it holds the moment it started, so the time on it is worked out from now, not from the last save.
+ * One left running for hours, or started in the future by a changed device clock, reopens paused
+ * at the time it had when the board last changed.
+ */
+export function storedClock(raw: unknown, updatedAt: number, now: number): Clock {
+  const c = isRec(raw) ? raw : {};
+  const base = Math.max(0, num(c.base));
+  const since = num(c.since);
+  if (c.running !== true || since <= 0) return { running: false, base, since: 0 };
+  if (since <= now && now - since <= BOARD_CONFIG.clockStaleMs) return { running: true, base, since };
+  return { running: false, base: base + Math.max(0, Math.min(updatedAt, now) - since), since: 0 };
 }
 
 /* ---------- localStorage ---------- */
@@ -259,28 +274,50 @@ export function readStoredRaw(): string | null {
   }
 }
 
-/** A stored board with players on it, or null. */
-export function parseStored(raw: string | null): BoardData | null {
+/** A stored board with players on it, or null. Given `now`, a running clock carries on from where it really is. */
+export function parseStored(raw: string | null, now?: number): BoardData | null {
   if (!raw) return null;
   try {
-    const d = readBoard(JSON.parse(raw));
-    return d && d.players.length ? d : null;
+    const json: unknown = JSON.parse(raw);
+    const d = readBoard(json);
+    if (!d || !d.players.length) return null;
+    if (now !== undefined && isRec(json)) d.clock = storedClock(json.clock, d.updatedAt, now);
+    return d;
   } catch {
     return null;
   }
 }
 
-export function loadStored(): BoardData | null {
-  return parseStored(readStoredRaw());
+/** The board another tab left in storage, to take up here. Nothing stored means it was cleared there. */
+export function readSynced(raw: string | null, now: number): BoardData {
+  try {
+    const json: unknown = raw ? JSON.parse(raw) : null;
+    const d = readBoard(json);
+    if (!d || !isRec(json)) return emptyData();
+    d.clock = storedClock(json.clock, d.updatedAt, now);
+    return d;
+  } catch {
+    return emptyData();
+  }
 }
 
-/** Returns false when the browser refuses to store anything. */
-export function writeStored(d: BoardData, now: number): boolean {
+export function loadStored(now: number): BoardData | null {
+  return parseStored(readStoredRaw(), now);
+}
+
+/** The board as this device keeps it. Unlike a file, a running clock stays running. */
+export function storedJSON(d: BoardData): string {
+  return JSON.stringify(d);
+}
+
+/** Writes the board and returns what was written, or null when the browser refuses to store anything. */
+export function writeStored(d: BoardData): string | null {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot(d, now)));
-    return true;
+    const json = storedJSON(d);
+    localStorage.setItem(STORAGE_KEY, json);
+    return json;
   } catch {
-    return false;
+    return null;
   }
 }
 
