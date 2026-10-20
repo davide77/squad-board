@@ -41,8 +41,8 @@ export const MAKER = {
   url: "https://originsocialclub.com",
   /** The Gafferboard mailbox, set up on SiteGround on 2026-09-30. */
   email: "davide@gafferboard.com",
-  /** Who the maker is on the touchline. Confirmed by Davide: the team is Ayat U15, coaching for more than seven years. */
-  bio: "A grassroots football manager for more than seven years, now running Ayat U15.",
+  /** Who the maker is on the touchline. Confirmed by Davide on 20 October 2026: coached his son's team from under 9s at Cheam Sports FC, now Ayat U15; his dad played. No year count, so it never goes stale. Never name the child. */
+  bio: "A grassroots coach who has followed one team from under 9s at Cheam Sports FC to Ayat U15. Grew up in football, learning the game from a dad who played it.",
   role: "Grassroots football manager",
 } as const;
 
@@ -132,7 +132,7 @@ export const PRIVACY = {
 
 export const CREDITS = {
   title: "Credits",
-  description: `Gafferboard is designed and built by ${MAKER.name}, a grassroots football manager who runs Ayat U15.`,
+  description: `Gafferboard is designed and built by ${MAKER.name}, a grassroots football coach, now at Ayat U15.`,
   heading: "Credits",
   makerLabel: "Designed and built by",
   makerLink: `Visit ${MAKER.site}`,
