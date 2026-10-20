@@ -5,7 +5,7 @@ import type { BoardStep } from "@/lib/board/types";
 import { cx } from "../cx";
 import Image from "next/image";
 import { VISOR_MARK } from "@/constants/brand";
-import { CLUB } from "@/constants/content/board";
+import { CLUB, SHAPE } from "@/constants/content/board";
 import { SITE } from "@/constants/site";
 import { BOARD_CONFIG } from "@/constants/config";
 import { kitColours } from "@/lib/board/kit";
@@ -26,7 +26,7 @@ import { FullActions, FullKinds, FullPreview } from "./Full";
 import { CallUpSheet } from "./CallUpSheet";
 import { NewMatchday, PickBar } from "./PickActions";
 import { BenchTray, ChangeBar, MatchBench, MatchClockCard, MatchLog } from "./Matchday";
-import { Pitch } from "./Pitch";
+import { Pitch, PITCH_ID } from "./Pitch";
 import { SquadPanel } from "./SquadPanel";
 import { STEP_PANEL_ID, stepTabId } from "./StepTabs";
 import { Toast } from "./Toast";
@@ -108,6 +108,12 @@ export function BoardView({ top }: BoardViewProps) {
       onPointerDown={onPointerDown}
       onClickCapture={onClickCapture}
     >
+      {/* Full time has no pitch, so nothing to skip to. */}
+      {step !== "full" && (
+        <a href={`#${PITCH_ID}`} className="skip-link">
+          {SHAPE.skipToPitch}
+        </a>
+      )}
       {top ?? (state.data.example ? <ExampleBanner /> : <KeepSafe />)}
       <BoardHeader />
       <div

@@ -1,6 +1,7 @@
 import {
   AGE_GROUPS,
   CUSTOM_BANDS,
+  CUSTOM_BOUNDS,
   CUSTOM_FORMATION,
   DEFAULT_FORMATION,
   FORMATIONS,
@@ -69,6 +70,12 @@ export function slotsFor(formation: string, custom: readonly Point[]): Slot[] {
   }
   const list = FORMATIONS[formation] ?? FORMATIONS[DEFAULT_FORMATION];
   return list.map((s, i) => ({ id: `${formation}#${i}`, ...s }));
+}
+
+/** A custom marker moved by the arrow keys, kept inside the same bounds as a dragged one. Up is towards goal. */
+export function nudgePoint(p: Point, dx: number, dy: number): Point {
+  const b = CUSTOM_BOUNDS;
+  return { x: Math.min(b.maxX, Math.max(b.minX, p.x + dx)), y: Math.min(b.maxY, Math.max(b.minY, p.y + dy)) };
 }
 
 export function slots(d: BoardData): Slot[] {

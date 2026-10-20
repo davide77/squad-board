@@ -53,17 +53,21 @@ export const HEADER = {
 } as const;
 
 export const SHAPE = {
+  /** The first stop for a keyboard on the board: past the header and the squad list, straight to the positions. */
+  skipToPitch: "Skip to pitch",
   formationLabel: "Formation",
   movePositions: "Move positions",
   doneMoving: "Done moving",
   resetShape: "Reset shape",
   hint: "Tap a position to see who can play there and swap them in. Drag works too.",
-  moveHint: "Drag the markers anywhere on the pitch. Each one takes its role from where it sits.",
+  moveHint: "Drag the markers anywhere on the pitch, or tab to one and use the arrow keys. Each one takes its role from where it sits.",
   /** Names the area round the pitch for a screen reader, as it has no visible heading. */
   label: "Shape",
   hideCover: "Hide bench cover",
   showCover: "Show bench cover",
   slotEmpty: (role: string) => `${role}, empty`,
+  /** Said after an arrow key moves a custom marker, as its role can change with where it sits. */
+  markerNow: (role: string) => `Now ${role}`,
   /** Starts with what the slot shows, number then name, so voice control matches it. */
   slotFilled: (num: number | string, name: string, role: string) => `${num} ${name}, ${role}`,
 } as const;

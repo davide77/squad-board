@@ -18,6 +18,9 @@ export const BOARD_CONFIG = {
   /** How far back the finger's speed is measured when a dragged player is let go. */
   velocityWindowMs: 80,
   clockTickMs: 1000,
+  /** How far an arrow key moves a custom marker, in percent of the pitch. With Shift held, the bigger step. */
+  markerStep: 2,
+  markerBigStep: 10,
   /** A clock still running this long after it started was left on by mistake, so the board reopens it paused. */
   clockStaleMs: 4 * 60 * 60_000,
   /** Past this much on the match clock, Reset asks first: there is a real match's worth of minutes to lose. */

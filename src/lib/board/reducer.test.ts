@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PositionKey } from "@/constants/football";
 import { boardReducer, initSandbox, type Action } from "./reducer";
-import { elapsed, playedMs, slotOf, slots } from "./queries";
+import { elapsed, nudgePoint, playedMs, slotOf, slots } from "./queries";
 import { buildBoard } from "./start";
 import { readSynced, storedJSON } from "./storage";
 import type { BoardState } from "./types";
@@ -212,5 +212,16 @@ describe("two tabs on one board", () => {
     const other = readSynced(storedJSON(kickOff.data), 35 * MIN);
     expect(other.clock.running).toBe(true);
     expect(elapsed(other, 35 * MIN)).toBe(25 * MIN);
+  });
+});
+
+describe("moving a custom marker from the keyboard", () => {
+  it("moves it by the step asked for, up the pitch being towards goal", () => {
+    expect(nudgePoint({ x: 50, y: 50 }, -2, 10)).toEqual({ x: 48, y: 60 });
+  });
+
+  it("keeps it on the pitch, as dragging does", () => {
+    expect(nudgePoint({ x: 92, y: 95 }, 10, 10)).toEqual({ x: 93, y: 96 });
+    expect(nudgePoint({ x: 8, y: 4 }, -10, -10)).toEqual({ x: 7, y: 3 });
   });
 });

@@ -110,6 +110,7 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
         <button
           type="button"
           className="roster-row__place is-flex-1 is-min-w-0 text-left"
+          data-place
           aria-label={SQUAD.putIn(p.name, place.role)}
           onClick={() => act({ type: "tapPlayer", pid: p.id })}
         >

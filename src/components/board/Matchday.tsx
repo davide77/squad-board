@@ -8,7 +8,7 @@ import { trackBoard } from "@/lib/analytics";
 import { firstName } from "@/lib/board/names";
 import { blocked, byId, elapsed, fmtClock, playedMinutes, playedMs, positionCodes, started, where } from "@/lib/board/queries";
 import type { BoardData, Player } from "@/lib/board/types";
-import { useNow } from "@/lib/hooks";
+import { useEscapeKey, useNow } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
@@ -105,6 +105,8 @@ export function ChangeBar() {
   const { data, ui } = state;
   const now = useNow(data.clock.running, BOARD_CONFIG.minutesTickMs);
   const off = comingOff(data, ui.offSlot);
+  // Escape lets go of the player coming off, as it lets go of a picked position.
+  useEscapeKey(!!ui.offSlot, () => act({ type: "selectOff", slotId: ui.offSlot ?? "" }));
   return (
     <div
       className={cx(
@@ -159,6 +161,7 @@ function BenchRow({ p, off, now, pool = false }: BenchRowProps) {
         variant={off ? "primary" : "default"}
         className="has-py-3 has-px-4"
         disabled={!off}
+        data-on
         onClick={() => act({ type: "bringOn", pid: p.id })}
       >
         {off ? MATCH.onFor(firstName(off.name)) : MATCH.on}
@@ -196,6 +199,7 @@ export function BenchTray() {
             type="button"
             className={cx("bench-tray__player is-flex is-flex-column is-justify-center has-gap-1 has-py-2 has-px-3 has-radius-panel text-left", off && "bench-tray__player--ready")}
             disabled={!off}
+            data-on
             aria-label={off ? MATCH.trayLabel(p.name, firstName(off.name)) : p.name}
             onClick={() => act({ type: "bringOn", pid: p.id })}
           >
