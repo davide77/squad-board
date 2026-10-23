@@ -53,6 +53,8 @@
   overflow: hidden;
   background-color: color(board-2);
   border: 1px solid color(board-3);
+  // Until the clip's poster arrives. The media is positioned, so it covers the sweep.
+  @include loading-sweep;
 
   &::after {
     content: '';
@@ -63,6 +65,7 @@
   }
 
   &__media {
+    position: relative;
     display: block;
     width: 100%;
     height: 100%;

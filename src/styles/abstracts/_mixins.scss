@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use 'colors' as *;
 @use 'spacers' as *;
 @use 'variables' as *;
 
@@ -71,5 +72,23 @@
 
   &:active:not(:disabled) {
     scale: $press-scale;
+  }
+}
+
+// A slow sweep of light across something still loading (components/_skeleton.scss holds the keyframes).
+// It runs on a ::before and moves by transform, so it never repaints: whatever loads into the frame sits
+// above it and covers it. The frame needs position and overflow: hidden. Still under reduced motion.
+@mixin loading-sweep {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, tint(chalk, 6%) 50%, transparent 80%);
+    translate: -100% 0;
+    pointer-events: none;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: loading-sweep 1.6s ease-in-out infinite;
+    }
   }
 }

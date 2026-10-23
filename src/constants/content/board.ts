@@ -16,6 +16,11 @@ export const UNDO = {
   button: "Undo",
 } as const;
 
+/** Read out while the board's skeleton stands in for it. */
+export const LOADING = {
+  board: "Loading your board",
+} as const;
+
 /** The Gaffer's line at the top of each step. */
 export const GAFFER_LINE = {
   /** Names his avatar for a screen reader, as the line beside it is unlabelled. */

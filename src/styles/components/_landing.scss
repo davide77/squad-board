@@ -278,7 +278,10 @@
   justify-self: center;
   aspect-ratio: 9 / 16;
   overflow: hidden;
+  background-color: color(board-2);
   border: 1px solid color(board-3);
+  // Until the poster arrives. The chapter layers sit over it.
+  @include loading-sweep;
 
   // On a phone a full 9:16 frame would push the chapter tabs a screen away. The clip crops instead.
   @include max(bp(md)) {

@@ -1,0 +1,72 @@
+@use '../abstracts' as *;
+
+// Stand-ins while the board loads (Skeleton.tsx, BoardSkeleton.tsx), and the sweep that crosses them.
+.skeleton {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  overflow: hidden;
+  background-color: color(board-2);
+  border-radius: $radius-sm;
+  @include loading-sweep;
+
+  &--line {
+    height: 0.9em;
+  }
+
+  &--title {
+    height: spacer(7);
+  }
+
+  // Here rather than a radius utility: utilities load before components, so .skeleton's own radius would win.
+  &--round {
+    border-radius: $radius-pill;
+  }
+
+  // Sized as .crest in _board.scss.
+  &--crest {
+    width: 46px;
+    height: 46px;
+  }
+
+  &--disc {
+    width: spacer(7);
+    height: spacer(7);
+  }
+
+  // The three step tabs. Docked along the foot on a phone, as the real ones are.
+  &--tabs {
+    width: 100%;
+    height: $hit-size;
+    border-radius: $radius-field;
+
+    @include min(bp(md)) {
+      width: 360px;
+    }
+  }
+
+  // Laid over the empty pitch: only the sweep shows, the pitch and its lines stay underneath.
+  &--over {
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    border-radius: 0;
+  }
+}
+
+// A squad row, the height of a real one.
+.skeleton-row {
+  min-height: $hit-size + spacer(1);
+  border-bottom: 1px solid $rule;
+}
+
+// The loading-sweep mixin's light, from off the left edge to off the right.
+@keyframes loading-sweep {
+  from {
+    translate: -100% 0;
+  }
+
+  to {
+    translate: 100% 0;
+  }
+}
