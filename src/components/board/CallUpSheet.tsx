@@ -4,7 +4,7 @@ import { useCallback, useId, useState } from "react";
 import { ANALYTICS_EVENTS, MESSAGE_CONFIG, SENT_HOW } from "@/constants/config";
 import { CALL_UP, FULL, HEADER, MESSAGE, PARENTS, SHEET } from "@/constants/content/board";
 import { trackSend } from "@/lib/analytics";
-import { squadMessage } from "@/lib/board/message";
+import { boldRuns, squadMessage } from "@/lib/board/message";
 import { Button } from "../Button";
 import { useBoard } from "./BoardProvider";
 import { MatchDetailsFields } from "./MatchDetailsFields";
@@ -41,6 +41,16 @@ function TeamNameField() {
   );
 }
 
+/** The message line by line, with the bold runs in bold, as WhatsApp will show it. */
+function MessageText({ text }: { readonly text: string }) {
+  return text.split("\n").map((line, i) => (
+    <span key={i}>
+      {i > 0 && "\n"}
+      {boldRuns(line).map((run, j) => (run.bold ? <strong key={j}>{run.text}</strong> : run.text))}
+    </span>
+  ));
+}
+
 /** What the parents will read: who's in, when, where and what to wear. Never the shape, the bench or who is injured. */
 function Preview() {
   const { state, act } = useBoard();
@@ -48,7 +58,7 @@ function Preview() {
     <section className="drawer__section has-pt-5">
       <h3 className={SECTION_HEADING}>{CALL_UP.previewHeading}</h3>
       <p className="send-chat__bubble parents-preview has-p-4 text-base leading-normal has-mb-4" aria-label={PARENTS.previewLabel}>
-        {squadMessage(state.data)}
+        <MessageText text={squadMessage(state.data)} />
       </p>
       <NameStyles label={FULL.namesLabel} hint={PARENTS.namesHint} />
       <label className="is-flex is-align-center has-gap-3 text-md has-mt-3 hit-area">

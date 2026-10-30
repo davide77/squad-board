@@ -33,6 +33,22 @@ export function matchIsToday(d: BoardData, now: number): boolean {
   return today.getFullYear() === y && today.getMonth() === m - 1 && today.getDate() === day;
 }
 
+const BOLD = MESSAGE_CONFIG.boldMark;
+
+/** "*Sunday 1 November*", so WhatsApp shows it in bold. Stray marks inside are dropped so the pair still holds. */
+function bold(text: string): string {
+  const clean = text.split(BOLD).join("").trim();
+  return clean ? BOLD + clean + BOLD : "";
+}
+
+/** A message line cut into plain and bold runs, so the preview on the board reads as WhatsApp will show it. */
+export function boldRuns(line: string): { text: string; bold: boolean }[] {
+  const parts = line.split(BOLD);
+  // An odd mark with no partner is not bold in WhatsApp either: put it back and keep the line plain.
+  if (parts.length % 2 === 0) return [{ text: line, bold: false }];
+  return parts.map((text, i) => ({ text, bold: i % 2 === 1 })).filter((r) => r.text);
+}
+
 export function mapLink(address: string): string {
   return MESSAGE_CONFIG.mapUrl + encodeURIComponent(address.replace(/\s+/g, " ").trim());
 }
@@ -45,7 +61,8 @@ export function matchHeader(d: BoardData): string[] {
   const { match } = d;
   const date = matchDate(match.date);
   const title = (d.team || SHEET.fallbackTitle) + (d.season ? SHEET.pictureJoin + d.season : "");
-  const out: string[] = [date ? `${title} - ${date}` : title];
+  // The lines a parent acts on are bold: who and when, the times, and the squad heading.
+  const out: string[] = [bold(date ? `${title} - ${date}` : title)];
   const kind = COMPETITIONS.find((c) => c.key === match.competition)?.label.toLowerCase();
   const tag = MESSAGE.fixtureTag([match.venue, kind ?? ""].filter(Boolean));
   if (d.fixture.trim()) out.push(d.fixture.trim() + tag);
@@ -58,8 +75,8 @@ export function matchHeader(d: BoardData): string[] {
   if (match.surface) out.push(MESSAGE.surfaceLine[match.surface]);
 
   const when: string[] = [];
-  if (match.kickoff) when.push(MESSAGE.kickoff + match.kickoff);
-  if (match.meet) when.push(MESSAGE.meet + match.meet);
+  if (match.kickoff) when.push(MESSAGE.kickoff + bold(match.kickoff));
+  if (match.meet) when.push(MESSAGE.meet + bold(match.meet));
   const address = match.address.trim();
   if (address) when.push(MESSAGE.address + address.replace(/\s*\n\s*/g, ", "), MESSAGE.map + mapLink(address));
   if (when.length) out.push("", ...when);
@@ -77,7 +94,7 @@ export function squadMessage(d: BoardData): string {
     .filter((p) => !p.out)
     .map((p) => sentName(d, p.name))
     .sort((a, b) => a.localeCompare(b, MESSAGE_CONFIG.locale));
-  out.push("", MESSAGE.squad, ...(squad.length ? squad : [MESSAGE.nobody]));
+  out.push("", bold(MESSAGE.squad), ...(squad.length ? squad : [MESSAGE.nobody]));
   out.push("", MESSAGE.confirm);
   if (d.sheetCredit) out.push("", SHEET.credit);
   return out.join("\n");

@@ -63,6 +63,8 @@ export const MESSAGE_CONFIG = {
   /** A Google Maps search for the address. Opens the Maps app on a phone, and WhatsApp previews it. */
   mapUrl: "https://www.google.com/maps/search/?api=1&query=",
   whatsappUrl: "https://wa.me/?text=",
+  /** WhatsApp shows text between two of these in bold. The preview on the board does the same. */
+  boldMark: "*",
   locale: "en-GB",
   addressRows: 2,
 } as const;
