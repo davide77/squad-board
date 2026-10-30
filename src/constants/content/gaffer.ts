@@ -42,6 +42,8 @@ export interface GafferLines {
   readonly cantPickInjured: (n: string) => string;
   readonly cantPickUnavailable: (n: string) => string;
   readonly cantPickNotCalledUp: (n: string) => string;
+  /** A player tapped on the pitch and sent to the bench. */
+  readonly benched: (n: string) => string;
   readonly markedInjured: (n: string) => string;
   readonly fitAgain: (n: string) => string;
   readonly markedUnavailable: (n: string) => string;
@@ -126,6 +128,7 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     cantPickInjured: (n) => `${n}'s injured. Pick someone else.`,
     cantPickUnavailable: (n) => `${n}'s not available. Pick someone else.`,
     cantPickNotCalledUp: (n) => `${n}'s not called up. Tick them first.`,
+    benched: (n) => `${n}, bench.`,
     markedInjured: (n) => `${n}'s injured. Get well, ${n}.`,
     fitAgain: (n) => `${n}'s fit. Tick the box.`,
     markedUnavailable: (n) => `${n}'s out this week.`,
@@ -197,6 +200,7 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     cantPickInjured: (n) => `${n}'s injured, so not today. Pick someone else.`,
     cantPickUnavailable: (n) => `${n} can't make it this week. Pick someone else.`,
     cantPickNotCalledUp: (n) => `${n} isn't called up yet. Tick them in the squad first.`,
+    benched: (n) => `${n}'s on the bench for now. Ready when we need them.`,
     markedInjured: (n) => `${n} marked injured. Get well soon, ${n}.`,
     fitAgain: (n) => `${n}'s fit again. Great news. Tick the box to call them up.`,
     markedUnavailable: (n) => `${n} marked unavailable. See them next week.`,

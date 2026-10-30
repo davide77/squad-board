@@ -582,7 +582,7 @@ export const HANDOFF = {
 
 export const PICKER = {
   title: (role: string, name: string | null) => `${role} · ${name ?? "empty"}`,
-  subFilled: (first: string) => `Pick a replacement, or move ${first} off.`,
+  subFilled: (first: string) => `Or swap ${first} for someone below.`,
   subEmpty: "Pick who starts here.",
   suited: (role: string) => `Suited to ${role}`,
   canCover: (role: string) => `Could fill in at ${role}`,
@@ -593,7 +593,8 @@ export const PICKER = {
   notCalledUp: "Not called up",
   injured: "Injured",
   unavailable: "Unavailable",
-  toBench: "Move to the bench",
+  /** The first thing a tapped player offers, by name: "Bench Toby". */
+  toBench: (first: string) => `Bench ${first}`,
   toPool: "Take out of the squad list",
   close: "Close",
   badgeBench: "Bench",

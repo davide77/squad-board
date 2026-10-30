@@ -11,6 +11,7 @@ import { firstName } from "@/lib/board/names";
 import { blocked, byId, freeAt, onBench, positionCodes, slotById, slotOf } from "@/lib/board/queries";
 import type { Player } from "@/lib/board/types";
 import { Button } from "../Button";
+import { BenchActions } from "./BenchActions";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { useSheetDrag } from "./useSheetDrag";
@@ -102,6 +103,12 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
           <Icon name="close" />
         </button>
       </div>
+      {/* A tapped player: bench them first, before any list. The list below is who could swap in. */}
+      {current && (
+        <div className="has-mb-3">
+          <BenchActions player={current} />
+        </div>
+      )}
       <div className="picker__list">
         {groups.map((g) => (
           <Group key={g.title} title={g.title} players={g.players} />
@@ -111,20 +118,13 @@ function PickerBody({ slotId, titleId }: { readonly slotId: string; readonly tit
         ))}
         {nobody && <p className="text-base is-dim has-py-2">{GAFFER[data.voice].nobody}</p>}
       </div>
-      <div className="picker__actions is-flex is-flex-wrap has-gap-2 has-pt-3 has-mt-1">
-        {current ? (
-          <>
-            <Button onClick={() => act({ type: "pickerOff", to: "bench" })}>{PICKER.toBench}</Button>
-            <Button variant="quiet" onClick={() => act({ type: "pickerOff", to: "pool" })}>
-              {PICKER.toPool}
-            </Button>
-          </>
-        ) : (
+      {!current && (
+        <div className="picker__actions is-flex is-flex-wrap has-gap-2 has-pt-3 has-mt-1">
           <Button variant="quiet" onClick={() => act({ type: "closePicker" })}>
             {PICKER.close}
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

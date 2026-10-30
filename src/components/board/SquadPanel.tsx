@@ -4,10 +4,11 @@ import { useId, useRef, useState, type FormEvent } from "react";
 import { CONFIRM, SET_POSITIONS, SQUAD, ZONES } from "@/constants/content/board";
 import { BOARD_CONFIG, PHONE_QUERY } from "@/constants/config";
 import { GAFFER } from "@/constants/content/gaffer";
-import { blocked, freeAt, slotById, squadChecks, where } from "@/lib/board/queries";
+import { blocked, byId, freeAt, slotById, squadChecks, where } from "@/lib/board/queries";
 import type { Player } from "@/lib/board/types";
 import { useMediaQuery } from "@/lib/hooks";
 import { Button } from "../Button";
+import { BenchActions } from "./BenchActions";
 import { useBoard } from "./BoardProvider";
 import { cx } from "../cx";
 import { ConfirmBox } from "./ConfirmBox";
@@ -79,6 +80,7 @@ export function SquadPanel() {
   // A position picked on the pitch, on a screen wide enough to pick from this list.
   const phone = useMediaQuery(PHONE_QUERY);
   const slot = !phone && state.ui.pickerSlot ? slotById(state.data, state.ui.pickerSlot) : null;
+  const slotPlayer = slot ? byId(state.data, state.data.xi[slot.id]) : undefined;
   const fits = new Map<string, 0 | 1 | 2>();
   if (slot) for (const level of [2, 1, 0] as const) for (const p of freeAt(state.data, slot.role, level)) fits.set(p.id, level);
   // Who can go there comes first, best fit at the top; everyone else keeps their place below.
@@ -149,6 +151,12 @@ export function SquadPanel() {
       <p className="text-sm is-dim" aria-live="polite">
         {slot && <span className="is-block has-mb-3">{SQUAD.placeHint(slot.role)}</span>}
       </p>
+      {/* A player tapped on the pitch: bench them straight away, or pick who swaps in from the list. */}
+      {slotPlayer && (
+        <div className="has-mb-3">
+          <BenchActions player={slotPlayer} />
+        </div>
+      )}
       {/* One note for everyone without a position, instead of a "no position" on every row. */}
       {noPosition.length > 0 && (
         <div className="position-note is-flex is-flex-wrap is-align-center is-justify-between has-gap-2 has-radius-field has-py-2 has-px-3 has-mb-3">

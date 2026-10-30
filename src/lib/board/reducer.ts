@@ -730,8 +730,11 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       const cur = ui.pickerSlot ? d.xi[ui.pickerSlot] : null;
       closePicker();
       if (cur) {
-        if (action.to === "bench") toBench(d, cur, note);
-        else detach(d, cur);
+        if (action.to === "bench") {
+          toBench(d, cur, note);
+          const p = byId(d, cur);
+          if (p && onBench(d, cur)) note(say.benched(firstName(p.name)));
+        } else detach(d, cur);
       }
       return next;
     }
