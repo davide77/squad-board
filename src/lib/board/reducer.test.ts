@@ -213,6 +213,11 @@ describe("two tabs on one board", () => {
     expect(other.clock.running).toBe(true);
     expect(elapsed(other, 35 * MIN)).toBe(25 * MIN);
   });
+
+  it("never reads below zero when the screen's clock is behind kick-off", () => {
+    const kickOff = play(board(), [{ type: "clockToggle" }, 10 * MIN]);
+    expect(elapsed(kickOff.data, 10 * MIN - 800)).toBe(0);
+  });
 });
 
 describe("moving a custom marker from the keyboard", () => {

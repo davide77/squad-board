@@ -221,7 +221,8 @@ export function matchUnderway(d: BoardData): boolean {
 }
 
 export function elapsed(d: BoardData, now: number): number {
-  return d.clock.base + (d.clock.running ? now - d.clock.since : 0);
+  // A "now" from before the clock started would count backwards, so it never runs below the banked time.
+  return d.clock.base + (d.clock.running ? Math.max(0, now - d.clock.since) : 0);
 }
 
 /** Match time a player has had so far, in milliseconds. */
