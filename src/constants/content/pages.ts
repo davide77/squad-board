@@ -124,6 +124,20 @@ export const PRIVACY = {
       ],
     },
     {
+      heading: "Who looks after your data",
+      body: [
+        `Gafferboard is made and run by ${MAKER.name}, who decides what is kept and why. That makes ${MAKER.name} responsible for the email addresses held for sign-in, the club waitlist and founding coaches.`,
+        "Nothing on your board is held by us, so there is nothing of it to hand over or delete on our side.",
+      ],
+    },
+    {
+      heading: "Your rights",
+      body: [
+        `Under UK data protection law you can ask for a copy of what we hold about you, ask us to correct it, or ask us to delete it. Email ${MAKER.email} and we answer within a month.`,
+        "If you are not happy with the answer, you can complain to the Information Commissioner's Office at ico.org.uk.",
+      ],
+    },
+    {
       heading: "Deleting your data",
       body: [
         "Delete a player and they are gone from the board. Start again, under Customise your club, clears the whole board. Clearing this site's data in your browser settings does the same.",
