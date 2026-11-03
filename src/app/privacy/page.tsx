@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/landing/PageShell";
 import { MAKER, PRIVACY } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
 import { PAGE_UPDATED } from "@/constants/seo";
-import { longDate, pageMetadata } from "@/lib/seo";
+import { longDate, pageJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: PRIVACY.title,
@@ -14,6 +15,14 @@ export const metadata: Metadata = pageMetadata({
 export default function PrivacyPage() {
   return (
     <PageShell>
+      <JsonLd
+        data={pageJsonLd({
+          path: ROUTES.privacy,
+          name: PRIVACY.title,
+          description: PRIVACY.description,
+          updated: PAGE_UPDATED.privacy,
+        })}
+      />
       <h1 className="text-5xl tracking-heading has-mb-3">{PRIVACY.title}</h1>
       <p className="text-sm is-dimmer has-mb-6">{PRIVACY.updated(longDate(PAGE_UPDATED.privacy))}</p>
       <p className="text-lg leading-relaxed has-mb-8">{PRIVACY.intro}</p>

@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
 import { FORMAT_PAGE, type FormatPage } from "@/constants/content/formats";
 import { FORMATS } from "@/constants/football";
-import { formatPagePath } from "@/constants/routes";
-import { OG_IMAGE, OPEN_GRAPH_BASE, PAGE_UPDATED, SITE_URL, TITLE_TEMPLATE, TWITTER_CARD } from "@/constants/seo";
+import { LANDING_META } from "@/constants/content/landing";
+import { ROUTES, formatPagePath } from "@/constants/routes";
+import {
+  FAQ_NODE,
+  OG_IMAGE,
+  OPEN_GRAPH_BASE,
+  PAGE_UPDATED,
+  SITE_GRAPH,
+  SITE_URL,
+  TITLE_TEMPLATE,
+  TWITTER_CARD,
+} from "@/constants/seo";
 
 const SHARE_IMAGE = { url: OG_IMAGE.path, width: OG_IMAGE.width, height: OG_IMAGE.height, alt: OG_IMAGE.alt };
 
@@ -37,36 +47,92 @@ export function longDate(iso: string): string {
   return LONG_DATE.format(new Date(iso));
 }
 
+const maker = { "@id": `${SITE_URL}/#maker` };
+
+interface PageGraph {
+  readonly path: string;
+  readonly name: string;
+  readonly description: string;
+  readonly updated: string;
+  /** WebPage for most pages, ProfilePage for the one about the maker. */
+  readonly type?: "WebPage" | "ProfilePage";
+  /** The page's main subject, by @id. */
+  readonly mainEntity?: { readonly "@id": string };
+  /** Nodes that belong to this page only, such as its FAQ or its list of shapes. */
+  readonly nodes?: readonly ({ readonly "@id": string } & Record<string, unknown>)[];
+}
+
 /**
- * Structured data for one format page: the page in the site, its breadcrumb, the shapes on the board
- * as a list, and its questions as an FAQ. Built from the same words the page prints.
+ * A page's structured data: the shared site graph, the page itself with its author and breadcrumb,
+ * and whatever nodes are the page's own. Every page carries the site graph, because Google reads
+ * each page alone and the @id links have to resolve on the page that uses them.
  */
-export function formatPageJsonLd(page: FormatPage) {
-  const url = SITE_URL + formatPagePath(page.slug);
+export function pageJsonLd({ path, name, description, updated, type = "WebPage", mainEntity, nodes = [] }: PageGraph) {
+  const isHome = path === ROUTES.home;
+  const url = isHome ? SITE_URL : SITE_URL + path;
+  const pageId = `${url}${isHome ? "/" : ""}#page`;
+  const crumbId = `${url}#breadcrumb`;
   return {
     "@context": "https://schema.org",
     "@graph": [
+      ...SITE_GRAPH,
       {
-        "@type": "WebPage",
-        "@id": `${url}#page`,
+        "@type": type,
+        "@id": pageId,
         url,
-        name: page.title,
-        description: page.description,
+        name,
+        description,
         inLanguage: "en-GB",
-        dateModified: PAGE_UPDATED.formats,
+        dateModified: updated,
         isPartOf: { "@id": `${SITE_URL}/#website` },
         about: { "@id": `${SITE_URL}/#app` },
-        breadcrumb: { "@id": `${url}#breadcrumb` },
-        mainEntity: { "@id": `${url}#shapes` },
+        author: maker,
+        ...(isHome ? {} : { breadcrumb: { "@id": crumbId } }),
+        ...(mainEntity ? { mainEntity } : {}),
+        ...(nodes.length ? { hasPart: nodes.map((n) => ({ "@id": n["@id"] })) } : {}),
       },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${url}#breadcrumb`,
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: FORMAT_PAGE.home, item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: page.title, item: url },
-        ],
-      },
+      ...(isHome
+        ? []
+        : [
+            {
+              "@type": "BreadcrumbList",
+              "@id": crumbId,
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: FORMAT_PAGE.home, item: SITE_URL },
+                { "@type": "ListItem", position: 2, name, item: url },
+              ],
+            },
+          ]),
+      ...nodes,
+    ],
+  };
+}
+
+/** The homepage: the site graph, the page and its FAQ, in one script. */
+export function homeJsonLd() {
+  return pageJsonLd({
+    path: ROUTES.home,
+    name: LANDING_META.title,
+    description: LANDING_META.description,
+    updated: PAGE_UPDATED.home,
+    mainEntity: { "@id": `${SITE_URL}/#app` },
+    nodes: [FAQ_NODE],
+  });
+}
+
+/**
+ * Structured data for one format page: the shapes on the board as a list, and its questions as an
+ * FAQ, built from the same words the page prints.
+ */
+export function formatPageJsonLd(page: FormatPage) {
+  const url = SITE_URL + formatPagePath(page.slug);
+  return pageJsonLd({
+    path: formatPagePath(page.slug),
+    name: page.title,
+    description: page.description,
+    updated: PAGE_UPDATED.formats,
+    mainEntity: { "@id": `${url}#shapes` },
+    nodes: [
       {
         "@type": "ItemList",
         "@id": `${url}#shapes`,
@@ -88,5 +154,5 @@ export function formatPageJsonLd(page: FormatPage) {
         })),
       },
     ],
-  };
+  });
 }

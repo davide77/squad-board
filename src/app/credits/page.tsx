@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/landing/PageShell";
 import { CREDITS, MAKER } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
-import { pageMetadata } from "@/lib/seo";
+import { PAGE_UPDATED, SITE_URL } from "@/constants/seo";
+import { pageJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: CREDITS.title,
@@ -13,6 +15,16 @@ export const metadata: Metadata = pageMetadata({
 export default function CreditsPage() {
   return (
     <PageShell>
+      <JsonLd
+        data={pageJsonLd({
+          path: ROUTES.credits,
+          name: CREDITS.title,
+          description: CREDITS.description,
+          updated: PAGE_UPDATED.credits,
+          type: "ProfilePage",
+          mainEntity: { "@id": `${SITE_URL}/#maker` },
+        })}
+      />
       <h1 className="text-5xl tracking-heading has-mb-8">{CREDITS.heading}</h1>
       <section className="has-mb-8">
         <p className="text-sm uppercase tracking-caps is-dimmer has-mb-2">{CREDITS.makerLabel}</p>
