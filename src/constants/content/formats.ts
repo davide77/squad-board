@@ -29,7 +29,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     format: "5v5",
     title: "5-a-side formations and line-ups",
     description:
-      "A free 5-a-side board for grassroots coaches: pick a shape, tick who's in, keep fair minutes and send the call-up to the parents. Under 8s and under 9s. No account.",
+      "A free 5-a-side board for grassroots coaches: pick a shape, tick who's in, keep fair minutes and send call-ups to parents. Under 8s and 9s. No account.",
     heading: "5-a-side. Everyone plays.",
     intro: [
       "Five a side is the FA format for under 8s and under 9s from the 2026-27 season: a keeper and four outfield players on a small pitch.",
@@ -65,7 +65,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     format: "7v7",
     title: "7-a-side formations and line-ups",
     description:
-      "A free 7-a-side board for grassroots coaches: pick a shape, tick who's in, keep fair minutes and send the call-up to the parents. Under 10s and under 11s. No account.",
+      "A free 7-a-side board for grassroots coaches: pick a shape, tick who's in, keep fair minutes and send call-ups to parents. Under 10s and 11s. No account.",
     heading: "7-a-side. Pick the team.",
     intro: [
       "Seven a side is the FA format for under 10s and under 11s: a keeper and six outfield players on a small pitch.",
@@ -111,7 +111,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     format: "9v9",
     title: "9-a-side formations and line-ups",
     description:
-      "A free 9-a-side board for grassroots coaches: five shapes, the bench, every sub to the minute and the result for the parents. Under 12s and under 13s. No account.",
+      "A free 9-a-side board for grassroots coaches: five shapes, the bench, every sub to the minute and the result for parents. Under 12s and 13s. No account.",
     heading: "9-a-side. Results count now.",
     intro: [
       "Nine a side is the FA format for under 12s and under 13s, where results and league tables begin.",
@@ -157,7 +157,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     format: "11v11",
     title: "11-a-side formations and line-ups",
     description:
-      "A free 11-a-side board for grassroots coaches: fifteen shapes from 4-3-3 to 5-3-2, the bench, subs to the minute and the call-up for the parents. Under 14s to adults.",
+      "A free 11-a-side board for grassroots coaches: fifteen shapes from 4-3-3 to 5-3-2, the bench, subs to the minute and the call-up. Under 14s to adults.",
     heading: "11-a-side. The full game.",
     intro: [
       "Eleven a side is the full game, from under 14s up to adults.",

@@ -55,7 +55,7 @@ const EVENTS_COUNTED =
 export const PRIVACY = {
   title: "Privacy and safety",
   description:
-    "How Gafferboard looks after your squad: it is never sent to us, no advertising, and an account only if you want one. The board stays in the browser on your device.",
+    "How Gafferboard looks after your squad: it stays in the browser on your device and is never sent to us. No adverts, and an account only if you want one.",
   /** Takes the date from PAGE_UPDATED.privacy in seo.ts, so the page and the sitemap agree. */
   updated: (date: string) => `Last updated ${date}`,
   intro:

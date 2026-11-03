@@ -102,9 +102,9 @@ export const LANDING_COPY: VoiceCopy = {
 };
 
 export const LANDING_META = {
-  title: "Gafferboard - free line-ups and team sheets for grassroots football",
+  title: "Gafferboard - free football line-up and team sheet app",
   description:
-    "A matchday board for grassroots coaches: the squad, who is called up, the shape, the bench and every substitution, on one screen. No account, nothing to install.",
+    "A free matchday board for grassroots football coaches: the squad, call-ups, formation, bench and every sub on one screen, on your phone. No account needed.",
   boardTitle: "Board",
 } as const;
 
