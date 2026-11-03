@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { PageShell } from "@/components/landing/PageShell";
 import { MAKER, PRIVACY } from "@/constants/content/pages";
 import { ROUTES } from "@/constants/routes";
-import { pageMetadata } from "@/lib/seo";
+import { PAGE_UPDATED } from "@/constants/seo";
+import { longDate, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: PRIVACY.title,
@@ -14,7 +15,7 @@ export default function PrivacyPage() {
   return (
     <PageShell>
       <h1 className="text-5xl tracking-heading has-mb-3">{PRIVACY.title}</h1>
-      <p className="text-sm is-dimmer has-mb-6">{PRIVACY.updated}</p>
+      <p className="text-sm is-dimmer has-mb-6">{PRIVACY.updated(longDate(PAGE_UPDATED.privacy))}</p>
       <p className="text-lg leading-relaxed has-mb-8">{PRIVACY.intro}</p>
       {PRIVACY.sections.map((s) => (
         <section key={s.heading} className="has-mb-8">

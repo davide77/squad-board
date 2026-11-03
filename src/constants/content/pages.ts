@@ -26,6 +26,8 @@ export const WAITLIST = {
 
 export const FOOTER_LINKS = {
   label: "About Gafferboard",
+  /** The second footer list: every format page, so each one is a link away from every page. */
+  formats: "Formats",
   privacy: "Privacy and safety",
   credits: "Credits",
   contact: "Contact",
@@ -54,7 +56,8 @@ export const PRIVACY = {
   title: "Privacy and safety",
   description:
     "How Gafferboard looks after your squad: it is never sent to us, no advertising, and an account only if you want one. The board stays in the browser on your device.",
-  updated: "Last updated 20 October 2026",
+  /** Takes the date from PAGE_UPDATED.privacy in seo.ts, so the page and the sitemap agree. */
+  updated: (date: string) => `Last updated ${date}`,
   intro:
     "Gafferboard keeps no database of squads. Your squad lives in the browser on your device, and nothing about your players is sent to us. Signing in is optional, and only tells us your email address.",
   sections: [

@@ -1,7 +1,8 @@
 import { FORMAT_PAGES } from "@/constants/content/formats";
 import { FAQ } from "@/constants/content/landing";
 import { MAKER } from "@/constants/content/pages";
-import { SITE, SOCIAL } from "@/constants/site";
+import { FORMAT_KEYS, FORMATS } from "@/constants/football";
+import { DEFINITION, SITE, SOCIAL } from "@/constants/site";
 
 // The live address. Used as the base for every absolute URL in the metadata.
 export const SITE_URL = "https://gafferboard.com";
@@ -17,8 +18,19 @@ export const OPEN_GRAPH_BASE = {
 
 export const TWITTER_CARD = "summary_large_image";
 
-/** When the indexable pages last changed. Bump it when their content does, so the sitemap stays honest. */
-export const CONTENT_UPDATED = "2026-09-30";
+/**
+ * When each indexable page last changed, as an ISO date. Bump a page's date when its words do, so the
+ * sitemap, the structured data and the "Last updated" line on the page stay honest.
+ */
+export const PAGE_UPDATED = {
+  home: "2026-11-03",
+  formats: "2026-11-03",
+  privacy: "2026-10-20",
+  credits: "2026-10-20",
+} as const;
+
+/** The square logo search engines and AI answers show beside the name. */
+export const LOGO = { path: "/brand/gafferboard-icon-512.png", size: 512 } as const;
 
 /** The share card drawn by src/app/opengraph-image.tsx. 1200 by 630 is the size every network crops to. */
 export const OG_IMAGE = {
@@ -35,11 +47,6 @@ export const OG_IMAGE = {
   fontName: "Saira Condensed",
 } as const;
 
-/** One plain sentence that says what Gafferboard is. Written to be quoted as it stands. */
-export const DEFINITION =
-  "Gafferboard is a free web app for grassroots football coaches. It holds the squad, who is called up, the formation, the bench and every substitution on one screen, works on a phone, and needs no account.";
-
-/** Structured data for the homepage: the app, the site and who makes it. */
 /** The homepage FAQ as FAQPage structured data, from the same words as the page. */
 export const FAQ_JSON_LD = {
   "@context": "https://schema.org",
@@ -52,6 +59,7 @@ export const FAQ_JSON_LD = {
   })),
 } as const;
 
+/** Structured data for the homepage: the site, the app, the brand and who makes it. */
 export const JSON_LD = {
   "@context": "https://schema.org",
   "@graph": [
@@ -61,8 +69,23 @@ export const JSON_LD = {
       name: SITE.name,
       url: SITE_URL,
       inLanguage: "en-GB",
+      publisher: { "@id": `${SITE_URL}/#org` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#org`,
+      name: SITE.name,
+      url: SITE_URL,
+      description: DEFINITION,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}${LOGO.path}`,
+        width: LOGO.size,
+        height: LOGO.size,
+      },
+      email: MAKER.email,
+      founder: { "@id": `${SITE_URL}/#maker` },
       sameAs: [SOCIAL.instagram.url],
-      publisher: { "@id": `${SITE_URL}/#maker` },
     },
     {
       "@type": "WebApplication",
@@ -77,7 +100,8 @@ export const JSON_LD = {
       isAccessibleForFree: true,
       offers: { "@type": "Offer", price: "0", priceCurrency: "GBP" },
       audience: { "@type": "Audience", audienceType: "Grassroots and youth football coaches" },
-      publisher: { "@id": `${SITE_URL}/#maker` },
+      dateModified: PAGE_UPDATED.home,
+      publisher: { "@id": `${SITE_URL}/#org` },
     },
     {
       "@type": "Person",
@@ -101,6 +125,19 @@ export const LLMS_TXT = {
     "The board keeps the squad, marks who is available or injured, sets the formation, fills the bench and records the minute of every substitution. The call-up and the result go to parents by WhatsApp or email, and a line-up picture to the other coaches.",
     "Everything is stored in the browser on the coach's own device. There are no accounts, no cookies and no advertising, and nothing on the board is sent to Gafferboard. A squad file moves the board to another device.",
   ],
+  factsHeading: "## Key facts",
+  facts: [
+    "Free for every team. No adverts, no account, nothing to install.",
+    `Formats: ${FORMAT_KEYS.map((k) => FORMATS[k].label).join(", ")}.`,
+    ...FORMAT_KEYS.map((k) => `${FORMATS[k].label} shapes: ${FORMATS[k].shapes.join(", ")}.`),
+    "Logs the minute of every substitution and each player's minutes played.",
+    "Sends the call-up and the result to parents by WhatsApp, email or copy, with an initials option.",
+    "Stores the squad in the browser on the coach's device. Nothing about the players is sent to Gafferboard.",
+    "Sets the format from the age group, following the FA pathway. The coach can change it.",
+    `Made by ${MAKER.name}, a grassroots football coach.`,
+  ],
+  contactHeading: "## Contact",
+  contact: [`Email: ${MAKER.email}`, `Instagram: ${SOCIAL.instagram.url}`],
   pagesHeading: "## Pages",
   pages: [
     { name: "Home", path: "/", note: "What the board does, with a working demo" },

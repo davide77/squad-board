@@ -5,7 +5,19 @@ export const dynamic = "force-static";
 
 export function GET() {
   const pages = LLMS_TXT.pages.map((p) => `- [${p.name}](${SITE_URL}${p.path}): ${p.note}`).join("\n");
-  const text = [LLMS_TXT.title, LLMS_TXT.summary, ...LLMS_TXT.body, LLMS_TXT.pagesHeading, pages].join("\n\n");
+  const facts = LLMS_TXT.facts.map((f) => `- ${f}`).join("\n");
+  const contact = LLMS_TXT.contact.map((c) => `- ${c}`).join("\n");
+  const text = [
+    LLMS_TXT.title,
+    LLMS_TXT.summary,
+    ...LLMS_TXT.body,
+    LLMS_TXT.factsHeading,
+    facts,
+    LLMS_TXT.pagesHeading,
+    pages,
+    LLMS_TXT.contactHeading,
+    contact,
+  ].join("\n\n");
 
   return new Response(`${text}\n`, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 }

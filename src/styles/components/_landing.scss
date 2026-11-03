@@ -498,6 +498,16 @@
   }
 }
 
+// The shapes on a format page: chips in one column, what each is for in the next, so the notes line up
+// however wide the shape's name is. Each row is a list item laid out by the list's grid.
+.format-shapes {
+  grid-template-columns: max-content 1fr;
+
+  > li {
+    display: contents;
+  }
+}
+
 // A shape on a format page, like a chip on the board.
 .format-shape {
   background-color: color(board-2);

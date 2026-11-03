@@ -1,4 +1,5 @@
-import type { Phase, PositionKey } from "@/constants/football";
+import { AGE_GROUPS, FORMAT_KEYS, FORMATS, type Phase, type PositionKey } from "@/constants/football";
+import { DEFINITION } from "@/constants/site";
 
 // Every string on the landing page, plus the example team the demo board plays with.
 // Players are never gendered. The team and players are made up.
@@ -101,7 +102,7 @@ export const LANDING_COPY: VoiceCopy = {
 };
 
 export const LANDING_META = {
-  title: "Gafferboard - line-ups and team sheets for grassroots football",
+  title: "Gafferboard - free line-ups and team sheets for grassroots football",
   description:
     "A matchday board for grassroots coaches: the squad, who is called up, the shape, the bench and every substitution, on one screen. No account, nothing to install.",
   boardTitle: "Board",
@@ -306,14 +307,34 @@ export const SHARE_URLS = {
   mail: "mailto:?subject=",
 } as const;
 
+/** "Under 8s", "Under 8s and under 9s", "Under 14s to adults": a run of age groups as a coach says it. */
+function ageRun(labels: readonly string[]) {
+  const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+  const first = labels[0] ?? "";
+  const last = labels[labels.length - 1] ?? "";
+  if (labels.length === 1) return first;
+  return labels.length === 2 ? `${first} and ${lower(last)}` : `${first} to ${lower(last)}`;
+}
+
+/** Which format each age group plays, read from AGE_GROUPS so the answer can never drift from the board. */
+const FORMAT_BY_AGE = FORMAT_KEYS.map((key) => ({ format: FORMATS[key].label, ages: AGE_GROUPS.filter((a) => a.format === key).map((a) => a.label) }))
+  .filter((run) => run.ages.length > 0)
+  .map((run) => `${ageRun(run.ages)} play ${run.format}.`)
+  .join(" ");
+
 /**
- * The four questions that stop a coach starting, above the footer. The heading takes the site's
- * Hairdryer voice; the answers stay straight, because two of them are about data.
+ * The questions that stop a coach starting, above the footer. The heading takes the site's
+ * Hairdryer voice; the answers stay straight, because most of them are about data.
  * The same words go into the FAQPage structured data (seo.ts), so search and AI answers read them too.
+ * The first answer opens with DEFINITION, so the sentence AI answers quote is on the page itself.
  */
 export const FAQ = {
   heading: "Before you start.",
   items: [
+    {
+      q: "What is Gafferboard?",
+      a: `${DEFINITION} Pick the team, send the call-up to the parents, and log every sub to the minute on matchday.`,
+    },
     {
       q: "Is it free?",
       a: "Yes. Gafferboard is free for your team, with no adverts and nothing to install.",
@@ -329,6 +350,22 @@ export const FAQ = {
     {
       q: "Which formats does it support?",
       a: "3-a-side, 5-a-side, 7-a-side, 9-a-side and 11-a-side, with the shapes for each. Pick the age group and the board sets the format the FA uses for it. You can change it if your league plays differently.",
+    },
+    {
+      q: "Which format does each age group play?",
+      a: `${FORMAT_BY_AGE} That is the FA's pathway from the 2026-27 season. Up to under 11s is development football, where everyone plays. From under 12s, results count.`,
+    },
+    {
+      q: "How do I give every player fair minutes?",
+      a: "Log every sub on the board as it happens. It records the minute, and Minutes played shows each player's total for the match. You see who's short before the second half, not on the drive home.",
+    },
+    {
+      q: "Can I send the team to the parents' WhatsApp group?",
+      a: "Yes. The call-up says who's in, when, where and what to wear, by shirt number. No shape, no bench, no injuries. Send it on WhatsApp, by email, or copy it. Use initials if the group has people outside the club.",
+    },
+    {
+      q: "Can my assistant coach use the same squad?",
+      a: "Yes. Send the squad by link or QR code, and it opens on their phone as their own copy. The link carries your players' names, so send it to a coach you trust, never the parents' group.",
     },
   ],
 } as const;

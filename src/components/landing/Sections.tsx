@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { FOOTER_SIGN_IN } from "@/constants/content/account";
 import { FAQ, PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
+import { FORMAT_PAGES } from "@/constants/content/formats";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
-import { ROUTES } from "@/constants/routes";
+import { FORMATS } from "@/constants/football";
+import { ROUTES, formatPagePath } from "@/constants/routes";
 import { SITE, SOCIAL } from "@/constants/site";
 import { InstagramIcon } from "../InstagramIcon";
 import { ClubWaitlist } from "./ClubWaitlist";
@@ -73,6 +75,13 @@ export function LandingFooter() {
       </div>
       <div className="container is-flex is-flex-wrap is-justify-between has-gap-3 has-py-6 text-sm is-dimmer">
         <span translate="no">{SITE.name}</span>
+        <nav aria-label={FOOTER_LINKS.formats} className="is-flex is-flex-wrap has-gap-6">
+          {FORMAT_PAGES.map((f) => (
+            <Link key={f.slug} href={formatPagePath(f.slug)} className="hit-area">
+              {FORMATS[f.format].label}
+            </Link>
+          ))}
+        </nav>
         <nav aria-label={FOOTER_LINKS.label} className="is-flex is-flex-wrap has-gap-6">
           <Link href={ROUTES.account} className="hit-area">
             {FOOTER_SIGN_IN}
