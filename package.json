@@ -13,7 +13,8 @@
     "test:unit": "vitest run --project unit",
     "test:stories": "vitest run --project storybook",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "indexnow": "node tools/seo/indexnow.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
