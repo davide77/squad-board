@@ -337,7 +337,7 @@ export const FAQ = {
     },
     {
       q: "Is it free?",
-      a: "Yes. Gafferboard is free for your team, with no adverts and nothing to install.",
+      a: "Yes. Picking the team, the call-up and the subs are free for your team, with no adverts and nothing to install. A season pass with extras may come later.",
     },
     {
       q: "Do I need an account?",

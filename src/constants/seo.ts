@@ -29,7 +29,8 @@ export const PAGE_UPDATED = {
   formats: "2026-11-03",
   guides: "2026-11-03",
   privacy: "2026-11-03",
-  credits: "2026-10-20",
+  credits: "2026-11-03",
+  terms: "2026-11-03",
 } as const;
 
 /** The square logo search engines and AI answers show beside the name. */
@@ -172,6 +173,7 @@ export const LLMS_TXT = {
     ...FORMAT_PAGES.map((f) => ({ name: f.title, path: `/${f.slug}`, note: f.description })),
     ...GUIDES.map((g) => ({ name: g.title, path: `/${g.slug}`, note: g.description })),
     { name: "Privacy and safety", path: "/privacy", note: "What is stored, where, and how to delete it" },
+    { name: "Terms of use", path: "/terms", note: "The terms for using the site" },
     { name: "Credits", path: "/credits", note: "Who made it and what it is built with" },
   ],
 } as const;

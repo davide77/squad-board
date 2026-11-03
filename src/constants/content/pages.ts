@@ -29,6 +29,7 @@ export const FOOTER_LINKS = {
   /** The second footer list: every format page, so each one is a link away from every page. */
   formats: "Formats",
   privacy: "Privacy and safety",
+  terms: "Terms",
   credits: "Credits",
   contact: "Contact",
   madeBy: "Made by",
@@ -43,8 +44,13 @@ export const MAKER = {
   url: "https://originsocialclub.com",
   /** The Gafferboard mailbox, set up on SiteGround on 2026-09-30. */
   email: "davide@gafferboard.com",
-  /** Who the maker is on the touchline. Confirmed by Davide on 20 October 2026: coached his son's team from under 9s at Cheam Sports FC, now Ayat U15; his dad played. No year count, so it never goes stale. Never name the child. */
-  bio: "A grassroots coach who has followed one team from under 9s at Cheam Sports FC to Ayat U15. Grew up in football, learning the game from a dad who played it.",
+  /**
+   * Who the maker is on the touchline. Confirmed by Davide on 20 October 2026: coached his son's team from
+   * under 9s at Cheam Sports FC, now manages the under 15s at Ayat; his dad played. On 3 November 2026:
+   * holds coaching badges and safeguarding training. No year count, so it never goes stale. Never name the
+   * child, and never publish a postal address.
+   */
+  bio: "A grassroots coach who took one team from under 9s at Cheam Sports FC and now manages the under 15s at Ayat. Holds coaching badges and safeguarding training. Grew up in football, learning the game from a dad who played it.",
   role: "Grassroots football manager",
 } as const;
 
@@ -149,9 +155,78 @@ export const PRIVACY = {
   contact: `Gafferboard is made by ${MAKER.name}. Email`,
 } as const;
 
+/** The terms of use. Straight voice throughout: these are the rules of using the site. */
+export const TERMS = {
+  title: "Terms of use",
+  description:
+    "The terms for using Gafferboard: a free board for grassroots coaches. Your squad stays yours and on your device, so keep a copy. Governed by English law.",
+  /** Takes the date from PAGE_UPDATED.terms in seo.ts, so the page and the sitemap agree. */
+  updated: (date: string) => `Last updated ${date}`,
+  intro: "These terms cover using Gafferboard at gafferboard.com. Using the site means you accept them. They are short, and written to be read.",
+  sections: [
+    {
+      heading: "Who we are",
+      body: [`Gafferboard is made and run by ${MAKER.name}. Get in touch at ${MAKER.email}.`],
+    },
+    {
+      heading: "What Gafferboard is",
+      body: [
+        "A free web app for grassroots football coaches: the squad, call-ups, formation, bench and substitutions on one screen. The board lives in the browser on your device.",
+        "We may change, add or remove features, and we may stop the service. Where we can, we say so on the site first.",
+      ],
+    },
+    {
+      heading: "Your squad is your responsibility",
+      body: [
+        "What you put on the board is yours. You are responsible for having permission to record players' names and details, and for who you send the call-up, the result and the line-up picture to.",
+        "Most squads are children. Follow your club's safeguarding policy, and use first names or initials where you can.",
+      ],
+    },
+    {
+      heading: "Keep a copy",
+      body: [
+        "The board is stored in this browser only. Clearing the site's data, losing your phone or a browser fault can lose it, and we cannot get it back, because we never had it.",
+        "Export a squad file under Customise your club to keep a copy, and keep the file somewhere private.",
+      ],
+    },
+    {
+      heading: "Fair use",
+      body: [
+        "Do not use Gafferboard to break the law, to harass anyone, or to try to break, overload or get round the site's security.",
+      ],
+    },
+    {
+      heading: "No guarantees",
+      body: [
+        "Gafferboard is provided as it is. We work to keep it running and correct, but we do not promise it will always be available or free of errors.",
+        "The formats and FA rules on the site are a guide. Your league or county FA can set its own, so check with them.",
+        "As far as the law allows, we are not liable for any loss from using Gafferboard. Nothing in these terms limits any liability that the law does not allow us to limit.",
+      ],
+    },
+    {
+      heading: "Paid extras",
+      body: [
+        "Gafferboard is free. If a paid season pass comes, its price and terms will be shown before anyone pays.",
+      ],
+    },
+    {
+      heading: "Privacy",
+      body: ["How we handle email addresses, and what we count, is on the privacy and safety page."],
+    },
+    {
+      heading: "Changes to these terms",
+      body: ["We may update these terms. The date at the top says when they last changed."],
+    },
+    {
+      heading: "The law",
+      body: ["These terms are governed by the law of England and Wales, and the courts of England and Wales deal with any dispute."],
+    },
+  ] satisfies readonly PageSection[],
+} as const;
+
 export const CREDITS = {
   title: "Credits",
-  description: `Gafferboard is designed and built by ${MAKER.name}, a grassroots football coach, now at Ayat U15.`,
+  description: `Gafferboard is designed and built by ${MAKER.name}, a grassroots football coach who manages the under 15s at Ayat.`,
   heading: "Credits",
   makerLabel: "Designed and built by",
   makerLink: `Visit ${MAKER.site}`,
