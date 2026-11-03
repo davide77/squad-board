@@ -13,11 +13,20 @@ const SECURITY_HEADERS = [
   },
 ];
 
+// The clips, posters and logos in public/ keep their names when they change, so they are not
+// immutable. A browser keeps them a day and may show the old one for up to a month while it
+// fetches the new, which saves a round trip on every repeat visit.
+const MEDIA_CACHE = "public, max-age=86400, stale-while-revalidate=2592000";
+const MEDIA_PATHS = ["/film/:path*", "/story/:path*", "/brand/:path*"];
+
 const nextConfig: NextConfig = {
   // No need to tell every visitor what the site is built with.
   poweredByHeader: false,
   async headers() {
-    return [{ source: "/:path*", headers: SECURITY_HEADERS }];
+    return [
+      { source: "/:path*", headers: SECURITY_HEADERS },
+      ...MEDIA_PATHS.map((source) => ({ source, headers: [{ key: "Cache-Control", value: MEDIA_CACHE }] })),
+    ];
   },
 };
 

@@ -170,7 +170,7 @@ export const phoneCopy = (path: string): string => path.replace(/(\.\w+)$/, "-sm
 export const FILM_MEDIA = {
   teaser: { mp4: "/film/gafferboard-teaser.mp4", webm: "/film/gafferboard-teaser.webm" },
   film: "/film/gafferboard-film.mp4",
-  poster: "/film/gafferboard-film-poster.jpg",
+  poster: "/film/gafferboard-film-poster.webp",
   captions: "/film/gafferboard-film.vtt",
   width: 720,
   height: 1280,
@@ -195,7 +195,7 @@ export const STORY: readonly StoryChapter[] = [
     // Says what it is first. On a phone this is all a coach sees before deciding to scroll.
     title: "Pick the team on the touchline.",
     body: "A matchday board for grassroots coaches. Squad, shape, bench, subs and the message to the parents, on your phone. I tell you what's next.",
-    media: { webm: "/film/gafferboard-teaser.webm", mp4: "/film/gafferboard-teaser.mp4", poster: "/film/gafferboard-film-poster.jpg" },
+    media: { webm: "/film/gafferboard-teaser.webm", mp4: "/film/gafferboard-teaser.mp4", poster: "/film/gafferboard-film-poster.webp" },
   },
   {
     key: "age",
@@ -203,7 +203,7 @@ export const STORY: readonly StoryChapter[] = [
     kicker: "Age group",
     title: "How old are they?",
     body: "Pick the age group. I set the format and the shapes. Under 11s, everyone gets a go. From under 12s, it's about results.",
-    media: { webm: "/story/gafferboard-story-age.webm", mp4: "/story/gafferboard-story-age.mp4", poster: "/story/gafferboard-story-age.jpg" },
+    media: { webm: "/story/gafferboard-story-age.webm", mp4: "/story/gafferboard-story-age.mp4", poster: "/story/gafferboard-story-age.webp" },
   },
   {
     key: "squad",
@@ -214,7 +214,7 @@ export const STORY: readonly StoryChapter[] = [
     media: {
       webm: "/story/gafferboard-story-squad.webm",
       mp4: "/story/gafferboard-story-squad.mp4",
-      poster: "/story/gafferboard-story-squad.jpg",
+      poster: "/story/gafferboard-story-squad.webp",
     },
   },
   {
@@ -226,7 +226,7 @@ export const STORY: readonly StoryChapter[] = [
     media: {
       webm: "/story/gafferboard-story-shape.webm",
       mp4: "/story/gafferboard-story-shape.mp4",
-      poster: "/story/gafferboard-story-shape.jpg",
+      poster: "/story/gafferboard-story-shape.webp",
     },
   },
   {
@@ -238,7 +238,7 @@ export const STORY: readonly StoryChapter[] = [
     media: {
       webm: "/story/gafferboard-story-match-3.webm",
       mp4: "/story/gafferboard-story-match-3.mp4",
-      poster: "/story/gafferboard-story-match-3.jpg",
+      poster: "/story/gafferboard-story-match-3.webp",
     },
   },
   {
@@ -250,7 +250,7 @@ export const STORY: readonly StoryChapter[] = [
     media: {
       webm: "/story/gafferboard-story-share.webm",
       mp4: "/story/gafferboard-story-share.mp4",
-      poster: "/story/gafferboard-story-share.jpg",
+      poster: "/story/gafferboard-story-share.webp",
     },
   },
 ];

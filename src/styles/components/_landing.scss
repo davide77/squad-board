@@ -312,6 +312,21 @@
 // there is room. The active tab's bar fills over --story-ms (STORY_DURATION_MS in
 // config.ts), and the chapter changes when it is full. Paused, the bar holds.
 .landing-story {
+  // The age question under the first chapter, for a finger only. Hidden by CSS rather than
+  // left out, so the server HTML and the phone agree and the clip below does not move.
+  &__touch-only {
+    @media not (pointer: coarse) {
+      display: none;
+    }
+  }
+
+  // The pause button, for a mouse only: a phone never moves the story on by itself.
+  &__mouse-only {
+    @media (pointer: coarse) {
+      display: none !important;
+    }
+  }
+
   &__tabs {
     grid-template-columns: repeat(auto-fit, minmax(min(150px, 30%), 1fr));
   }

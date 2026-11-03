@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type AnimationEvent, type CSSProperties, type FocusEvent, type KeyboardEvent } from "react";
+import { preload } from "react-dom";
 import { AnimatePresence, MotionConfig, motion, useInView, type Variants } from "framer-motion";
 import { STORY_DURATION_MS, VIDEO_CONFIG } from "@/constants/config";
 import { FILM, FILM_MEDIA, STORY, STORY_UI, phoneCopy, type StoryChapter } from "@/constants/content/landing";
@@ -59,6 +60,10 @@ export function HeroCarousel() {
   const tabsRef = useRef<HTMLDivElement>(null);
   const inView = useInView(sectionRef, { amount: IN_VIEW_AMOUNT });
   const id = useId();
+
+  // The first chapter's poster is the biggest thing on the first screen, and a video poster cannot ask
+  // for priority itself, so the page asks for it in the head before the fonts.
+  preload(STORY[0].media.poster, { as: "image", fetchPriority: "high" });
 
   const chapter = STORY[index];
   const paused = reduced || touch || held || reading || focused || film || !inView;
@@ -160,9 +165,17 @@ export function HeroCarousel() {
                   </motion.p>
                 </div>
 
-                {/* On a phone the carousel never moves on by itself, so the question comes up under the first chapter too. */}
-                {(chapter.key === "age" || (touch && index === 0)) && (
-                  <motion.div custom={dir} variants={LINE}>
+                {/*
+                  On a phone the carousel never moves on by itself, so the question comes up under the first
+                  chapter too. It is in the server HTML and CSS hides it on a mouse, so nothing below it jumps
+                  when the page wakes up.
+                */}
+                {(chapter.key === "age" || index === 0) && (
+                  <motion.div
+                    custom={dir}
+                    variants={LINE}
+                    className={cx(chapter.key !== "age" && "landing-story__touch-only")}
+                  >
                     <AgePicker onPick={() => setHeld(true)} />
                   </motion.div>
                 )}
@@ -226,9 +239,12 @@ export function HeroCarousel() {
             })}
           </div>
 
-          {/* Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause. */}
-          {!reduced && !touch && (
-            <div className="is-flex is-justify-end">
+          {/*
+            Under reduced motion or on a phone it never moves on by itself, so there is nothing to pause.
+            A phone is told apart by CSS, so the server HTML matches and nothing shifts on load.
+          */}
+          {!reduced && (
+            <div className="landing-story__mouse-only is-flex is-justify-end">
               {/*
                 A toggle: the words stay "Pause" and the pressed state says it is paused, with a kit-colour
                 outline. py-3 makes it a 44px target, like every other button in the hero.
