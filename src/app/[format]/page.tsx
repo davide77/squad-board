@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { FormationDiagram } from "@/components/landing/FormationDiagram";
 import { PageShell } from "@/components/landing/PageShell";
-import { FORMAT_PAGE, FORMAT_PAGES } from "@/constants/content/formats";
+import { FA_SOURCES, FORMAT_PAGE, FORMAT_PAGES } from "@/constants/content/formats";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
 import { MAKER } from "@/constants/content/pages";
 import { ROUTES, boardOnFormat, formatPagePath } from "@/constants/routes";
@@ -66,6 +66,34 @@ export default async function FormatPage({ params }: FormatPageProps) {
           ))}
         </section>
       ))}
+      {page.rules && (
+        <section className="has-mb-7">
+          <h2 className="text-2xl tracking-heading has-mb-3">{FORMAT_PAGE.rulesHeading(FORMATS[page.format].label)}</h2>
+          <table className="format-rules is-w-full text-md has-mb-3">
+            <tbody>
+              {page.rules.map((r) => (
+                <tr key={r.label}>
+                  <th scope="row" className="text-left has-font-semibold has-py-2 has-pr-4">
+                    {r.label}
+                  </th>
+                  <td className="is-dim leading-snug has-py-2">{r.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-sm is-dimmer has-mb-2">{FORMAT_PAGE.rulesSource}</p>
+          <p className="text-sm is-dimmer has-mb-1">{FORMAT_PAGE.rulesLinks}</p>
+          <ul className="is-flex is-flex-column has-gap-1">
+            {[FA_SOURCES.formats, FA_SOURCES.futureFit].map((l) => (
+              <li key={l.url}>
+                <a href={l.url} className="hit-area is-kit has-font-semibold text-sm">
+                  {l.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section className="has-mb-7">
         <h2 className="text-2xl tracking-heading has-mb-3">{FORMAT_PAGE.agesHeading}</h2>
         <p className="text-md is-dim">{FORMAT_PAGE.ages(ages)}</p>

@@ -515,6 +515,18 @@
 
 // The shapes on a format page: chips in one column, what each is for in the next, so the notes line up
 // however wide the shape's name is. Each row is a list item laid out by the list's grid.
+// The FA rules on a format page: label beside value, each row ruled off, the label at the top
+// of a long answer rather than floating in its middle.
+.format-rules {
+  border-collapse: collapse;
+
+  th,
+  td {
+    vertical-align: top;
+    border-top: 1px solid $edge;
+  }
+}
+
 // The shapes on a format page: one card each, as many to a row as fit.
 .format-shapes {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));

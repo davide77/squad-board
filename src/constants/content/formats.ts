@@ -16,7 +16,39 @@ export interface FormatPage {
   readonly questions: readonly FormatQuestion[];
   /** One line on what each shape on the board is for, keyed by the shape as FORMATS names it. */
   readonly shapeNotes: Readonly<Record<string, string>>;
+  /**
+   * The FA's rules for the format, only where they are confirmed in an FA document for 2026-27.
+   * 9-a-side and 11-a-side have none yet: their 2026-27 figures were only seen in the FA's proposed rules.
+   */
+  readonly rules?: readonly FormatRule[];
 }
+
+export interface FormatRule {
+  readonly label: string;
+  readonly value: string;
+}
+
+/**
+ * Where the rules come from. Checked on 3 November 2026 against The FA's Mini-Soccer and Youth Futsal
+ * Handbook for 2026-27 and the FutureFit announcement.
+ */
+export const FA_SOURCES = {
+  handbook: "The FA Mini-Soccer and Youth Futsal Handbook 2026-27",
+  formats: { name: "England Football: game formats by age", url: "https://learn.englandfootball.com/articles-and-resources/coaching/resources/2022/What-is-a-format-in-football" },
+  futureFit: {
+    name: "FutureFit: the changes to youth football",
+    url: "https://www.englandfootball.com/articles/2025/Feb/21/Future-Fit-grassroots-youth-football-england-update-20252102",
+  },
+} as const;
+
+/** Rules shared by both mini-soccer formats, word for word the same on 5-a-side and 7-a-side. */
+const MINI_SOCCER_RULES: readonly FormatRule[] = [
+  { label: "Subs", value: "Rolling. On and off at any time with the referee's say-so, and a player who came off can go back on." },
+  { label: "Goal kicks", value: "Retreat line. The other side drops back to halfway until the ball is played." },
+  { label: "Restarts", value: "No offside. No throw-ins: pass or dribble it in. No deliberate heading." },
+  { label: "Results", value: "No leagues. Up to three trophy events a season." },
+  { label: "Playing time", value: "Equal where possible. The FA's best practice is at least half of every game for every player." },
+];
 
 export interface FormatQuestion {
   readonly q: string;
@@ -59,6 +91,13 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
       "2-2": "Two at the back, two up top. Simple to hold.",
       "2-1-1": "Two at the back, one in the middle, one up top. Safer at the back.",
     },
+    rules: [
+      { label: "Ages", value: "Under 8s and under 9s, from 2026-27." },
+      { label: "Goals and ball", value: "12 x 6 ft goals. Size 3 ball." },
+      { label: "Match length", value: "Up to 40 minutes, two halves of 20. No more than 60 minutes in a day." },
+      { label: "Squad", value: "Five on the pitch, ten or fewer on matchday." },
+      ...MINI_SOCCER_RULES,
+    ],
   },
   {
     slug: "7-a-side",
@@ -96,6 +135,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
           "Two more players, a bigger pitch, and the shape starts to matter.",
           "Start in 2-3-1. It's the 1-2-1 diamond with one more at the back and one more in the middle, so nobody has to learn a new job.",
           "Under 10s and under 11s is still development football. Everyone plays. Move them around.",
+          "Under 9s used to play 7-a-side. From 2026-27 they stay on 5-a-side, and under 11s stay on 7-a-side instead of moving to nine.",
         ],
       },
     ],
@@ -105,6 +145,13 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
       "2-1-2-1": "A diamond. One sits, two get forward, one up top.",
       "3-1-2": "Three at the back, one in the middle, two up top. For a side that scores.",
     },
+    rules: [
+      { label: "Ages", value: "Under 10s and under 11s." },
+      { label: "Goals and ball", value: "12 x 6 ft goals. Size 3 ball." },
+      { label: "Match length", value: "Up to 50 minutes, two halves of 25. No more than 90 minutes in a day." },
+      { label: "Squad", value: "Seven on the pitch, fourteen or fewer on matchday." },
+      ...MINI_SOCCER_RULES,
+    ],
   },
   {
     slug: "9-a-side",
@@ -133,6 +180,13 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
           "Under 12s and under 13s is where results count and league tables start. Coaches play to win.",
           "Positions start to mean something, and the parents want to know who's starting.",
           "The board keeps your strongest side saved, logs every change to the minute, and sends the result to the parents at full time.",
+        ],
+      },
+      {
+        q: "Who plays 9-a-side from 2026-27?",
+        a: [
+          "Under 12s and under 13s. That's the FA's FutureFit change.",
+          "Under 11s used to play nine. They now stay on 7-a-side a season longer. Under 13s used to go up to eleven. They now get another season of nine.",
         ],
       },
       {
@@ -220,6 +274,10 @@ export const FORMAT_PAGE = {
   shapeHeading: (shape: string) => `${shape} formation`,
   /** Read out for the drawing of a shape: the keeper, then each line from the back. */
   diagramLabel: (shape: string) => `The ${shape} formation on a pitch: a keeper, then ${shape.split("-").join(", ")} from the back.`,
+  rulesHeading: (label: string) => `The FA rules for ${label}`,
+  rulesSource: `From ${FA_SOURCES.handbook}. Leagues can play a smaller format. Check yours.`,
+  /** The FA pages linked under the rules, as further reading. */
+  rulesLinks: "Read more from the FA",
   /** Who wrote the page, beside the date. Links to the credits page. */
   byline: "· By",
   updated: (date: string) => `Last updated ${date}`,
