@@ -1,4 +1,5 @@
 import { FORMAT_PAGES } from "@/constants/content/formats";
+import { GUIDES } from "@/constants/content/guides";
 import { FAQ } from "@/constants/content/landing";
 import { MAKER } from "@/constants/content/pages";
 import { FORMAT_KEYS, FORMATS } from "@/constants/football";
@@ -26,6 +27,7 @@ export const TWITTER_CARD = "summary_large_image";
 export const PAGE_UPDATED = {
   home: "2026-11-03",
   formats: "2026-11-03",
+  guides: "2026-11-03",
   privacy: "2026-11-03",
   credits: "2026-10-20",
 } as const;
@@ -168,6 +170,7 @@ export const LLMS_TXT = {
   pages: [
     { name: "Home", path: "/", note: "What the board does, with a working demo" },
     ...FORMAT_PAGES.map((f) => ({ name: f.title, path: `/${f.slug}`, note: f.description })),
+    ...GUIDES.map((g) => ({ name: g.title, path: `/${g.slug}`, note: g.description })),
     { name: "Privacy and safety", path: "/privacy", note: "What is stored, where, and how to delete it" },
     { name: "Credits", path: "/credits", note: "Who made it and what it is built with" },
   ],

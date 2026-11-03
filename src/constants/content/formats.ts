@@ -269,6 +269,8 @@ export const FORMAT_PAGE = {
   shapesHeading: "Shapes on the board",
   agesHeading: "Who plays it",
   ages: (labels: readonly string[]) => labels.join(", "),
+  /** Under "Who plays it", to the page with every age group. */
+  agesMore: "Every age group and its format",
   others: "Other formats",
   /** The shape's own heading, so "2-3-1 formation" has a heading to match. */
   shapeHeading: (shape: string) => `${shape} formation`,

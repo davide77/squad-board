@@ -7,7 +7,8 @@ import { PageShell } from "@/components/landing/PageShell";
 import { FA_SOURCES, FORMAT_PAGE, FORMAT_PAGES } from "@/constants/content/formats";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
 import { MAKER } from "@/constants/content/pages";
-import { ROUTES, boardOnFormat, formatPagePath } from "@/constants/routes";
+import { GUIDE_SLUGS } from "@/constants/content/guides";
+import { ROUTES, boardOnFormat, formatPagePath, guidePath } from "@/constants/routes";
 import { PAGE_UPDATED } from "@/constants/seo";
 import { formatPageJsonLd, longDate, pageMetadata } from "@/lib/seo";
 
@@ -96,7 +97,10 @@ export default async function FormatPage({ params }: FormatPageProps) {
       )}
       <section className="has-mb-7">
         <h2 className="text-2xl tracking-heading has-mb-3">{FORMAT_PAGE.agesHeading}</h2>
-        <p className="text-md is-dim">{FORMAT_PAGE.ages(ages)}</p>
+        <p className="text-md is-dim has-mb-2">{FORMAT_PAGE.ages(ages)}</p>
+        <Link href={guidePath(GUIDE_SLUGS.formatsByAge)} className="hit-area is-kit has-font-semibold text-md">
+          {FORMAT_PAGE.agesMore}
+        </Link>
       </section>
       <section className="has-mb-7">
         <h2 className="text-2xl tracking-heading has-mb-4">{FORMAT_PAGE.shapesHeading}</h2>

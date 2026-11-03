@@ -15,3 +15,6 @@ export const boardOnFormat = (format: string) => `${ROUTES.board}?${FORMAT_PARAM
 
 /** A format page's address, such as /7-a-side. */
 export const formatPagePath = (slug: string) => `/${slug}`;
+
+/** A guide's address, such as /fair-playing-time. */
+export const guidePath = (slug: string) => `/${slug}`;

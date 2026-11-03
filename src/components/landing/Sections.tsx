@@ -2,9 +2,10 @@ import Link from "next/link";
 import { FOOTER_SIGN_IN } from "@/constants/content/account";
 import { FAQ, PRIVATE_MORE, PRIVATE_ROWS } from "@/constants/content/landing";
 import { FORMAT_PAGES } from "@/constants/content/formats";
+import { GUIDES, GUIDE_PAGE } from "@/constants/content/guides";
 import { FOOTER_LINKS, MAKER } from "@/constants/content/pages";
 import { FORMATS } from "@/constants/football";
-import { ROUTES, formatPagePath } from "@/constants/routes";
+import { ROUTES, formatPagePath, guidePath } from "@/constants/routes";
 import { SITE, SOCIAL } from "@/constants/site";
 import { InstagramIcon } from "../InstagramIcon";
 import { ClubWaitlist } from "./ClubWaitlist";
@@ -79,6 +80,13 @@ export function LandingFooter() {
           {FORMAT_PAGES.map((f) => (
             <Link key={f.slug} href={formatPagePath(f.slug)} className="hit-area">
               {FORMATS[f.format].label}
+            </Link>
+          ))}
+        </nav>
+        <nav aria-label={GUIDE_PAGE.footer} className="is-flex is-flex-wrap has-gap-6">
+          {GUIDES.map((g) => (
+            <Link key={g.slug} href={guidePath(g.slug)} className="hit-area">
+              {g.short}
             </Link>
           ))}
         </nav>

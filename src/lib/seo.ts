@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { FORMAT_PAGE, type FormatPage } from "@/constants/content/formats";
+import type { Guide } from "@/constants/content/guides";
 import { FORMATS } from "@/constants/football";
 import { LANDING_META } from "@/constants/content/landing";
-import { ROUTES, formatPagePath } from "@/constants/routes";
+import { ROUTES, formatPagePath, guidePath } from "@/constants/routes";
 import {
   FAQ_NODE,
   OG_IMAGE,
@@ -152,6 +153,33 @@ export function formatPageJsonLd(page: FormatPage) {
           name: item.q,
           acceptedAnswer: { "@type": "Answer", text: item.a.join(" ") },
         })),
+      },
+    ],
+  });
+}
+
+/** Structured data for a guide: the page, and the guide itself as an Article by the maker. */
+export function guideJsonLd(guide: Guide) {
+  const url = SITE_URL + guidePath(guide.slug);
+  return pageJsonLd({
+    path: guidePath(guide.slug),
+    name: guide.title,
+    description: guide.description,
+    updated: PAGE_UPDATED.guides,
+    mainEntity: { "@id": `${url}#article` },
+    nodes: [
+      {
+        "@type": "Article",
+        "@id": `${url}#article`,
+        headline: guide.title,
+        description: guide.description,
+        inLanguage: "en-GB",
+        dateModified: PAGE_UPDATED.guides,
+        author: { "@id": `${SITE_URL}/#maker` },
+        publisher: { "@id": `${SITE_URL}/#org` },
+        image: `${SITE_URL}${OG_IMAGE.path}`,
+        mainEntityOfPage: { "@id": `${url}#page` },
+        ...(guide.sources.length ? { citation: guide.sources.map((src) => src.url) } : {}),
       },
     ],
   });

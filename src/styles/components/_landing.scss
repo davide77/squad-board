@@ -527,6 +527,14 @@
   }
 }
 
+// A message shown as it is sent: the line breaks kept, long links wrapped rather than
+// pushing the page sideways.
+.guide-example {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+}
+
 // The shapes on a format page: one card each, as many to a row as fit.
 .format-shapes {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
