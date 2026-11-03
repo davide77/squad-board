@@ -10,6 +10,7 @@ const INDEXED: readonly { readonly path: string; readonly updated: string }[] = 
   ...FORMAT_PAGES.map((f) => ({ path: formatPagePath(f.slug), updated: PAGE_UPDATED.formats })),
   ...GUIDES.map((g) => ({ path: guidePath(g.slug), updated: PAGE_UPDATED.guides })),
   { path: ROUTES.privacy, updated: PAGE_UPDATED.privacy },
+  { path: ROUTES.terms, updated: PAGE_UPDATED.terms },
   { path: ROUTES.credits, updated: PAGE_UPDATED.credits },
 ];
 

@@ -3,6 +3,7 @@ export const ROUTES = {
   home: "/",
   board: "/board",
   privacy: "/privacy",
+  terms: "/terms",
   credits: "/credits",
   account: "/account",
   /** Where the sign-in email's link lands. A route handler, not a page. */

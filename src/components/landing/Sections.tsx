@@ -97,6 +97,9 @@ export function LandingFooter() {
           <Link href={ROUTES.privacy} className="hit-area">
             {FOOTER_LINKS.privacy}
           </Link>
+          <Link href={ROUTES.terms} className="hit-area">
+            {FOOTER_LINKS.terms}
+          </Link>
           <Link href={ROUTES.credits} className="hit-area">
             {FOOTER_LINKS.credits}
           </Link>
