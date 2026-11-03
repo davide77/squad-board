@@ -80,6 +80,7 @@ export const PRIVACY = {
       heading: "What we count",
       body: [
         "We count visits, so we know how many coaches use Gafferboard. Vercel Web Analytics records which page was opened, the site you came from, your country and the kind of device and browser. It sets no cookie and does not know who you are: a visitor is a code that resets every day.",
+        "Vercel Speed Insights measures how fast each page loads on your device, such as how long the main picture takes to appear and whether anything jumps as it loads. With it go the page, your country and the kind of device and browser. It sets no cookie either.",
         // Only said while the board's events are switched on, so the page never claims more than is counted.
         ...(ANALYTICS_CONFIG.events ? [EVENTS_COUNTED] : []),
         "Nothing on your board is part of it. Not the team, not a player, not the message you send.",

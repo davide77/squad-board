@@ -26,7 +26,7 @@ export const TWITTER_CARD = "summary_large_image";
 export const PAGE_UPDATED = {
   home: "2026-11-03",
   formats: "2026-11-03",
-  privacy: "2026-10-20",
+  privacy: "2026-11-03",
   credits: "2026-10-20",
 } as const;
 

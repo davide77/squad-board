@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { THEME_COLOUR } from "@/constants/brand";
 import { OPEN_GRAPH_BASE, SITE_URL, TITLE_TEMPLATE, TWITTER_CARD } from "@/constants/seo";
 import { SITE } from "@/constants/site";
@@ -29,6 +30,8 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
         </a>
         {children}
         <Analytics />
+        {/* Core Web Vitals from real visits, so LCP and CLS are measured on coaches' phones, not only in a lab. */}
+        <SpeedInsights />
       </body>
     </html>
   );
