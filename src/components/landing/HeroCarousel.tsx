@@ -204,6 +204,21 @@ export function HeroCarousel() {
           </motion.div>
         </div>
 
+        {/*
+          The other chapters' words, in the HTML but hidden, the way any tab panel waits its turn. Only
+          the chapter on screen is rendered above, so without this a crawler reads one chapter in six.
+        */}
+        <div hidden>
+          {STORY.map((c, i) =>
+            i === index ? null : (
+              <div key={c.key}>
+                <h2>{c.title}</h2>
+                <p>{c.body}</p>
+              </div>
+            ),
+          )}
+        </div>
+
         <div className="is-flex is-flex-column has-gap-3">
           <div ref={tabsRef} role="tablist" aria-label={STORY_UI.chapters} className="landing-story__tabs is-grid has-gap-2">
             {STORY.map((c, i) => {

@@ -35,7 +35,7 @@ export function PrivateSection() {
   );
 }
 
-/** Four questions, each a native details element: open and close with a tap, readable with no script. */
+/** The questions, each a native details element: open and close with a tap, readable with no script. */
 export function FaqSection() {
   return (
     <section id="faq" className="landing-section">
