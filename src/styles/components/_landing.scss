@@ -515,18 +515,33 @@
 
 // The shapes on a format page: chips in one column, what each is for in the next, so the notes line up
 // however wide the shape's name is. Each row is a list item laid out by the list's grid.
+// The shapes on a format page: one card each, as many to a row as fit.
 .format-shapes {
-  grid-template-columns: max-content 1fr;
-
-  > li {
-    display: contents;
-  }
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
 }
 
-// A shape on a format page, like a chip on the board.
-.format-shape {
-  background-color: color(board-2);
-  border: 1px solid $edge;
+// A formation drawn on the board's pitch. The markers are the board's discs, small, placed by
+// --x and --y as shares of the pitch's width and length, own goal at the bottom.
+.formation-diagram {
+  --line: #{tint(kit, 24%)};
+  width: min(100%, 220px);
+
+  &__marker {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: spacer(4);
+    height: spacer(4);
+    translate: -50% -50%;
+    background-color: color(kit);
+    border: 1px solid color(kit-edge);
+    box-shadow: 0 2px 0 tint(black, 35%);
+
+    &--keeper {
+      background-color: color(chalk);
+      border-color: color(keeper-edge);
+    }
+  }
 }
 
 // The waitlist email: wide enough for an address, never wider than a phone.

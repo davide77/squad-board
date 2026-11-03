@@ -30,7 +30,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     title: "5-a-side formations and line-ups",
     description:
       "A free 5-a-side board for grassroots coaches: pick a shape, tick who's in, keep fair minutes and send call-ups to parents. Under 8s and 9s. No account.",
-    heading: "5-a-side. Everyone plays.",
+    heading: "5-a-side formations. Everyone plays.",
     intro: [
       "Five a side is the FA format for under 8s and under 9s from the 2026-27 season: a keeper and four outfield players on a small pitch.",
       "Pick a shape, tick who's in, and the board keeps every player's minutes, so everyone gets a fair go.",
@@ -57,7 +57,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     shapeNotes: {
       "1-2-1": "The diamond. One back, two wide, one up top. The balanced start.",
       "2-2": "Two at the back, two up top. Simple to hold.",
-      "2-1-1": "Two at the back, one in the middle, one up top. Safer.",
+      "2-1-1": "Two at the back, one in the middle, one up top. Safer at the back.",
     },
   },
   {
@@ -66,7 +66,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     title: "7-a-side formations and line-ups",
     description:
       "A free 7-a-side board for grassroots coaches: pick a shape, tick who's in, keep fair minutes and send call-ups to parents. Under 10s and 11s. No account.",
-    heading: "7-a-side. Pick the team.",
+    heading: "7-a-side formations. Pick the team.",
     intro: [
       "Seven a side is the FA format for under 10s and under 11s: a keeper and six outfield players on a small pitch.",
       "Pick a shape, tick who's in, and the board keeps every player's minutes, so everyone gets a fair go.",
@@ -76,8 +76,8 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
       {
         q: "What is the best 7-a-side formation?",
         a: [
-          "There isn't one. There's the one that suits the players you've got.",
-          "2-3-1 is where most coaches start. Two at the back, three across the middle, one up top. It's balanced, and everyone gets on the ball.",
+          "2-3-1 is where most coaches start. But there's no best shape, only the one that suits the players you've got.",
+          "Two at the back, three across the middle, one up top. It's balanced, and everyone gets on the ball.",
           "Leaking goals? Go 3-2-1 and put three at the back. Got two who score? 3-1-2 plays them together up top. 2-1-2-1 is a diamond, for a side that likes to pass through the middle.",
           "This is development football, so move players around. A defender who plays up top for a half learns something.",
         ],
@@ -91,7 +91,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
         ],
       },
       {
-        q: "Moving up from 5-a-side?",
+        q: "Moving up from 5-a-side to 7-a-side?",
         a: [
           "Two more players, a bigger pitch, and the shape starts to matter.",
           "Start in 2-3-1. It's the 1-2-1 diamond with one more at the back and one more in the middle, so nobody has to learn a new job.",
@@ -112,7 +112,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     title: "9-a-side formations and line-ups",
     description:
       "A free 9-a-side board for grassroots coaches: five shapes, the bench, every sub to the minute and the result for parents. Under 12s and 13s. No account.",
-    heading: "9-a-side. Results count now.",
+    heading: "9-a-side formations. Results count now.",
     intro: [
       "Nine a side is the FA format for under 12s and under 13s, where results and league tables begin.",
       "Pick from five shapes, set your strongest side, and log every change to the minute on matchday.",
@@ -136,7 +136,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
         ],
       },
       {
-        q: "Moving up from 7-a-side?",
+        q: "Moving up from 7-a-side to 9-a-side?",
         a: [
           "Two more players, and the first season results count.",
           "3-3-2 is the easy step. It's a 2-3-1 with one more at the back and a second striker, so the shape your squad knows is still there.",
@@ -147,7 +147,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     shapeNotes: {
       "3-2-3": "Three back, two in the middle, three up front. Width and goals.",
       "2-3-2-1": "Two at the back, three across midfield, two behind a striker.",
-      "3-3-2": "Three and three behind a front two. Even.",
+      "3-3-2": "Three at the back, three in midfield, two up top. Balanced.",
       "3-4-1": "Four across the middle. Win the midfield.",
       "4-3-1": "A back four. Hard to beat.",
     },
@@ -158,7 +158,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
     title: "11-a-side formations and line-ups",
     description:
       "A free 11-a-side board for grassroots coaches: fifteen shapes from 4-3-3 to 5-3-2, the bench, subs to the minute and the call-up. Under 14s to adults.",
-    heading: "11-a-side. The full game.",
+    heading: "11-a-side formations. The full game.",
     intro: [
       "Eleven a side is the full game, from under 14s up to adults.",
       "Fifteen shapes to pick from, or drag the markers into your own. Bench cover, subs to the minute, and the call-up in one tap.",
@@ -182,7 +182,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
         ],
       },
       {
-        q: "Moving up from 9-a-side?",
+        q: "Moving up from 9-a-side to 11-a-side?",
         a: [
           "From 2026-27, under 14s is the first season of 11-a-side. Two more players, a bigger pitch, and a back four for most sides.",
           "Played 3-2-3? Go 4-3-3. One more at the back, one more in midfield, the same front three.",
@@ -204,7 +204,7 @@ export const FORMAT_PAGES: readonly FormatPage[] = [
       "3-4-3": "Three at the back, wing-backs, three up top.",
       "3-4-2-1": "Three at the back, two 10s behind a striker.",
       "3-5-2": "Wing-backs and a midfield three behind two strikers.",
-      "5-4-1": "Five at the back, four in midfield. Hold on.",
+      "5-4-1": "Five at the back, four in midfield. For holding a lead.",
       "5-3-2": "Five at the back, two up top on the break.",
     },
   },
@@ -216,6 +216,12 @@ export const FORMAT_PAGE = {
   agesHeading: "Who plays it",
   ages: (labels: readonly string[]) => labels.join(", "),
   others: "Other formats",
+  /** The shape's own heading, so "2-3-1 formation" has a heading to match. */
+  shapeHeading: (shape: string) => `${shape} formation`,
+  /** Read out for the drawing of a shape: the keeper, then each line from the back. */
+  diagramLabel: (shape: string) => `The ${shape} formation on a pitch: a keeper, then ${shape.split("-").join(", ")} from the back.`,
+  /** Who wrote the page, beside the date. Links to the credits page. */
+  byline: "· By",
   updated: (date: string) => `Last updated ${date}`,
   /** The first step of the breadcrumb in the structured data. */
   home: "Home",

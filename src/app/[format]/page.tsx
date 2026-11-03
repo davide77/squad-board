@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
+import { FormationDiagram } from "@/components/landing/FormationDiagram";
 import { PageShell } from "@/components/landing/PageShell";
 import { FORMAT_PAGE, FORMAT_PAGES } from "@/constants/content/formats";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
-import { boardOnFormat, formatPagePath } from "@/constants/routes";
+import { MAKER } from "@/constants/content/pages";
+import { ROUTES, boardOnFormat, formatPagePath } from "@/constants/routes";
 import { PAGE_UPDATED } from "@/constants/seo";
 import { formatPageJsonLd, longDate, pageMetadata } from "@/lib/seo";
 
@@ -39,7 +41,12 @@ export default async function FormatPage({ params }: FormatPageProps) {
     <PageShell>
       <JsonLd data={formatPageJsonLd(page)} />
       <h1 className="text-5xl tracking-heading has-mb-3">{page.heading}</h1>
-      <p className="text-sm is-dimmer has-mb-6">{FORMAT_PAGE.updated(longDate(PAGE_UPDATED.formats))}</p>
+      <p className="text-sm is-dimmer has-mb-6">
+        {FORMAT_PAGE.updated(longDate(PAGE_UPDATED.formats))} {FORMAT_PAGE.byline}{" "}
+        <Link href={ROUTES.credits} className="is-kit has-font-semibold">
+          {MAKER.name}
+        </Link>
+      </p>
       {page.intro.map((p) => (
         <p key={p} className="text-lg leading-relaxed is-dim has-mb-4">
           {p}
@@ -64,12 +71,13 @@ export default async function FormatPage({ params }: FormatPageProps) {
         <p className="text-md is-dim">{FORMAT_PAGE.ages(ages)}</p>
       </section>
       <section className="has-mb-7">
-        <h2 className="text-2xl tracking-heading has-mb-3">{FORMAT_PAGE.shapesHeading}</h2>
-        <ul className="format-shapes is-grid is-align-center has-gap-3">
+        <h2 className="text-2xl tracking-heading has-mb-4">{FORMAT_PAGE.shapesHeading}</h2>
+        <ul className="format-shapes is-grid has-gap-6">
           {FORMATS[page.format].shapes.map((s) => (
-            <li key={s}>
-              <span className="format-shape text-center has-font-headline has-font-bold text-xl tracking-tag has-radius-field has-py-2 has-px-4">{s}</span>
-              <span className="text-md is-dim leading-snug">{page.shapeNotes[s]}</span>
+            <li key={s} className="is-flex is-flex-column has-gap-3">
+              <h3 className="has-font-headline has-font-bold text-xl tracking-tag">{FORMAT_PAGE.shapeHeading(s)}</h3>
+              <FormationDiagram shape={s} />
+              <p className="text-md is-dim leading-snug">{page.shapeNotes[s]}</p>
             </li>
           ))}
         </ul>
