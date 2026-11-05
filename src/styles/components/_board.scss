@@ -19,6 +19,10 @@ $pitch-headroom: spacer(11) * 3;
 // The room the bar along the foot of Pick the team takes: its buttons and their padding.
 $pick-bar-room: spacer(11) + spacer(4);
 
+// The narrowest the pitch is squeezed to fit a short screen. Below this the shape controls stack into a
+// column and the bench cover names collide, so a short laptop window scrolls the pitch instead.
+$pitch-min-width: 440px;
+
 // Headings on the board, and in the sheets over it, are chalk. Yellow is kept for what the coach acts on:
 // Send call-up, ticked boxes, the step showing and the shirts on the pitch. :where keeps this at the
 // weight of a bare element, so a colour utility on a heading still wins.
@@ -108,7 +112,7 @@ $pick-bar-room: spacer(11) + spacer(4);
 
       // The whole shape fits the screen, keeper included, with the Gaffer and the shape controls above it.
       .pitch {
-        max-width: calc((100dvh - #{$pitch-headroom}) * 3 / 4);
+        max-width: max(#{$pitch-min-width}, calc((100dvh - #{$pitch-headroom}) * 3 / 4));
         margin-inline: auto;
       }
     }
@@ -119,7 +123,7 @@ $pick-bar-room: spacer(11) + spacer(4);
   @include min(bp(md)) {
     &--pick &__centre {
       .shape-panel {
-        max-width: calc((100dvh - #{$pitch-headroom + $pick-bar-room}) * 3 / 4);
+        max-width: max(#{$pitch-min-width}, calc((100dvh - #{$pitch-headroom + $pick-bar-room}) * 3 / 4));
         margin-inline: auto;
       }
     }
