@@ -3,7 +3,7 @@ import { NO_NUMBER, SHEET, SUBS } from "@/constants/content/board";
 import { PICTURE_CONFIG } from "@/constants/config";
 import { containIn, loadImage } from "./badge";
 import { downloadBlob } from "./files";
-import { matchDate } from "./message";
+import { fixtureVersus, matchDate } from "./message";
 import { monogram, shirtName } from "./names";
 import { byId, slots } from "./queries";
 import type { BoardData } from "./types";
@@ -152,7 +152,7 @@ export async function lineupPicture(d: BoardData): Promise<Blob> {
   ctx.fillStyle = kit.kit;
   ctx.font = `700 ${L.teamSize}px ${head}`;
   // The fixture, then the day and kick-off when the coach filled them in.
-  const sub = [d.fixture.trim(), matchDate(d.match.date), d.match.kickoff].filter(Boolean).join(SHEET.pictureJoin);
+  const sub = [fixtureVersus(d.fixture), matchDate(d.match.date), d.match.kickoff].filter(Boolean).join(SHEET.pictureJoin);
   ctx.fillText(fit(ctx, d.team || SHEET.fallbackTitle, textW), textX, sub ? L.crestY + 8 : L.crestY + 20);
   if (sub) {
     ctx.fillStyle = BOARD_PALETTE.dim;

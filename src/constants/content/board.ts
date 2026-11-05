@@ -479,6 +479,8 @@ export const MESSAGE = {
   /** "To change the kits, customise your club.", with the last words opening the club sheet. */
   venueHint: "To change the kits,",
   venueHintLink: "customise your club",
+  /** Put before the opponent when the coach typed only the name, so a parent reads who we play. */
+  versus: "v ",
   /** After the fixture in the message: "v Northgate (away, league)". Then the kit line under it. */
   fixtureTag: (parts: readonly string[]) => (parts.length ? ` (${parts.join(", ")})` : ""),
   /** "Home kit: black and yellow stripes, black shorts, black socks." */

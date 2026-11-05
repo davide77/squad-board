@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boldRuns, squadMessage } from "./message";
+import { boldRuns, fixtureVersus, squadMessage } from "./message";
 import { emptyData } from "./storage";
 
 describe("squadMessage", () => {
@@ -33,5 +33,31 @@ describe("boldRuns", () => {
 
   it("leaves a line with an unpaired mark plain", () => {
     expect(boldRuns("5*a side")).toEqual([{ text: "5*a side", bold: false }]);
+  });
+});
+
+describe("fixtureVersus", () => {
+  it("puts v before an opponent typed on its own", () => {
+    expect(fixtureVersus("Redbridge Youth U15 Blue C Div")).toBe("v Redbridge Youth U15 Blue C Div");
+  });
+
+  it("keeps a v or vs the coach typed", () => {
+    expect(fixtureVersus("v Northgate")).toBe("v Northgate");
+    expect(fixtureVersus("vs. Northgate")).toBe("vs. Northgate");
+    expect(fixtureVersus("VS Northgate")).toBe("VS Northgate");
+  });
+
+  it("does not mistake a name starting with v for the prefix", () => {
+    expect(fixtureVersus("Valley Rangers")).toBe("v Valley Rangers");
+  });
+
+  it("stays empty when nothing is typed", () => {
+    expect(fixtureVersus("  ")).toBe("");
+  });
+
+  it("heads the fixture line of the call-up", () => {
+    const d = { ...emptyData(), team: "Ayat", fixture: "Redbridge", players: [] };
+    d.match = { ...d.match, venue: "home", competition: "cup" };
+    expect(squadMessage(d)).toContain("v Redbridge (home, cup)");
   });
 });

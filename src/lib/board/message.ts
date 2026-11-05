@@ -11,11 +11,20 @@ export function matchDate(iso: string): string {
   return new Intl.DateTimeFormat(MESSAGE_CONFIG.locale, MESSAGE_DATE_FORMAT).format(new Date(y, m - 1, d));
 }
 
+const VERSUS = /^(v|vs)\.?\s/i;
+
+/** "Northgate" as "v Northgate", so the line reads as who we play. A fixture typed with its own "v" or "vs" is kept. */
+export function fixtureVersus(fixture: string): string {
+  const typed = fixture.trim();
+  if (!typed || VERSUS.test(typed)) return typed;
+  return MESSAGE.versus + typed;
+}
+
 /** "v City Select · Friendly · Away · Sunday 4 October · KO 10:00", for the board header. Empty when nothing is in. */
 export function matchSummary(d: BoardData): string {
   const { match } = d;
   return [
-    d.fixture.trim(),
+    fixtureVersus(d.fixture),
     COMPETITIONS.find((c) => c.key === match.competition)?.label,
     MESSAGE.venues.find((v) => v.key === match.venue)?.label,
     matchDate(match.date),
@@ -65,7 +74,8 @@ export function matchHeader(d: BoardData): string[] {
   const out: string[] = [bold(date ? `${title} - ${date}` : title)];
   const kind = COMPETITIONS.find((c) => c.key === match.competition)?.label.toLowerCase();
   const tag = MESSAGE.fixtureTag([match.venue, kind ?? ""].filter(Boolean));
-  if (d.fixture.trim()) out.push(d.fixture.trim() + tag);
+  const fixture = fixtureVersus(d.fixture);
+  if (fixture) out.push(fixture + tag);
   // Home or away says which strip, in full. A board from before that keeps its own words.
   if (match.venue) {
     out.push(MESSAGE.kitLine(match.venue, kitWords(d.kits[match.venue])));
