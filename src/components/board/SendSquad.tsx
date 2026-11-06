@@ -3,12 +3,13 @@
 import { useCallback, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ANALYTICS_EVENTS, SENT_HOW, type SentHow } from "@/constants/config";
+import { ANALYTICS_EVENTS, BADGE_CONFIG, SENT_HOW, type SentHow } from "@/constants/config";
 import { HANDOFF } from "@/constants/content/board";
 import { GAFFER } from "@/constants/content/gaffer";
 import { MOTION } from "@/constants/motion";
 import { trackSend } from "@/lib/analytics";
-import { canHandOff, qrPath, squadLink } from "@/lib/board/handoff";
+import { travelBadge } from "@/lib/board/badge";
+import { badgeLink, canHandOff, qrPath, squadLink } from "@/lib/board/handoff";
 import { useEscapeKey, useFocusTrap, useScrollLock } from "@/lib/hooks";
 import { Button } from "../Button";
 import { cx } from "../cx";
@@ -18,13 +19,13 @@ import { useSheetDrag } from "./useSheetDrag";
 import { Icon } from "../Icon";
 
 /** The link as a QR code, dark on chalk, because that is what a camera reads. */
-function SquadCode({ link }: { readonly link: string }) {
+function SquadCode({ link, label = HANDOFF.codeLabel }: { readonly link: string; readonly label?: string }) {
   const { size, path } = qrPath(link);
   return (
     <svg
       viewBox={`0 0 ${size} ${size}`}
       role="img"
-      aria-label={HANDOFF.codeLabel}
+      aria-label={label}
       className="handoff__code is-w-full bg-chalk is-black has-radius-sm"
     >
       <path d={path} fill="currentColor" />
@@ -32,22 +33,75 @@ function SquadCode({ link }: { readonly link: string }) {
   );
 }
 
+/** The three addresses the sheet hands out. */
+interface SquadLinks {
+  /** In the QR code: the squad only, so the code stays coarse enough to scan off a laptop. */
+  readonly code: string;
+  /** Copied or shared: the squad and, when it fits, the badge. */
+  readonly shared: string;
+  /** The badge QR code, or null when the board has no badge or it is too big for a code. */
+  readonly badge: string | null;
+  /** The board has a badge that the shared link could not carry. */
+  readonly badgeTooBig: boolean;
+}
+
 /**
- * The link, made when the coach asks for it, from the board as it is then. Null while it is being made,
- * and never made in a browser that cannot squeeze the squad small enough.
+ * The links, made when the coach asks for them, from the board as it is then. Null while they are being
+ * made, and never made in a browser that cannot squeeze the squad small enough.
  */
 function useSquadLink() {
   const { state } = useBoard();
-  const [link, setLink] = useState<string | null>(null);
+  const [links, setLinks] = useState<SquadLinks | null>(null);
   const make = async () => {
-    if (canHandOff()) setLink(await squadLink(state.data, Date.now(), window.location.origin));
+    if (!canHandOff()) return;
+    const { data } = state;
+    const origin = window.location.origin;
+    const now = Date.now();
+    const { linkMaxChars, codeMaxChars } = BADGE_CONFIG.travel;
+    const [forLink, forCode] = await Promise.all([
+      travelBadge(data.badge, linkMaxChars),
+      travelBadge(data.badge, codeMaxChars),
+    ]);
+    const has = Boolean(data.badge);
+    const [code, shared] = await Promise.all([
+      squadLink(data, now, origin, { badgeBehind: has }),
+      squadLink(data, now, origin, { badge: forLink, badgeBehind: has }),
+    ]);
+    setLinks({ code, shared, badge: forCode ? badgeLink(data.team, forCode, origin) : null, badgeTooBig: has && !forLink });
   };
-  const clear = useCallback(() => setLink(null), []);
-  return { link, make, clear };
+  const clear = useCallback(() => setLinks(null), []);
+  return { links, make, clear };
+}
+
+/** What happens to the badge, after the privacy line. */
+function badgeNote(links: SquadLinks): string {
+  if (links.badgeTooBig) return HANDOFF.badgeTooBig;
+  return links.badge ? HANDOFF.badgeInLink : HANDOFF.badgeLinkOnly;
+}
+
+/** The badge's own QR code, folded away until the squad is open on the phone and asks for it. */
+function BadgeCode({ link }: { readonly link: string }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  return (
+    <div className="is-flex is-flex-column has-gap-3">
+      <div>
+        <Button size="tiny" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
+          {open ? HANDOFF.badgeCodeClose : HANDOFF.badgeCodeOpen}
+        </Button>
+      </div>
+      {open && (
+        <div id={id} className="is-flex is-flex-column has-gap-3">
+          <SquadCode link={link} label={HANDOFF.badgeCodeLabel} />
+          <p className="text-md is-chalk has-font-semibold">{HANDOFF.badgeCodeHint}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /** The QR code, and the link to copy or share for the way back from the phone. */
-function SquadLinkPanel({ link }: { readonly link: string | null }) {
+function SquadLinkPanel({ links }: { readonly links: SquadLinks | null }) {
   const { state, act } = useBoard();
   const { data } = state;
   const say = GAFFER[data.voice];
@@ -77,7 +131,7 @@ function SquadLinkPanel({ link }: { readonly link: string | null }) {
   }
 
   if (!canHandOff()) return <p className="text-base is-dim">{HANDOFF.unsupported}</p>;
-  if (!link) {
+  if (!links) {
     return (
       <p className="text-base is-dim" role="status">
         {HANDOFF.making}
@@ -86,19 +140,23 @@ function SquadLinkPanel({ link }: { readonly link: string | null }) {
   }
   return (
     <div className="is-flex is-flex-column has-gap-3">
-      <SquadCode link={link} />
+      <SquadCode link={links.code} />
       <p className="text-md is-chalk has-font-semibold">{HANDOFF.scan}</p>
       <div className="is-flex is-flex-wrap has-gap-2">
-        <Button size="tiny" icon="copy" onClick={() => void copy(link)}>
+        <Button size="tiny" icon="copy" onClick={() => void copy(links.shared)}>
           {HANDOFF.copy}
         </Button>
         {canShare && (
-          <Button size="tiny" onClick={() => void share(link)}>
+          <Button size="tiny" onClick={() => void share(links.shared)}>
             {HANDOFF.share}
           </Button>
         )}
       </div>
-      <p className="text-sm is-dim">{HANDOFF.privacy}</p>
+      <p className="text-sm is-dim">
+        {HANDOFF.privacy}
+        {data.badge && ` ${badgeNote(links)}`}
+      </p>
+      {links.badge && <BadgeCode link={links.badge} />}
     </div>
   );
 }
@@ -107,7 +165,7 @@ function SquadLinkPanel({ link }: { readonly link: string | null }) {
 export function SendSquad() {
   const panelId = useId();
   const [open, setOpen] = useState(false);
-  const { link, make, clear } = useSquadLink();
+  const { links, make, clear } = useSquadLink();
 
   function toggle() {
     setOpen(!open);
@@ -124,7 +182,7 @@ export function SendSquad() {
       </ControlRow>
       {open && (
         <div id={panelId} className="has-mt-2 has-mb-3">
-          <SquadLinkPanel link={link} />
+          <SquadLinkPanel links={links} />
         </div>
       )}
     </>
@@ -138,7 +196,7 @@ export function SendSquad() {
 export function SendToPhone({ className }: { readonly className?: string }) {
   const { state } = useBoard();
   const [open, setOpen] = useState(false);
-  const { link, make, clear } = useSquadLink();
+  const { links, make, clear } = useSquadLink();
   const titleId = useId();
   const close = useCallback(() => {
     setOpen(false);
@@ -203,7 +261,7 @@ export function SendToPhone({ className }: { readonly className?: string }) {
                     <Icon name="close" />
                   </button>
                 </div>
-                <SquadLinkPanel link={link} />
+                <SquadLinkPanel links={links} />
               </motion.div>
             </motion.div>
           )}

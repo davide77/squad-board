@@ -117,10 +117,11 @@ function readPlanFormation(v: unknown, custom: readonly Point[]): string {
   return f in FORMATIONS ? f : "";
 }
 
-// Only the PNG this app writes. Anything else in the field could be a link, so it is dropped.
-const BADGE_PREFIX = "data:image/png;base64,";
-const isBadge = (v: unknown): v is string =>
-  typeof v === "string" && v.startsWith(BADGE_PREFIX) && v.length <= BADGE_CONFIG.maxChars;
+// Only the PNG this app writes, or the WebP copy that travels to another device. Anything else in the
+// field could be a link, so it is dropped.
+export const BADGE_PREFIXES = ["data:image/png;base64,", "data:image/webp;base64,"] as const;
+export const isBadge = (v: unknown): v is string =>
+  typeof v === "string" && BADGE_PREFIXES.some((p) => v.startsWith(p)) && v.length <= BADGE_CONFIG.maxChars;
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^\d{2}:\d{2}$/;

@@ -80,6 +80,9 @@ export interface GafferLines {
   /** A squad opened from a link sent from another device. */
   readonly arrived: string;
   readonly linkBroken: string;
+  /** The badge code from another device, scanned onto the right team, or the wrong one. */
+  readonly badgeArrived: string;
+  readonly badgeWrongTeam: (team: string) => string;
 
   // Fair time, under 11s and younger, once the clock has started
   readonly waiting: (first: string, more: number) => string;
@@ -163,6 +166,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     notASquad: "Wrong file. You want the one ending in -board.json.",
     arrived: "Squad's here. Good.",
     linkBroken: "Link's cut short. Send it again.",
+    badgeArrived: "Badge is on. Looks the part.",
+    badgeWrongTeam: (team) => `That badge is for ${team}. Open their board first.`,
 
     waiting: (first, more) => (more ? `${first} and ${more} more haven't been on.` : `${first} hasn't been on yet.`),
     everyonePlayed: "Everyone's played. Good.",
@@ -237,6 +242,8 @@ export const GAFFER: Readonly<Record<VoiceKey, GafferLines>> = {
     notASquad: "That's not a squad file. Happens to the best of us. Look for the one ending in -board.json.",
     arrived: "Your squad's arrived. Everyone made the trip.",
     linkBroken: "That link didn't come through in one piece. Send it again from the other device.",
+    badgeArrived: "Your badge is on. Proper club now.",
+    badgeWrongTeam: (team) => `That badge belongs to ${team}. Open that team's board, then scan it again.`,
 
     waiting: (first, more) =>
       more ? `${first} and ${more} more are still waiting for a go.` : `${first}'s still waiting for a go.`,

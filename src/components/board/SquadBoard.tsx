@@ -38,21 +38,19 @@ function Board() {
     if (reopened) act({ type: "setFormat", format: asked });
   }, [asked, reopened, act]);
 
-  // An empty board opens on the start screen: name the team, paste the squad, done.
-  if (!state.data.players.length) {
-    return (
-      <div className="board container has-pt-4 has-pb-11" style={kitColours(state.data.colour)}>
-        <IncomingSquad />
-        <StartScreen format={asked} />
-        <Toast />
-      </div>
-    );
-  }
-
+  // An empty board opens on the start screen: name the team, paste the squad, done. IncomingSquad sits
+  // outside both, so it stays mounted when a squad arrives and can still ask for the badge after.
   return (
     <>
       <IncomingSquad />
-      <BoardView />
+      {state.data.players.length ? (
+        <BoardView />
+      ) : (
+        <div className="board container has-pt-4 has-pb-11" style={kitColours(state.data.colour)}>
+          <StartScreen format={asked} />
+          <Toast />
+        </div>
+      )}
     </>
   );
 }

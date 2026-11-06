@@ -578,7 +578,20 @@ export const HANDOFF = {
   copy: "Copy link",
   share: "Share link",
   shareTitle: "Gafferboard squad",
-  privacy: "The link carries your players' names. Send it to yourself or a coach you trust, never the parents' group. The badge stays on this device.",
+  privacy: "The link carries your players' names. Send it to yourself or a coach you trust, never the parents' group.",
+  /** After the privacy line, when the board has a badge. The QR code carries the squad only. */
+  badgeInLink: "Copy or share the link and your badge goes with it. The code above brings the squad, and the badge has a code of its own.",
+  /** When the badge fits in the link but is too detailed for a second code. */
+  badgeLinkOnly: "Copy or share the link and your badge goes with it. The code above brings the squad only.",
+  /** When even the smallest copy of the badge is too big to travel. */
+  badgeTooBig: "Your badge is too detailed to send, so add it again on the other device.",
+  badgeCodeOpen: "Show the badge code",
+  badgeCodeClose: "Hide the badge code",
+  badgeCodeLabel: "QR code that adds your badge on another device",
+  badgeCodeHint: "Scan this once the squad is open on your phone. It adds the badge to the same team.",
+  /** On the device the squad arrived on, when the badge stayed on the one it came from. */
+  badgeBehind: "Your badge stayed on the other device. Tap Show the badge code there and scan it, or add it here.",
+  badgeBehindDismiss: "Not now",
   unsupported: "This browser can't make the link. Export a squad file instead.",
 } as const;
 

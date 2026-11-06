@@ -56,6 +56,23 @@ export const BADGE_CONFIG = {
   maxChars: 300_000,
   /** The board header crest, in CSS pixels. Mirrors .crest in components/_board.scss. */
   crestPx: 46,
+  /**
+   * The small copy that goes to another device. It is redrawn at each size and quality in turn until it
+   * fits: WebP where the browser can write it, PNG where it cannot. Both still sharp at the header crest.
+   */
+  travel: {
+    sizes: [64, 48, 40],
+    qualities: [0.8, 0.6, 0.4],
+    type: "image/webp",
+    /** The most a shared link carries. A link has room; this keeps it easy to paste. */
+    linkMaxChars: 12_000,
+    /**
+     * The most the badge QR code carries. A detailed crest needs over 2,000 even at 40px, and a QR code
+     * holds under 2,950 at low error correction. A code this full reads off a Retina laptop screen; the
+     * squad's own code is smaller, about 1,400, and reads off any screen.
+     */
+    codeMaxChars: 2_400,
+  },
 } as const;
 
 // The squad message for the parents' group.
@@ -264,6 +281,12 @@ export const TEAMS_FROM = { header: "Header", club: "Club sheet" } as const;
 export const HANDOFF_CONFIG = {
   /** The name in the address: /board#squad=... */
   param: "squad",
+  /** The badge, beside the squad in a shared link, or on its own in the badge QR code. */
+  badgeParam: "badge",
+  /** Which team the badge-only code is for, so it never lands on another team's board. */
+  teamParam: "team",
+  /** Set when the sending device has a badge the code could not carry, so the phone can ask for it. */
+  badgeBehindParam: "b",
   /** Squeezes the squad so a full matchday fits in a QR code. */
   compression: "deflate-raw",
   /** Low error correction keeps the code coarse enough to scan off a laptop screen. */
