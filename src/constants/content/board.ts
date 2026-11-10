@@ -51,7 +51,8 @@ export const HEADER = {
   clubShort: "Club",
   /** The match line under the team name opens the call-up sheet. Empty, it asks for the match. */
   addMatch: "Add this week's match",
-  editMatch: "Edit",
+  /** The chip at the end of a filled match line: the details and the call-up to the parents sit behind it. */
+  editMatch: "Edit and send",
   start: "Start",
   pause: "Pause",
   resume: "Resume",

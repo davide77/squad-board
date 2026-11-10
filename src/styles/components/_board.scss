@@ -884,7 +884,8 @@ $gaffer-tail: spacer(2);
   border: 1px solid $edge;
 }
 
-// The match line under the team name: the details, and Edit, underlined, so it reads as the way in.
+// The match line under the team name: the details, then a chip that reads as the way in to them
+// and to the call-up. Dressed like the board's other small buttons, so it is plainly tappable.
 .board-header__match {
   max-width: 100%;
   padding: 0;
@@ -893,13 +894,15 @@ $gaffer-tail: spacer(2);
   cursor: pointer;
 
   &:hover .board-header__edit {
-    color: color(chalk);
+    background-color: color(board-3);
+    border-color: color(kit-edge);
   }
 }
 
 .board-header__edit {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  white-space: nowrap;
+  border: 1px solid $edge;
+  transition: background-color $transition-fast, border-color $transition-fast;
 }
 
 // ---------- The bench tray, on a phone ----------

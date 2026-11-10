@@ -5,7 +5,7 @@ import { HEADER, SHEET } from "@/constants/content/board";
 import { AGE_GROUPS, FORMATS } from "@/constants/football";
 import { matchSummary } from "@/lib/board/message";
 import { started } from "@/lib/board/queries";
-import { cx } from "../cx";
+import { Icon } from "../Icon";
 import { useBoard } from "./BoardProvider";
 import { ClubButton } from "./ClubButton";
 import { Crest } from "./Crest";
@@ -50,12 +50,16 @@ export function BoardHeader() {
         </div>
         <button
           type="button"
-          className="board-header__match is-flex is-align-baseline has-gap-2 text-left text-md hit-area"
+          className="board-header__match is-flex is-align-center has-gap-2 has-mt-1 text-left text-md hit-area"
           aria-haspopup="dialog"
           onClick={() => act({ type: "openCallUp" })}
         >
-          <span className={cx("is-min-w-0 is-truncate", summary ? "is-chalk" : "is-dim")}>{summary || HEADER.addMatch}</span>
-          <span className="board-header__edit text-sm is-dim is-shrink-0">{HEADER.editMatch}</span>
+          {summary && <span className="is-min-w-0 is-truncate is-chalk">{summary}</span>}
+          {/* A chip, not a word: the match details and the call-up live behind this line, so it has to look tappable. */}
+          <span className="board-header__edit is-inline-flex is-align-center has-gap-1 has-py-1 has-px-2 text-sm has-font-medium has-radius-pill is-shrink-0 is-chalk bg-board-2">
+            <Icon name={summary ? "edit" : "add"} size="small" className="is-kit" />
+            {summary ? HEADER.editMatch : HEADER.addMatch}
+          </span>
         </button>
       </div>
       <div className="board-header__steps">
