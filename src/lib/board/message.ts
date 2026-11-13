@@ -1,5 +1,5 @@
 import { MESSAGE_CONFIG, MESSAGE_DATE_FORMAT } from "@/constants/config";
-import { COMPETITIONS, MESSAGE, SHEET } from "@/constants/content/board";
+import { CAPTAIN, COMPETITIONS, MEET_OPTIONS, MESSAGE, SHEET } from "@/constants/content/board";
 import { kitWords } from "./kit";
 import { sentName } from "./names";
 import type { BoardData } from "./types";
@@ -42,6 +42,15 @@ export function matchIsToday(d: BoardData, now: number): boolean {
   return today.getFullYear() === y && today.getMonth() === m - 1 && today.getDate() === day;
 }
 
+const DAY_MINUTES = 24 * 60;
+
+/** The meet time for a kick-off: "09:30" less 30 minutes is "09:00". Wraps past midnight rather than going negative. */
+export function meetTime(kickoff: string, before: number): string {
+  const [h, m] = kickoff.split(":").map(Number);
+  const at = (((h * 60 + m - before) % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
+  return `${String(Math.floor(at / 60)).padStart(2, "0")}:${String(at % 60).padStart(2, "0")}`;
+}
+
 const BOLD = MESSAGE_CONFIG.boldMark;
 
 /** "*Sunday 1 November*", so WhatsApp shows it in bold. Stray marks inside are dropped so the pair still holds. */
@@ -73,12 +82,12 @@ export function matchHeader(d: BoardData): string[] {
   // The lines a parent acts on are bold: who and when, the times, and the squad heading.
   const out: string[] = [bold(date ? `${title} - ${date}` : title)];
   const kind = COMPETITIONS.find((c) => c.key === match.competition)?.label.toLowerCase();
-  const tag = MESSAGE.fixtureTag([match.venue, kind ?? ""].filter(Boolean));
+  const tag = MESSAGE.fixtureTag([match.venue ? MESSAGE.venueTag[match.venue] : "", kind ?? ""].filter(Boolean));
   const fixture = fixtureVersus(d.fixture);
   if (fixture) out.push(fixture + tag);
-  // Home or away says which strip, in full. A board from before that keeps its own words.
-  if (match.venue) {
-    out.push(MESSAGE.kitLine(match.venue, kitWords(d.kits[match.venue])));
+  // The kit says which strip, in full. A board from before that keeps its own words.
+  if (match.strip) {
+    out.push(MESSAGE.kitLine(match.strip, kitWords(d.kits[match.strip])));
   } else if (match.kit.trim()) {
     out.push(match.kit.trim());
   }
@@ -86,7 +95,11 @@ export function matchHeader(d: BoardData): string[] {
 
   const when: string[] = [];
   if (match.kickoff) when.push(MESSAGE.kickoff + bold(match.kickoff));
-  if (match.meet) when.push(MESSAGE.meet + bold(match.meet));
+  const meet = MEET_OPTIONS.find((o) => o.minutes === match.meetBefore);
+  if (meet) {
+    const gap = MESSAGE.meetGap(meet.label);
+    when.push(MESSAGE.meet + (match.kickoff ? `${bold(meetTime(match.kickoff, meet.minutes))} (${gap})` : bold(gap)));
+  }
   const address = match.address.trim();
   if (address) when.push(MESSAGE.address + address.replace(/\s*\n\s*/g, ", "), MESSAGE.map + mapLink(address));
   if (when.length) out.push("", ...when);
@@ -102,7 +115,7 @@ export function squadMessage(d: BoardData): string {
   // In alphabetical order of the name as it goes out, so a parent finds their child at a glance.
   const squad = d.players
     .filter((p) => !p.out)
-    .map((p) => sentName(d, p.name))
+    .map((p) => sentName(d, p.name) + (p.id === d.captain ? CAPTAIN.messageMark : ""))
     .sort((a, b) => a.localeCompare(b, MESSAGE_CONFIG.locale));
   out.push("", bold(MESSAGE.squad), ...(squad.length ? squad : [MESSAGE.nobody]));
   out.push("", MESSAGE.confirm);

@@ -75,7 +75,8 @@ export const SHAPE = {
   /** Said after an arrow key moves a custom marker, as its role can change with where it sits. */
   markerNow: (role: string) => `Now ${role}`,
   /** Starts with what the slot shows, number then name, so voice control matches it. */
-  slotFilled: (num: number | string, name: string, role: string) => `${num} ${name}, ${role}`,
+  slotFilled: (num: number | string, name: string, role: string, captain = false) =>
+    `${num} ${name}, ${role}${captain ? ", captain" : ""}`,
 } as const;
 
 /** Pick the team's line-ups menu, the way on to the match, and starting over. */
@@ -319,6 +320,10 @@ export const DRAWER = {
   main: "Main",
   sideHint: "Which side for full-back and wing",
   listedAs: "Listed as",
+  captainHeading: "Captain",
+  /** A toggle: pressed, this player wears the armband. Picking another moves it to them. */
+  captain: "Captain",
+  captainHint: "Gets a C on the pitch, in the list and in the call-up.",
   weekHeading: "This week",
   statuses: [
     { key: "available", label: "Available" },
@@ -461,6 +466,23 @@ export const COMPETITIONS = [
   { key: "tournament", label: "Tournament" },
 ] as const;
 
+/** The captain's mark, wherever their name is shown. */
+export const CAPTAIN = {
+  /** On the pitch marker and the squad row. A screen reader hears `label` instead. */
+  mark: "C",
+  label: "captain",
+  /** After the name in the call-up: "Sam (C)". */
+  messageMark: " (C)",
+} as const;
+
+/** How long before kick-off the players meet. The call-up works out the time from the kick-off. */
+export const MEET_OPTIONS = [
+  { minutes: 30, label: "30 minutes before" },
+  { minutes: 45, label: "45 minutes before" },
+  { minutes: 60, label: "1 hour before" },
+  { minutes: 90, label: "1 hour 30 minutes before" },
+] as const;
+
 /** The call-up for the parents' group. It goes out in the coach's name, so it stays straight. */
 export const MESSAGE = {
   heading: "This week's match",
@@ -472,10 +494,20 @@ export const MESSAGE = {
   dateLabel: "Date",
   kickoffLabel: "Kick-off",
   meetLabel: "Meet",
-  venueLabel: "Home or away",
+  meetNone: "Not set",
+  /** Is the match at home or away. The kit is asked on its own, below. */
+  venueLabel: "Home or away match",
   venues: [
     { key: "home", label: "Home" },
     { key: "away", label: "Away" },
+  ],
+  /** In the message's fixture tag: "v Northgate (away match, league)". */
+  venueTag: { home: "home match", away: "away match" },
+  /** Which strip the players wear, apart from the venue. */
+  kitLabel: "Kit",
+  kits: [
+    { key: "home", label: "Home kit" },
+    { key: "away", label: "Away kit" },
   ],
   /** "To change the kits, customise your club.", with the last words opening the club sheet. */
   venueHint: "To change the kits,",
@@ -502,6 +534,8 @@ export const MESSAGE = {
   /** Lines of the message itself. */
   kickoff: "Kick-off: ",
   meet: "Meet: ",
+  /** After the meet time: "Meet: *09:00* (30 minutes before kick-off)". Without a kick-off, the gap on its own. */
+  meetGap: (label: string) => `${label} kick-off`,
   address: "Address: ",
   map: "Map: ",
   squad: "Matchday squad:",

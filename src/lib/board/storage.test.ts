@@ -38,13 +38,19 @@ describe("readBoard", () => {
     expect(d.players[0].side).toBeNull();
     expect(d.players[0].inj).toBe(true);
 
-    expect(d.match).toMatchObject({ date: "", kickoff: "10:30", meet: "", us: 0, them: 2, venue: "", ended: false });
+    expect(d.match).toMatchObject({ date: "", kickoff: "10:30", meetBefore: 0, us: 0, them: 2, venue: "", strip: "", ended: false });
     // A badge that is not this app's PNG could be a link, so it is dropped.
     expect(d.badge).toBe("");
     // The clock always reopens paused where it was left.
     expect(d.clock).toEqual({ running: false, base: 125000, since: 0 });
     expect(d.colour).toBe(0);
     expect(d.nameStyle).toBe("first");
+  });
+
+  it("upgrades a board saved before the kit and the meet gap were asked apart", () => {
+    const d = readBoard({ players: [player("a")], match: { kickoff: "10:00", meet: "09:20", venue: "away" } });
+    // Home or away named the strip too, so the old choice carries over as the kit.
+    expect(d?.match).toMatchObject({ venue: "away", strip: "away", meetBefore: 45 });
   });
 
   it("upgrades a board saved before formats, age groups and kits existed", () => {

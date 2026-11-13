@@ -2,9 +2,9 @@
 
 import { useId } from "react";
 import { MESSAGE_CONFIG } from "@/constants/config";
-import { COMPETITIONS, MESSAGE } from "@/constants/content/board";
+import { COMPETITIONS, MEET_OPTIONS, MESSAGE } from "@/constants/content/board";
 import { kitWords } from "@/lib/board/kit";
-import { mapLink } from "@/lib/board/message";
+import { mapLink, meetTime } from "@/lib/board/message";
 import type { Competition, MatchTextField } from "@/lib/board/types";
 import { useBoard } from "./BoardProvider";
 import { KitIcon } from "./KitIcon";
@@ -13,7 +13,7 @@ const LABEL = "is-block has-font-headline text-xs tracking-caps uppercase is-dim
 // py-3 keeps every field at least 44px tall for a thumb.
 const FIELD = "field is-w-full has-radius-field has-py-3 has-px-3 text-base";
 
-/** This week's opponent, date, times, home or away, and ground, in the call-up sheet. They head the call-up and the result. */
+/** This week's opponent, date, times, home or away, kit and ground, in the call-up sheet. They head the call-up and the result. */
 export function MatchDetailsFields() {
   const { state, act } = useBoard();
   const { fixture, match, kits } = state.data;
@@ -75,29 +75,67 @@ export function MatchDetailsFields() {
             <label htmlFor={`${id}-meet`} className={LABEL}>
               {MESSAGE.meetLabel}
             </label>
-            <input id={`${id}-meet`} type="time" className={FIELD} value={match.meet} onChange={set("meet")} />
+            {/* How long before kick-off, not a clock time: the message works the time out from the kick-off. */}
+            <select
+              id={`${id}-meet`}
+              className={`${FIELD} formation-select`}
+              value={match.meetBefore}
+              onChange={(e) => act({ type: "setMeetBefore", minutes: Number(e.target.value) })}
+            >
+              <option value={0}>{MESSAGE.meetNone}</option>
+              {MEET_OPTIONS.map((o) => (
+                <option key={o.minutes} value={o.minutes}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+            {/* The time it comes to, as the parents will read it. */}
+            {match.kickoff && match.meetBefore > 0 && (
+              <p className="text-sm is-dim has-mt-1">
+                {MESSAGE.meet}
+                {meetTime(match.kickoff, match.meetBefore)}
+              </p>
+            )}
           </div>
         </div>
         <div>
           <p id={`${id}-venue`} className={LABEL}>
             {MESSAGE.venueLabel}
           </p>
-          {/* Which strip, drawn on the button. The message says it in full: "Home kit: red shirts, white shorts, red socks." */}
           <div role="group" aria-labelledby={`${id}-venue`} className="is-flex has-gap-2">
             {MESSAGE.venues.map((v) => (
               <button
                 key={v.key}
                 type="button"
                 aria-pressed={match.venue === v.key}
-                className="choice is-flex is-flex-1 is-align-center is-justify-center has-gap-2 has-radius-field has-font-semibold text-md"
+                className="choice is-flex is-flex-1 is-align-center is-justify-center has-radius-field has-font-semibold text-md"
                 onClick={() => act({ type: "setVenue", venue: v.key })}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p id={`${id}-kit`} className={LABEL}>
+            {MESSAGE.kitLabel}
+          </p>
+          {/* Which strip, drawn on the button. The message says it in full: "Home kit: red shirts, white shorts, red socks." */}
+          <div role="group" aria-labelledby={`${id}-kit`} className="is-flex has-gap-2">
+            {MESSAGE.kits.map((v) => (
+              <button
+                key={v.key}
+                type="button"
+                aria-pressed={match.strip === v.key}
+                className="choice is-flex is-flex-1 is-align-center is-justify-center has-gap-2 has-radius-field has-font-semibold text-md"
+                onClick={() => act({ type: "setStrip", strip: v.key })}
               >
                 <KitIcon kit={kits[v.key]} className="kit-icon--sm" />
                 {v.label}
               </button>
             ))}
           </div>
-          {match.venue && <p className="kit-editor__words text-sm is-dim has-mt-2">{kitWords(kits[match.venue])}</p>}
+          {match.strip && <p className="kit-editor__words text-sm is-dim has-mt-2">{kitWords(kits[match.strip])}</p>}
           <p className="text-sm is-dim has-mt-1">
             {MESSAGE.venueHint}{" "}
             <button

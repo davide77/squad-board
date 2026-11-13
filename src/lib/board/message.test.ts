@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boldRuns, fixtureVersus, squadMessage } from "./message";
+import { boldRuns, fixtureVersus, meetTime, squadMessage } from "./message";
 import { emptyData } from "./storage";
 
 describe("squadMessage", () => {
@@ -9,11 +9,11 @@ describe("squadMessage", () => {
       ...d,
       team: "Ayat U15",
       sheetCredit: false,
-      match: { ...d.match, date: "2026-11-01", kickoff: "09:30", meet: "09:00" },
+      match: { ...d.match, date: "2026-11-01", kickoff: "09:30", meetBefore: 30 },
     }).split("\n");
     expect(lines[0]).toBe("*Ayat U15 - Sunday 1 November*");
     expect(lines).toContain("Kick-off: *09:30*");
-    expect(lines).toContain("Meet: *09:00*");
+    expect(lines).toContain("Meet: *09:00* (30 minutes before kick-off)");
     expect(lines).toContain("*Matchday squad:*");
   });
 
@@ -58,6 +58,41 @@ describe("fixtureVersus", () => {
   it("heads the fixture line of the call-up", () => {
     const d = { ...emptyData(), team: "Ayat", fixture: "Redbridge", players: [] };
     d.match = { ...d.match, venue: "home", competition: "cup" };
-    expect(squadMessage(d)).toContain("v Redbridge (home, cup)");
+    expect(squadMessage(d)).toContain("v Redbridge (home match, cup)");
+  });
+});
+
+describe("the kit and the meet", () => {
+  it("names the kit apart from the venue", () => {
+    const d = { ...emptyData(), team: "Ayat", fixture: "Redbridge", players: [] };
+    d.match = { ...d.match, venue: "away", strip: "home" };
+    const msg = squadMessage(d);
+    expect(msg).toContain("v Redbridge (away match)");
+    expect(msg).toContain("Home kit: ");
+    expect(msg).not.toContain("Away kit");
+  });
+
+  it("gives the gap on its own when there is no kick-off", () => {
+    const d = { ...emptyData(), sheetCredit: false };
+    d.match = { ...d.match, meetBefore: 90 };
+    expect(squadMessage(d).split("\n")).toContain("Meet: *1 hour 30 minutes before kick-off*");
+  });
+
+  it("works the meet time back from the kick-off, past midnight too", () => {
+    expect(meetTime("10:15", 45)).toBe("09:30");
+    expect(meetTime("00:30", 60)).toBe("23:30");
+  });
+});
+
+describe("the captain", () => {
+  it("puts (C) after the captain in the call-up, and nobody else", () => {
+    const base = emptyData();
+    const players = [
+      { id: "a", num: "4", name: "Sam Jones", init: "", pos: [], side: null, out: false, inj: false, una: false, trn: false },
+      { id: "b", num: "7", name: "Alex Reid", init: "", pos: [], side: null, out: false, inj: false, una: false, trn: false },
+    ];
+    const lines = squadMessage({ ...base, players, captain: "a", sheetCredit: false }).split("\n");
+    expect(lines.filter((l) => l.endsWith(" (C)"))).toHaveLength(1);
+    expect(lines.find((l) => l.startsWith("Sam"))).toMatch(/ \(C\)$/);
   });
 });

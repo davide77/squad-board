@@ -106,11 +106,15 @@ export interface MatchDetails {
   date: string;
   /** HH:MM, from a time input. */
   kickoff: string;
-  meet: string;
+  /** Minutes before kick-off the players meet, from MESSAGE.meetOptions. 0 when not set. */
+  meetBefore: number;
   /** Free text from before home or away was asked. Still read, so an old board keeps it. */
   kit: string;
   address: string;
+  /** Whether the match is at home or away. */
   venue: Venue;
+  /** Which strip the players turn up in. Apart from the venue: an away side often wears its home kit. */
+  strip: Venue;
   surface: Surface;
   competition: Competition;
   /** Goals for and against, from the Full time step. */
@@ -126,10 +130,12 @@ export interface MatchDetails {
 }
 
 /** The text fields of the match, which the details form edits. */
-export type MatchTextField = "date" | "kickoff" | "meet" | "kit" | "address";
+export type MatchTextField = "date" | "kickoff" | "kit" | "address";
 
 export interface BoardData {
   team: string;
+  /** The captain, by player id. Empty for none. Kept from week to week, as the armband usually is. */
+  captain: string;
   season: string;
   fixture: string;
   match: MatchDetails;

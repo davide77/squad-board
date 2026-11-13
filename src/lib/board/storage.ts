@@ -1,5 +1,5 @@
 import { KIT_COLOURS } from "@/constants/brand";
-import { COMPETITIONS, NAME_STYLES, type NameStyle } from "@/constants/content/board";
+import { COMPETITIONS, MEET_OPTIONS, NAME_STYLES, type NameStyle } from "@/constants/content/board";
 import { BADGE_CONFIG, BOARD_CONFIG, STORAGE_KEY } from "@/constants/config";
 import { DEFAULT_VOICE } from "@/constants/content/landing";
 import {
@@ -20,12 +20,13 @@ import { captureLineup, elapsed } from "./queries";
 import type { BoardData, Clock, Kickoff, Lineup, MatchDetails, Minutes, NamedLineup, Player, Point, Sub, XI } from "./types";
 
 export function emptyMatch(): MatchDetails {
-  return { date: "", kickoff: "", meet: "", kit: "", address: "", venue: "", surface: "", competition: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
+  return { date: "", kickoff: "", meetBefore: 0, kit: "", address: "", venue: "", strip: "", surface: "", competition: "", us: 0, them: 0, potm: "", ended: false, half: 1, atBreak: false };
 }
 
 export function emptyData(): BoardData {
   const d: BoardData = {
     team: "",
+    captain: "",
     season: "",
     fixture: "",
     match: emptyMatch(),
@@ -127,15 +128,35 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^\d{2}:\d{2}$/;
 const matching = (v: unknown, re: RegExp) => (re.test(str(v)) ? str(v) : "");
 
+const side = (v: unknown) => (v === "home" || v === "away" ? v : "");
+const minutesOf = (hhmm: string) => {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+};
+
+/** How long before kick-off to meet. A board from before the choice had a meet time: it becomes the nearest option. */
+function readMeetBefore(v: Record<string, unknown>, kickoff: string): number {
+  const chosen = MEET_OPTIONS.find((o) => o.minutes === v.meetBefore);
+  if (chosen) return chosen.minutes;
+  const meet = matching(v.meet, TIME);
+  if (!meet || !kickoff) return 0;
+  const gap = minutesOf(kickoff) - minutesOf(meet);
+  if (gap <= 0) return 0;
+  return MEET_OPTIONS.map((o): number => o.minutes).reduce((best, m) => (Math.abs(m - gap) < Math.abs(best - gap) ? m : best));
+}
+
 function readMatch(v: unknown): MatchDetails {
   if (!isRec(v)) return emptyMatch();
+  const kickoff = matching(v.kickoff, TIME);
   return {
     date: matching(v.date, DATE),
-    kickoff: matching(v.kickoff, TIME),
-    meet: matching(v.meet, TIME),
+    kickoff,
+    meetBefore: readMeetBefore(v, kickoff),
     kit: str(v.kit),
     address: str(v.address),
-    venue: v.venue === "home" || v.venue === "away" ? v.venue : "",
+    venue: side(v.venue),
+    // Before the kit was its own choice, home or away named the strip too.
+    strip: "strip" in v ? side(v.strip) : side(v.venue),
     surface: v.surface === "grass" || v.surface === "astro" ? v.surface : "",
     competition: COMPETITIONS.find((c) => c.key === v.competition)?.key ?? "",
     us: Math.max(0, Math.floor(num(v.us))),
@@ -211,6 +232,7 @@ export function readBoard(raw: unknown): BoardData | null {
   const format = isFormat(raw.format) ? raw.format : DEFAULT_FORMAT;
   return {
     team: str(raw.team),
+    captain: str(raw.captain),
     season: str(raw.season),
     fixture: str(raw.fixture),
     match: readMatch(raw.match),

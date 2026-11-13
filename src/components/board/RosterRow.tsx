@@ -11,6 +11,7 @@ import type { Player } from "@/lib/board/types";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { Icon } from "../Icon";
+import { CaptainMark } from "./CaptainMark";
 
 interface RosterRowProps {
   readonly player: Player;
@@ -36,7 +37,10 @@ export function RosterRow({ player: p, moves, dupe, place, grouped = false }: Ro
 
   const body = (
     <>
-      <b className="roster-row__name is-block has-font-medium is-truncate">{p.name}</b>
+      <span className="is-flex is-align-center has-gap-2 is-min-w-0">
+        <b className="roster-row__name is-block has-font-medium is-truncate">{p.name}</b>
+        {p.id === data.captain && <CaptainMark />}
+      </span>
       <span className="is-flex is-flex-wrap is-align-center has-gap-2">
         {place && place.fit > 0 && (
           <span className={cx("fit-tag text-xs has-font-semibold has-radius-sm has-px-1", place.fit === 2 && "fit-tag--there")}>

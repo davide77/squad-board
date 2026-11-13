@@ -61,6 +61,8 @@ export type Action =
   | { type: "setFixture"; value: string }
   | { type: "setMatch"; field: MatchTextField; value: string }
   | { type: "setVenue"; venue: Venue }
+  | { type: "setStrip"; strip: Venue }
+  | { type: "setMeetBefore"; minutes: number }
   | { type: "setSurface"; surface: Surface }
   | { type: "setCompetition"; competition: Competition }
   | { type: "setKit"; side: KitSide; kit: Partial<Kit> }
@@ -100,6 +102,7 @@ export type Action =
   | { type: "toggleUnavailable"; id: string }
   | { type: "setCalledUp"; id: string; called: boolean }
   | { type: "removePlayer"; id: string }
+  | { type: "setCaptain"; id: string }
   | { type: "restorePlayer"; id: string }
   | { type: "deletePlayer"; id: string }
   | { type: "setNumber"; id: string; value: string }
@@ -592,6 +595,14 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       d.match.venue = d.match.venue === action.venue ? "" : action.venue;
       return next;
 
+    case "setStrip":
+      d.match.strip = d.match.strip === action.strip ? "" : action.strip;
+      return next;
+
+    case "setMeetBefore":
+      d.match.meetBefore = action.minutes;
+      return next;
+
     case "setCompetition":
       d.match.competition = action.competition;
       return next;
@@ -870,6 +881,10 @@ function reduce(state: BoardState, action: StampedAction): BoardState {
       note(p.out ? say.notCalledUp(firstName(p.name)) : say.calledUp(firstName(p.name)));
       return next;
     }
+
+    case "setCaptain":
+      d.captain = d.captain === action.id ? "" : action.id;
+      return next;
 
     case "removePlayer": {
       const p = player(action.id);

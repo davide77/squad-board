@@ -167,6 +167,21 @@ function DrawerBody({ p, titleId, close }: DrawerBodyProps) {
       </section>
 
       <section className="drawer__section is-flex is-flex-column has-gap-3 has-pt-5">
+        <h3 className={HEADING}>{DRAWER.captainHeading}</h3>
+        <p className="text-base is-dim">{DRAWER.captainHint}</p>
+        {/* One armband: pressing it here takes it off whoever had it. */}
+        <button
+          type="button"
+          aria-pressed={data.captain === p.id}
+          className="choice is-flex is-align-center is-justify-center has-gap-2 has-radius-field has-font-semibold text-md"
+          onClick={() => act({ type: "setCaptain", id: p.id })}
+        >
+          <Icon name="captain" size="button" />
+          {DRAWER.captain}
+        </button>
+      </section>
+
+      <section className="drawer__section is-flex is-flex-column has-gap-3 has-pt-5">
         <h3 id={`${labelId}-week`} className={HEADING}>
           {DRAWER.weekHeading}
         </h3>

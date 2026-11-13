@@ -11,6 +11,7 @@ import type { Slot } from "@/lib/board/types";
 import { cx } from "../cx";
 import { useBoard } from "./BoardProvider";
 import { PitchMarkings } from "./PitchMarkings";
+import { CaptainMark } from "./CaptainMark";
 
 interface PitchSlotProps {
   readonly slot: Slot;
@@ -79,7 +80,7 @@ function PitchSlot({ slot, now, dupes, onNudge }: PitchSlotProps) {
       style={position}
       data-slot={slot.id}
       data-player={p?.id}
-      aria-label={p ? SHAPE.slotFilled(p.num || NO_NUMBER, shirtName(p, data.nameStyle, data.players), slot.role) : SHAPE.slotEmpty(slot.role)}
+      aria-label={p ? SHAPE.slotFilled(p.num || NO_NUMBER, shirtName(p, data.nameStyle, data.players), slot.role, p.id === data.captain) : SHAPE.slotEmpty(slot.role)}
       aria-pressed={matchday && p ? ui.offSlot === slot.id : undefined}
       onClick={() => act(matchday ? { type: "selectOff", slotId: slot.id } : { type: "tapSlot", slotId: slot.id })}
       onKeyDown={onKeyDown}
@@ -87,6 +88,7 @@ function PitchSlot({ slot, now, dupes, onNudge }: PitchSlotProps) {
       <span className="pitch-slot__disc is-flex is-align-center is-justify-center has-radius-pill has-font-headline has-font-bold text-xl leading-tight is-tabular">
         {/* No shirt number yet: the player's initials, which say who it is, rather than a dash. */}
         {p ? p.num || monogram(p.name) : ""}
+        {p && p.id === data.captain && <CaptainMark className="pitch-slot__captain" />}
       </span>
       {p ? (
         <span className="pitch-slot__name text-2xs leading-snug text-center has-radius-sm">

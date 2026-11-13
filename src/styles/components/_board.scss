@@ -1079,3 +1079,21 @@ $gaffer-tail: spacer(2);
   height: spacer(8) - spacer(2);
   font-size: font-size(xs);
 }
+
+// ---------- The captain ----------
+
+// The C on the captain's marker and beside their name: chalk on black, so it reads on any club colour.
+.captain-mark {
+  width: spacer(4);
+  height: spacer(4);
+  color: color(black);
+  background-color: color(chalk);
+}
+
+// On the pitch it sits on the shirt's top right, like an armband seen from the front.
+.pitch-slot__captain {
+  position: absolute;
+  top: -(spacer(1));
+  right: -(spacer(1));
+  box-shadow: 0 1px 2px tint(black, 50%);
+}
